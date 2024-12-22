@@ -1,0 +1,28 @@
+question: Given a 2D integer matrix mat[][] of size n x m, where every row and column is sorted in increasing order and a number x, the task is to find whether element x is present in the matrix.
+code:
+class Solution {
+public:
+    // Function to search for a value 'x' in a 2D matrix 'mat'
+    bool matSearch(vector<vector<int>> &mat, int x) {
+        // Initialize 'i' to the last column index and 'j' to the first row index
+        int i = mat[0].size() - 1; // Last column index
+        int j = 0; // First row index
+
+        // Loop until we are within the bounds of the matrix
+        while (i >= 0 && j < mat.size()) {
+            // Check if the current element is equal to 'x'
+            if (mat[j][i] == x) return true;
+
+            // If the current element is greater than 'x', move left (decrease column index)
+            if (mat[j][i] > x) {
+                i--;
+            } 
+            // If the current element is less than 'x', move down (increase row index)
+            else {
+                j++;
+            }
+        }
+        // If we exit the loop, 'x' is not found in the matrix
+        return false;
+    }
+};
