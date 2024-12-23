@@ -3,18 +3,22 @@ Note: In a row-wise sorted matrix, each row is sorted in itself, i.e. for any i,
 
 code: 
 class Solution {
-  public:
-    // Function to search a given number in row-column sorted matrix.
-         bool searchRowMatrix(vector<vector<int>> &mat, int x) {
+public:
+    // Function to search a given number in a row-column sorted matrix.
+    bool searchRowMatrix(vector<vector<int>> &mat, int x) {
         // Iterate through each row in the matrix
         for (vector<int> &row : mat) {
             // Perform binary search using lower_bound in the current row
+            // lower_bound returns an iterator pointing to the first element 
+            // that is not less than (i.e., greater than or equal to) x
             auto lb = lower_bound(row.begin(), row.end(), x) - row.begin();
-            // Check if the found element is equal to x
+            
+            // Check if the found position is within the bounds of the row
+            // and if the element at that position is equal to x
             if (lb != row.size() && row[lb] == x) 
-                return true; // Return true if found
+                return true; // Return true if x is found in the current row
         }
-        // If the target is not found in any row, return false
+        // If the target x is not found in any row, return false
         return false;
     }
 };
