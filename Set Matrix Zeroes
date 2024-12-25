@@ -1,0 +1,37 @@
+Question: 
+You are given a 2D matrix mat[][] of size n×m. The task is to modify the matrix such that if mat[i][j] is 0, all the elements in the i-th row and j-th column are set to 0 and do it in constant space complexity.
+
+code:
+class Solution {
+public:
+    // Function to set entire row and column to zero if an element is zero
+    void setMatrixZeroes(vector<vector<int>> &mat) {
+        // Maps to track which rows and columns need to be zeroed
+        unordered_map<int, bool> rows, cols;
+        
+        // Get the number of rows (n) and columns (m) in the matrix
+        int n = mat.size(), m = mat[0].size();
+        
+        // First pass: Identify rows and columns that need to be zeroed
+        for(int i = 0; i < n; i++) { // Iterate through each row
+            for(int j = 0; j < m; j++) { // Iterate through each column
+                // Check if the current element is zero
+                if(!mat[i][j]) {
+                    // Mark the row and column for zeroing
+                    rows[i] = true; // Mark the current row as needing zeroing
+                    cols[j] = true; // Mark the current column as needing zeroing
+                }
+            }
+        }
+
+        // Second pass: Set the identified rows and columns to zero
+        for(int i = 0; i < n; i++) { // Iterate through each row again
+            for(int j = 0; j < m; j++) { // Iterate through each column again
+                // If the current row or column is marked for zeroing, set the element to zero
+                if(rows[i] || cols[j]) {
+                    mat[i][j] = 0; // Set the current element to zero
+                }
+            }
+        }
+    }
+};
