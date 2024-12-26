@@ -1,0 +1,42 @@
+question: Given an array arr[] of positive integers and another integer target. Determine if there exists two distinct indices such that the sum of there elements is equals to target.
+code: 
+class Solution {
+public:
+    // Function to determine if there are two numbers in 'arr' that sum up to 'target'
+    bool twoSum(vector<int>& arr, int target) {
+        // Get the size of the array
+        int n = arr.size();
+        
+        // If the array has less than 2 elements, we cannot find two numbers
+        if (n < 2) return false;
+        
+        // Sort the array to use the two-pointer technique
+        sort(arr.begin(), arr.end());
+        
+        // Initialize two pointers: one at the start (l) and one at the end (r) of the array
+        int l = 0, r = n - 1;
+        
+        // Loop until the two pointers meet
+        while (l < r) {
+            // Calculate the sum of the elements at the two pointers
+            int s = arr[l] + arr[r];
+            
+            // Check if the sum is equal to the target
+            if (s == target) {
+                // If found, return true
+                return true;
+            }
+            // If the sum is less than the target, move the left pointer to the right
+            else if (s < target) {
+                l++;
+            }
+            // If the sum is greater than the target, move the right pointer to the left
+            else {
+                r--;
+            }
+        }
+        
+        // If no pair is found that sums to the target, return false
+        return false;
+    }
+};
