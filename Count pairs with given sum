@@ -1,0 +1,35 @@
+question: Given an array arr[] and an integer target. You have to find numbers of pairs in array arr[] which sums up to given target.
+
+code:
+
+class solution{
+public:
+int countPairs(vector<int> &arr, int target) {
+    // Sort the array in ascending order
+    sort(arr.begin(), arr.end());
+
+    // Create an unordered map to store the frequency of elements
+    unordered_map<int, int> mp;
+
+    // Initialize a counter to keep track of the number of pairs that sum to the target
+    int cnt = 0;
+
+    // Iterate through each element in the array
+    for (int i = 0; i < arr.size(); i++) {
+        // Calculate the difference needed to reach the target sum
+        int d = target - arr[i];
+
+        // Check if the difference exists in the map
+        if (mp.find(d) != mp.end()) {
+            // If it exists, add the count of that difference to the total count
+            cnt += mp[d];
+        }
+
+        // Increment the frequency of the current element in the map
+        mp[arr[i]]++;
+    }
+
+    // Return the total count of pairs that sum to the target
+    return cnt;
+}
+};
