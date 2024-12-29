@@ -1,0 +1,36 @@
+Question:  Given two integer arrays a[] and b[], you have to find the intersection of the two arrays. Intersection of two arrays is said to be elements that are common in both arrays. The intersection should not have duplicate elements and the result should contain items in any order.
+code: 
+
+class solution{
+public:
+vector<int> intersectionWithDuplicates(vector<int>& a, vector<int>& b) {
+// Declare two sets to store unique integers from two vectors
+set<int> s1; // Set to store elements from vector 'a'
+set<int> s2; // Set to store elements from vector 'b'
+
+// Loop through the first vector 'a'
+for (int i = 0; i < a.size(); i++) {
+    // Insert each element of 'a' into the set 's1'
+    s1.insert(a[i]);
+}
+
+// Declare a vector to store the intersection of the two sets
+vector<int> ans;
+
+// Loop through the second vector 'b'
+for (int i = 0; i < b.size(); i++) {
+    // Insert each element of 'b' into the set 's2'
+    s2.insert(b[i]);
+}
+
+// Iterate through each element in the first set 's1'
+for (auto it : s1) {
+    // Check if the current element exists in the second set 's2'
+    if (s2.find(it) != s2.end()) {
+        // If it exists, add it to the result vector 'ans'
+        ans.push_back(it);
+    }
+}
+
+// Return the vector containing the intersection of the two sets
+return ans;
