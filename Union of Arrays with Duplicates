@@ -1,0 +1,33 @@
+Question:  Given two arrays a[] and b[], the task is to find the number of elements in the union between these two arrays.
+
+The Union of the two arrays can be defined as the set containing distinct elements from both arrays. If there are repetitions, then only one element occurrence should be there in the union.
+
+Note: Elements of a[] and b[] are not necessarily distinct.
+code:
+
+
+class Solution {
+  public:
+    // Function to return the count of number of elements in the union of two arrays.
+    int findUnion(vector<int>& a, vector<int>& b) {
+        // Create an unordered set to store unique elements from both arrays.
+        unordered_set<int> st;
+
+        // Iterate through the first array 'a'.
+        for(int i = 0; i < a.size(); i++) {
+            // Insert each element of 'a' into the set.
+            // The set automatically handles duplicates.
+            st.insert(a[i]);
+        }
+
+        // Iterate through the second array 'b'.
+        for(int i = 0; i < b.size(); i++) {
+            // Insert each element of 'b' into the set.
+            // Again, duplicates will be ignored.
+            st.insert(b[i]);
+        }
+
+        // The size of the set represents the count of unique elements in the union of both arrays.
+        return st.size();
+    }
+};
