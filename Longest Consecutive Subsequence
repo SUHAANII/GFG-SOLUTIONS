@@ -1,0 +1,28 @@
+Question:  Given an array arr[] of non-negative integers. Find the length of the longest sub-sequence such that elements in the subsequence are consecutive integers, the consecutive numbers can be in any order.
+code:
+
+int mx = 0; // Initialize a variable to keep track of the maximum value in the array.
+
+for (auto i : arr) { // Iterate through each element in the array 'arr'.
+    mx = max(i, mx); // Update 'mx' to be the maximum value found so far.
+}
+
+vector<int> hash(mx + 1, 0); // Create a hash vector of size 'mx + 1' initialized to 0.
+// This will be used to track the presence of each number from 0 to 'mx'.
+
+for (auto i : arr) { // Iterate through each element in the array 'arr' again.
+    hash[i] = 1; // Mark the presence of the number 'i' in the hash vector.
+}
+
+int pre = 0; // Initialize 'pre' to keep track of the last index where a zero was found.
+int ans = 0; // Initialize 'ans' to store the maximum length of consecutive numbers found.
+
+for (int i = 0; i < hash.size(); i++) { // Iterate through the hash vector.
+    if (hash[i] == 0) { // If the current index 'i' is not present in 'arr' (i.e., hash[i] is 0).
+        pre = i + 1; // Update 'pre' to the next index after 'i'.
+    } else { // If the current index 'i' is present in 'arr' (i.e., hash[i] is 1).
+        ans = max(ans, i - pre + 1); // Calculate the length of the current consecutive sequence and update 'ans' if it's longer.
+    }
+}
+
+return ans; // Return the maximum length of consecutive numbers found.
