@@ -1,0 +1,35 @@
+Question:  Given an array of strings, return all groups of strings that are anagrams. The groups must be created in order of their appearance in the original array. Look at the sample case for clarification.
+
+Note: The final output will be in lexicographic order.
+
+code: 
+class Solution {
+public:
+    vector<vector<string>> anagrams(vector<string>& arr) {
+        // Map to store sorted string as key and indices of original strings as values
+        unordered_map<string, vector<int>> mp;
+        vector<vector<string>> result;
+
+        // Process each string in the input array
+        for (int i = 0; i < arr.size(); i++) {
+            string s = arr[i];
+            // Sort the string
+            sort(s.begin(), s.end());
+            // Store the index of the original string in the map
+            mp[s].push_back(i);
+        }
+
+        // Build the result from the map
+        for (const auto& entry : mp) {
+            const auto& indices = entry.second;
+            vector<string> group;
+            // Add the original strings to the group based on stored indices
+            for (int index : indices) {
+                group.push_back(arr[index]);
+            }
+            result.push_back(group);
+        }
+
+        return result;
+    }
+};
