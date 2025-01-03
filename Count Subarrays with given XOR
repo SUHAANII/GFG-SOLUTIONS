@@ -1,0 +1,36 @@
+Question:  Given an array of integers arr[] and a number k, count the number of subarrays having XOR of their elements as k.
+
+code:  
+// Declare an unordered_map to store the frequency of each XOR sum encountered
+unordered_map<int, int> mp;
+
+// Initialize a variable to count the number of valid subarrays
+long count = 0;
+
+// This will hold the cumulative XOR sum of the elements processed so far
+int xorSum = 0;
+
+// Initialize the map with the base case: XOR sum of 0 occurs once (before any elements are processed)
+mp[0] = 1;
+
+// Loop through each element in the array
+for (int i = 0; i < arr.size(); i++) 
+{
+    // Update the cumulative XOR sum with the current element
+    xorSum ^= arr[i];
+    
+    // Check if there exists a previous XOR sum such that:
+    // (current xorSum) ^ (desired k) = (previous xorSum)
+    // This means we are looking for a previous XOR sum that, when XORed with k, gives us the current xorSum
+    if (mp.find(xorSum ^ k) != mp.end()) 
+    {
+        // If such a previous XOR sum exists, add its frequency to the count
+        count += mp[xorSum ^ k];
+    }
+    
+    // Increment the frequency of the current cumulative XOR sum in the map
+    mp[xorSum]++;
+}
+
+// Return the total count of valid subarrays found
+return count;
