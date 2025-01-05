@@ -1,0 +1,35 @@
+Question:  Given an array arr[] and an integer target. You have to find the number of pairs in the array whose sum is strictly less than the target.
+code: 
+
+class Solution {
+  public:
+    // Function to count pairs in the array that sum up to at least the target value
+    int countPairs(vector<int> &arr, int target) {
+        // Sort the array in non-decreasing order
+        sort(arr.begin(), arr.end());
+        
+        // Initialize count of valid pairs
+        int count = 0;
+        // Start index for the left pointer
+        int s = 0;
+        // Start index for the right pointer (last element)
+        int e = arr.size() - 1;
+        
+        // Use two pointers to find pairs
+        while (s < e) {
+            // If the sum of the elements at the two pointers is greater than or equal to the target
+            if (arr[s] + arr[e] >= target) {
+                // Move the right pointer to the left
+                e--;
+            } else {
+                // If the sum is less than the target, count all pairs from s to e
+                count += e - s; // All pairs (arr[s], arr[s+1]), ..., (arr[s], arr[e])
+                // Move the left pointer to the right
+                s++;
+            }
+        }
+        
+        // Return the total count of valid pairs
+        return count;
+    }
+};
