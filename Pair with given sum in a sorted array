@@ -1,0 +1,56 @@
+Question:  You are given an integer target and an array arr[]. You have to find number of pairs in arr[] which sums up to target. It is given that the elements of the arr[] are in sorted order.
+Note: pairs should have elements of distinct indexes. 
+
+code: 
+class Solution {
+public:
+    // Function to count pairs in the array that sum up to the target
+    int countPairs(vector<int> &arr, int target) {
+        int ans = 0; // Initialize the count of pairs to 0
+        int left = 0; // Start pointer at the beginning of the array
+        int right = arr.size() - 1; // End pointer at the end of the array
+        
+        // Loop until the left pointer is less than the right pointer
+        while (left < right) {
+            // Check if the sum of the elements at left and right pointers equals the target
+            if (arr[left] + arr[right] == target) {
+                ans++; // Increment the pair count
+                
+                // Set up new pointers to find additional pairs
+                int left1 = left + 1; // Move left pointer to the right
+                int right1 = right - 1; // Move right pointer to the left
+                
+                // Check for pairs with the current left element
+                while (left1 < right) {
+                    // If the sum of the left1 and right pointers equals the target
+                    if (arr[left1] + arr[right] == target) {
+                        ans++; // Increment the pair count
+                    }
+                    left1++; // Move to the next element on the left
+                }
+                
+                // Check for pairs with the current right element
+                while (right1 > left) {
+                    // If the sum of the right1 and left pointers equals the target
+                    if (arr[right1] + arr[left] == target) {
+                        ans++; // Increment the pair count
+                    }
+                    right1--; // Move to the next element on the right
+                }
+                
+                // Move both pointers inward to look for new pairs
+                right--; 
+                left++;
+                
+            } else if (arr[left] + arr[right] > target) {
+                // If the sum is greater than the target, move the right pointer left
+                right--;
+            } else {
+                // If the sum is less than the target, move the left pointer right
+                left++;
+            }
+        }
+        return ans; // Return the total count of pairs found
+    }
+};
+
