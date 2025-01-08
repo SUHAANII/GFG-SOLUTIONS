@@ -1,0 +1,37 @@
+Question: Given an integer array arr[]. Find the number of triangles that can be formed with three different array elements as lengths of three sides of the triangle. 
+
+A triangle with three given sides is only possible if sum of any two sides is always greater than the third side.
+
+code:
+// Sort the array in ascending order
+sort(arr.begin(), arr.end());
+
+// Initialize a counter to keep track of valid triplets
+int count = 0;
+
+// Iterate from the end of the array to the third element
+for (int i = arr.size() - 1; i >= 2; i--) {
+    
+    // Iterate from the element just before 'i' to the second element
+    for (int j = i - 1; j >= 1; j--) {
+        
+        // Iterate from the element just before 'j' to the first element
+        for (int k = j - 1; k >= 0; k--) {
+            
+            // Check if the current triplet (arr[i], arr[j], arr[k]) satisfies the triangle inequality
+            // Specifically, we check if arr[i] < arr[j] + arr[k]
+            // Also ensure that j and k are not the same index
+            if (arr[i] < arr[j] + arr[k] && j != k) {
+                // If the condition is met, increment the count of valid triplets
+                count++;
+            } else {
+                // If the condition is not met, we can break out of the innermost loop
+                // because further values of k will not satisfy the condition either
+                break;
+            }
+        }
+    }
+}
+
+// Return the total count of valid triplets found
+return count;
