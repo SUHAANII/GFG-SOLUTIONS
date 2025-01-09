@@ -1,0 +1,42 @@
+Question: Given an array arr[] containing only non-negative integers, your task is to find a continuous subarray (a contiguous sequence of elements) whose sum equals a specified value target. You need to return the 1-based indices of the leftmost and rightmost elements of this subarray. You need to find the first subarray whose sum is equal to the target.
+
+Note: If no such array is possible then, return [-1].
+
+code:
+
+class solution{
+public:
+    // Function to find the starting and ending indices of a subarray that sums to the target
+    vector<int> subarraySum(vector<int> &arr, int target) {
+        // Get the size of the input array
+        int n = arr.size();
+        int i = 0; // Initialize index for traversing the array
+        unordered_map<int, int> hash; // Hash map to store cumulative sums and their indices
+        
+        int sum = 0; // Variable to keep track of the cumulative sum
+        
+        // Loop through the array
+        while(i < n) {
+            sum += arr[i]; // Add the current element to the cumulative sum
+            
+            // Check if the cumulative sum equals the target
+            if(sum == target) {
+                // Return the indices (1-based) if the sum equals the target
+                return {0 + 1, i + 1}; // Start index is 1, end index is i + 1
+            }
+            
+            // Check if there exists a cumulative sum that, when subtracted from the current sum, equals the target
+            if(hash.find(sum - target) != hash.end()) {
+                // Return the indices (1-based) of the subarray that sums to the target
+                return {hash[sum - target] + 2, i + 1}; // Start index is hash[sum - target] + 2, end index is i + 1
+            }
+            
+            // Store the current cumulative sum and its index in the hash map
+            hash[sum] = i;
+            i++; // Move to the next element
+        }
+        
+        // Return -1 if no subarray was found that sums to the target
+        return {-1};
+    }
+};
