@@ -1,0 +1,42 @@
+QUESTION: Given an integer array arr[] and a number k. Find the count of distinct elements in every window of size k in the array.
+
+code:
+class Solution {
+  public:
+    vector<int> countDistinct(vector<int> &arr, int k) {
+        // code here.
+         int n = arr.size();
+        
+        // Hash map to store frequencies of elements in the current window
+        map<int, int> mp;
+        
+        // Initialize the hash map with the first window
+        for (int i = 0; i < k; ++i) {
+            mp[arr[i]]++;
+        }
+        
+        // Result vector to store distinct element counts for each window
+        vector<int> ans;
+        
+        // Process remaining windows
+        for (int i = k; i < n; ++i) {
+            // Add the count of distinct elements in the current window
+            ans.push_back(mp.size());
+            
+            // Remove the element going out of the window
+            mp[arr[i - k]]--;
+            if (mp[arr[i - k]] == 0) {
+                // If its frequency becomes zero, erase it from the map
+                mp.erase(arr[i - k]);
+            }
+            
+            // Add the new element entering the window
+            mp[arr[i]]++;
+        }
+        
+        // Add the distinct count for the last window
+        ans.push_back(mp.size());
+        
+        return ans;
+    }
+};
