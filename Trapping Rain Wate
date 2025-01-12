@@ -1,0 +1,42 @@
+Question: Given an array arr[] with non-negative integers representing the height of blocks. If the width of each block is 1, compute how much water can be trapped between the blocks during the rainy season.
+
+code:
+public:
+    int maxWater(vector<int> &arr) {
+        // Variable to store the total amount of trapped water
+        int totalWater = 0;
+        
+        // Variables to store the maximum height from the left and right
+        int lmax = 0, rmax = 0;
+        
+        // Two pointers: one starting from the left (i) and one from the right (j)
+        int i = 0;
+        int j = arr.size() - 1;
+        
+        // Loop until the two pointers meet
+        while (i < j) {
+            // Update the left maximum height if the current height is greater
+            lmax = max(lmax, arr[i]);
+            // Update the right maximum height if the current height is greater
+            rmax = max(rmax, arr[j]);
+            
+            // If the left height is less than or equal to the right height
+            if (arr[i] <= arr[j]) {
+                // Calculate trapped water at the current left position
+                totalWater += lmax - arr[i];
+                // Move the left pointer to the right
+                i++;
+            } 
+            // If the right height is less than the left height
+            else {
+                // Calculate trapped water at the current right position
+                totalWater += rmax - arr[j];
+                // Move the right pointer to the left
+                j--;
+            }
+        }
+        
+        // Return the total amount of trapped water
+        return totalWater;
+    }
+};
