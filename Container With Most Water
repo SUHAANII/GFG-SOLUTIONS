@@ -1,0 +1,43 @@
+Question:  Given an array arr[] of non-negative integers, where each element arr[i] represents the height of the vertical lines, find the maximum amount of water that can be contained between any two lines, together with the x-axis.
+
+Note: In the case of a single vertical line it will not be able to hold water.
+
+code:
+
+// Function to calculate the maximum water that can be trapped between two heights
+int maxWater(int[] arr) {
+    // Get the size of the array
+    int n = arr.size();
+    
+    // Initialize two pointers: left at the start and right at the end of the array
+    int left = 0, right = n - 1;
+    
+    // Variable to keep track of the maximum water occupied
+    int maxWaterOccupied = 0;
+    
+    // Loop until the left pointer is less than the right pointer
+    while (left < right) {
+        // Calculate the width between the two pointers
+        int width = right - left;
+        
+        // Find the height of water that can be trapped, which is determined by the shorter of the two heights
+        int height = min(arr[left], arr[right]);
+        
+        // Calculate the current water occupied between the two heights
+        int currWaterOccupied = width * height;
+        
+        // Update the maximum water occupied if the current calculation is greater
+        maxWaterOccupied = max(maxWaterOccupied, currWaterOccupied);
+        
+        // Move the pointer of the shorter height inward
+        // This is because the shorter height limits the amount of water that can be trapped
+        if (arr[left] < arr[right]) {
+            left += 1; // Move the left pointer to the right
+        } else {
+            right -= 1; // Move the right pointer to the left
+        }
+    }
+    
+    // Return the maximum water occupied found
+    return maxWaterOccupied;
+}
