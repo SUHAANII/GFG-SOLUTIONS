@@ -1,0 +1,26 @@
+Question: Given an array of integers arr[], the task is to find the first equilibrium point in the array.
+
+The equilibrium point in an array is an index (0-based indexing) such that the sum of all elements before that index is the same as the sum of elements after it. Return -1 if no such point exists. 
+
+code: 
+
+int sum = 0; // Initialize a variable to hold the total sum of the array
+// Calculate the total sum of the elements in the array
+for (auto i : arr) sum += i;
+
+int temp = 0; // Initialize a variable to hold the sum of elements to the left of the current index
+int n = arr.size(); // Get the size of the array
+
+// Iterate through the array starting from the second element (index 1)
+for (int i = 1; i < n; i++) {
+    temp += arr[i - 1]; // Update the left sum by adding the previous element
+    
+    // Check if the left sum equals the right sum
+    // Right sum is calculated as total sum minus left sum minus current element
+    if (temp == sum - temp - arr[i]) {
+        return i; // If they are equal, return the current index
+    }
+}
+
+// If no index is found where the left sum equals the right sum, return -1
+return -1;
