@@ -1,0 +1,29 @@
+Question: Given an array arr[] containing integers and an integer k, your task is to find the length of the longest subarray where the sum of its elements is equal to the given value k. If there is no subarray with sum equal to k, return 0.
+
+code:
+
+
+int n = arr.size(); // Get the size of the input array
+int maxi = 0; // Variable to keep track of the maximum length of subarray found
+int sum = 0; // Variable to store the cumulative sum of elements
+unordered_map<int, int> mpp; // HashMap to store the sum and its corresponding index
+mpp[0] = -1; // Initialize the map with sum 0 at index -1 to handle edge cases
+
+// Iterate through each element in the array
+for (int i = 0; i < n; i++) {
+    sum += arr[i]; // Update the cumulative sum with the current element
+    
+    // Check if there exists a previous sum that, when subtracted by k, equals the current sum
+    if (mpp.find(sum - k) != mpp.end()) {
+        // If found, calculate the length of the subarray and update maxi if it's larger
+        maxi = max(maxi, i - mpp[sum - k]);
+    }
+    
+    // If the current sum is not already in the map, add it with its index
+    if (mpp.find(sum) == mpp.end()) {
+        mpp[sum] = i; // Store the current sum and its index
+    }
+}
+
+// Return the maximum length of subarray found
+return maxi;
