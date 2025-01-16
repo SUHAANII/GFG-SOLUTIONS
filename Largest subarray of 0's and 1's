@@ -1,0 +1,43 @@
+Question: Given an array arr of 0s and 1s. Find and return the length of the longest subarray with equal number of 0s and 1s
+
+code: 
+
+public:
+    int maxLen(vector<int> &arr) {
+        // Create a map to store the first occurrence of a particular difference
+        map<int, int> x;
+        
+        // Initialize counters for the number of 1s and 0s
+        int count1 = 0; // Count of 1s
+        int count0 = 0; // Count of 0s
+        
+        // Store the initial difference (0) at index 0
+        x[count1 - count0] = 0; // Difference of count1 and count0 is 0 at the start
+        
+        int ans = 0; // Variable to store the maximum length of subarray found
+        
+        // Iterate through the array
+        for (int i = 0; i < arr.size(); i++) {
+            // Increment the respective counter based on the value of the current element
+            if (arr[i] == 0) 
+                count0++; // Increment count0 if the current element is 0
+            else 
+                count1++; // Increment count1 if the current element is 1
+            
+            // Calculate the difference between count1 and count0
+            int diff = count1 - count0;
+            
+            // Check if this difference has been seen before
+            if (x.find(diff) != x.end()) {
+                // If it has, calculate the length of the subarray
+                ans = max(ans, i - x[diff] + 1); // Update ans if this subarray is longer
+            } else {
+                // If this difference hasn't been seen, store the index + 1 (to handle zero-based index)
+                x[diff] = i + 1;
+            }
+        }
+        
+        // Return the maximum length of subarray found
+        return ans;
+    }
+};
