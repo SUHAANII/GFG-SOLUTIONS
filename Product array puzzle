@@ -1,0 +1,54 @@
+Question: Given an array, arr[] construct a product array, res[] where each element in res[i] is the product of all elements in arr[] except arr[i]. Return this resultant array, res[].
+Note: Each element is res[] lies inside the 32-bit integer range.
+
+code:
+
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& arr) {
+        // Initialize a variable to hold the product of all non-zero elements
+        int prod = 1;  
+        // Flag to check if there is at least one non-zero element
+        bool flag = false;  
+        // Counter to count the number of zeros in the array
+        int count = 0;  
+
+        // First loop to calculate the product of all non-zero elements
+        for(int i = 0; i < arr.size(); i++) {
+            if(arr[i] != 0) {
+                // Multiply the product by the current element if it's non-zero
+                prod *= arr[i];  
+                flag = true;  // Set flag to true since we found a non-zero
+            } else {
+                // Increment count for each zero found
+                count++;  
+            }
+        }
+
+        // Vector to hold the result
+        vector<int> ans;  
+
+        // Second loop to build the result based on the product and zeros
+        for(int i = 0; i < arr.size(); i++) {
+            if(arr[i] != 0 && count == 0) {
+                // If current element is non-zero and there are no zeros,
+                // the result is the total product divided by the current element
+                int val = prod / arr[i];  
+                ans.push_back(val);  // Add the calculated value to the result
+            } else {
+                // If the current element is zero and there is exactly one zero in the array
+                if(arr[i] == 0 && flag && count == 1) {
+                    // The result for this position should be the product of all non-zero elements
+                    ans.push_back(prod);  
+                } else {
+                    // For all other cases (multiple zeros or no non-zero elements),
+                    // the result is zero
+                    ans.push_back(0);  
+                }
+            }
+        }
+        
+        // Return the final result vector
+        return ans;  
+    }
+};
