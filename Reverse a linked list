@@ -1,0 +1,23 @@
+Question: Given the head of a linked list, the task is to reverse this list and return the reversed head.
+
+
+code: 
+*/
+
+class Solution {
+  public:
+    Node* reverseList(struct Node* head) {
+        // code here
+         if (head == nullptr || head->next == nullptr) return head;
+
+        Node* prev = nullptr; // The new tail (initially null)
+        Node* curr = head;    // Start with the current head
+        while (curr != nullptr) { // Loop until we reach the end
+            Node* next = curr->next; // Store the next node temporarily
+            curr->next = prev;       // Reverse the current node's link
+            prev = curr;             // Move prev to the current node
+            curr = next;             // Move to the next node
+        }
+        return prev; // 'prev' now points to the new head
+    }
+};
