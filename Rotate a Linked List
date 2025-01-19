@@ -1,0 +1,39 @@
+Question: Given the head of a singly linked list, your task is to left rotate the linked list k times.
+code: 
+class Solution {
+public:
+    Node* rotate(Node* head, int k) {
+        // If the head is NULL, return NULL (empty list)
+        if (head == NULL) return NULL;
+
+        Node* temp = head; // Initialize a temporary pointer to traverse the list
+        Node* tail; // This will hold the last node of the list
+        int c = 0; // Counter to keep track of the number of nodes
+
+        // Traverse the list to count the number of nodes and find the tail
+        while (temp != NULL) {
+            c++; // Increment the count for each node
+            tail = temp; // Keep updating the tail to the current node
+            temp = temp->next; // Move to the next node
+        }
+
+        // Calculate the effective rotations needed (in case k > c)
+        k = k % c; 
+        // If k is 0, no rotation is needed, return the original head
+        if (k == 0) return head;
+
+        temp = head; // Reset temp to the head for another traversal
+        k--; // Decrement k since we will find the (k+1)th node
+
+        // Traverse to the (k+1)th node
+        while (k--) {
+            temp = temp->next; // Move temp k nodes forward
+        }
+
+        Node* nh = temp->next; // The new head will be the (k+1)th node
+        temp->next = NULL; // Break the link to make the list circular
+        tail->next = head; // Connect the end of the list to the original head
+
+        return nh; // Return the new head of the rotated list
+    }
+};
