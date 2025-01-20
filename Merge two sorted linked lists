@@ -1,0 +1,50 @@
+Question: Given the head of two sorted linked lists consisting of nodes respectively. The task is to merge both lists and return the head of the sorted merged list.
+
+code: 
+
+class Solution {
+public:
+    Node* sortedMerge(Node* head1, Node* head2) {
+        // Initialize pointers for the start and tail of the resultant linked list
+        Node *start = NULL; // This will point to the head of the merged list
+        Node *tail = NULL;  // This will be used to build the merged list
+        
+        // Determine the starting node of the merged list
+        // Compare the data of the first nodes of both lists
+        if (head1->data <= head2->data) {
+            start = head1; // Start with head1 if its data is less than or equal to head2
+            head1 = head1->next; // Move head1 to the next node
+        } else {
+            start = head2; // Start with head2 otherwise
+            head2 = head2->next; // Move head2 to the next node
+        }
+        
+        // Set the tail pointer to the starting node
+        tail = start;
+
+        // Loop until either head1 or head2 is exhausted
+        while (head1 && head2) {
+            // Compare the current nodes of both lists
+            if (head1->data <= head2->data) {
+                tail->next = head1; // Link the smaller node to the tail
+                head1 = head1->next; // Move to the next node in head1
+            } else {
+                tail->next = head2; // Link the smaller node to the tail
+                head2 = head2->next; // Move to the next node in head2
+            }
+            tail = tail->next; // Move the tail pointer to the newly added node
+        }
+        
+        // If there are remaining nodes in head1, link them to the tail
+        if (head1) {
+            tail->next = head1;
+        } 
+        // If there are remaining nodes in head2, link them to the tail
+        else {
+            tail->next = head2;
+        }
+        
+        // Return the head of the merged linked list
+        return start;
+    }
+};
