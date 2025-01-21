@@ -1,0 +1,43 @@
+Question: Given the head a linked list, the task is to reverse every k node in the linked list. If the number of nodes is not a multiple of k then the left-out nodes in the end, should be considered as a group and must be reversed
+
+code: 
+
+class Solution {
+  public:
+    Node *reverseKGroup(Node *head, int k) {
+        // Create a dummy node to simplify the head manipulation
+        Node* dummy = new Node(-1);
+        dummy->next = head; // Point the dummy's next to the head
+        Node* temp = head;  // Initialize temp to the head
+        Node* dummy1 = dummy; // Keep a reference to the start of the modified list
+        
+        // Loop until we reach the end of the list
+        while (temp != NULL) {
+            Node* it = temp; // Pointer to traverse the current group
+            Node* prev = NULL; // Pointer to hold the previous node
+            Node* nxt = NULL; // Pointer to hold the next node
+            int cnt = 1; // Counter to track the number of nodes processed
+            
+            // Reverse the next k nodes
+            while (cnt <= k && it != nullptr) {
+                nxt = it->next; // Store the next node
+                it->next = prev; // Reverse the current node's pointer
+                prev = it; // Move prev to the current node
+                it = nxt; // Move to the next node
+                cnt++; // Increment the counter
+            }
+            
+            // Connect the previous part of the list to the reversed part
+            dummy->next = prev; // Link the last processed node to the reversed part
+            // Move dummy to the end of the newly reversed section
+            while (dummy->next != NULL) {
+                dummy = dummy->next; // Move dummy forward to the end of the reversed section
+            }
+            // Move temp to the next section to be processed
+            temp = it; // Set temp to the next group
+        }
+        
+        // Return the head of the new list, skipping the dummy node
+        return dummy1->next;
+    }
+};
