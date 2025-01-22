@@ -1,0 +1,86 @@
+Question: Given the head of two singly linked lists num1 and num2 representing two non-negative integers. The task is to return the head of the linked list representing the sum of these two numbers.
+
+For example, num1 represented by the linked list : 1 -> 9 -> 0, similarly num2 represented by the linked list: 2 -> 5. Sum of these two numbers is represented by 2 -> 1 -> 5.
+
+Note: There can be leading zeros in the input lists, but there should not be any leading zeros in the output list.
+
+code: 
+
+class Solution
+{
+private:
+    // Helper function to reverse the linked list
+    Node* reverseNode(Node* node, Node** head) {
+        // Base case: if the node is NULL, return NULL
+        if (node == NULL) {
+            return NULL;
+        }
+
+        // Recursively reverse the rest of the list
+        Node* nextNode = reverseNode(node->next, head);
+
+        // If nextNode is not NULL, link it back to the current node
+        if (nextNode) {
+            nextNode->next = node; // Set the next of nextNode to the current node
+            node->next = NULL; // Set the current node's next to NULL (it will be the last node)
+        } else {
+            // If nextNode is NULL, this means we are at the last node
+            (*head) = node; // Set the head to the last node processed
+        }
+        return node; // Return the current node
+    }
+
+public:
+    // Function to add two numbers represented by linked lists
+    Node* addTwoLists(Node* first, Node* second) {
+        int total = 0; // Variable to store the sum of digits
+        int carry = 0; // Variable to store the carry for sums greater than 10
+        Node *res = new Node(-1); // Dummy head for the result list
+        Node *node = NULL; // Pointer for the new node to be added
+        Node *prevNode = res; // Pointer to keep track of the last node in the result list
+
+        // Reverse both linked lists to facilitate addition from least significant digit
+        reverseNode(first, &first);
+        reverseNode(second, &second);
+
+        // Loop until all nodes are processed and no carry remains
+        while (first || second || carry) {
+            // If there are nodes left in the first list, add its value
+            if (first) {
+                total += first->data; // Add data from the first list
+                first = first->next; // Move to the next node in the first list
+            }
+
+            // If there are nodes left in the second list, add its value
+            if (second) {
+                total += second->data; // Add data from the second list
+                second = second->next; // Move to the next node in the second list
+            }
+
+            // Include the carry from the previous addition
+            total += carry; 
+
+            // Calculate new carry for the next iteration
+            carry = total / 10; // Carry will be 1 if total is 10 or more
+
+            // Create a new node for the current digit of the result
+            node = new Node(total % 10); // Get the last digit (total mod 10)
+            prevNode->next = node; // Link the new node to the result list
+            prevNode = node; // Move the previous node pointer to the new node
+            total = 0; // Reset total for the next iteration
+        }
+
+        // Reverse the result list to get the final answer in correct order
+        reverseNode(res->next, &(res->next));
+        res = res->next; // Move res to point to the actual result (skipping the dummy head)
+
+        // Handle the case where the result is zero (e.g., both lists were empty)
+        while (res != NULL && res->data == 0) {
+            res = res->next; // Skip leading zeros
+        }
+        // If the result is NULL after skipping zeros, return a new node with value 0
+        if (res == NULL) return new Node(0);
+        
+        return res; // Return the head of the result linked list
+    }
+};
