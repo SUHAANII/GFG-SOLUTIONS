@@ -1,0 +1,58 @@
+Question: You are given a special linked list with n nodes where each node has two pointers a next pointer that points to the next node of the singly linked list, and a random pointer that points to the random node of the linked list.
+
+Construct a copy of this linked list. The copy should consist of the same number of new nodes, where each new node has the value corresponding to its original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list, such that it also represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+
+Return the head of the copied linked list.
+
+NOTE : Original linked list should remain unchanged.
+
+code: 
+
+class Solution {
+public:
+    Node* cloneLinkedList(Node* head) {
+        // Step 1: Check if the input list is empty
+        if (!head) return nullptr; // If the head is null, return null
+
+        // Step 2: Create new nodes and interleave them with the original nodes
+        Node* current = head; // Start with the head of the original list
+        while (current) {
+            // Create a new node with the same data as the current node
+            Node* newNode = new Node(current->data);
+            // Insert the new node right after the current node
+            newNode->next = current->next; // Point to the next original node
+            current->next = newNode; // Link the original node to the new node
+            current = newNode->next; // Move to the next original node
+        }
+
+        // Step 3: Set the random pointers for the new nodes
+        current = head; // Reset current to the head of the original list
+        while (current) {
+            // If the current node has a random pointer
+            if (current->random) {
+                // Set the random pointer of the new node (next node) to the next of the random node
+                current->next->random = current->random->next; // Link the random pointer
+            }
+            current = current->next->next; // Move to the next original node
+        }
+
+        // Step 4: Separate the two lists (original and cloned)
+        current = head; // Reset current to the head of the original list
+        Node* newHead = head->next; // The head of the new cloned list
+        Node* copyCurrent = newHead; // Pointer to traverse the cloned list
+
+        while (current) {
+            // Restore the original list by linking original nodes back together
+            current->next = copyCurrent->next; // Link original node to the next original node
+            current = current->next; // Move to the next original node
+            if (current) {
+                // Link the cloned node to the next cloned node
+                copyCurrent->next = current->next; // Link cloned node to the next cloned node
+                copyCurrent = copyCurrent->next; // Move to the next cloned node
+            }
+        }
+
+        // Step 5: Return the head of the cloned list
+        return newHead; // Return the head of the newly cloned list
+    }
+};
