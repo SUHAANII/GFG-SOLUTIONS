@@ -1,0 +1,53 @@
+
+ logic: 
+Here's the algorithm: Initialize two pointers
+
+1)Temp,slowPointer and fastPointer, both set to the head of the linked list
+ 2)Move slowPointer one node at a time and fastPointer two nodes at a time.
+3)If fastPointer becomes null, then there is no loop in the linked list and return -1.
+4)If fastPointer and slowPointer meet, then there is a loop in the linked list.
+5) Move slowPointer and temp one node at a time. The point where they meet is the first node of the loop. Return the data of the first node of the loop.
+
+question: 
+Given a head of the singly linked list. If a loop is present in the list then return the first node of the loop else return NULL.
+
+Custom Input format:
+A head of a singly linked list and a pos (1-based index) which denotes the position of the node to which the last node points to. If pos = 0, it means the last node points to null, indicating there is no loop.
+
+code:
+
+class solution{
+public:
+Node* findFirstNode(Node* head) {
+    // Initialize two pointers for the Floyd's Tortoise and Hare algorithm
+    Node* slow = head; // Slow pointer moves one step at a time
+    Node* fast = head; // Fast pointer moves two steps at a time
+
+    // Traverse the list to find a cycle
+    while (fast && fast->next) {
+        slow = slow->next; // Move slow pointer one step
+        fast = fast->next->next; // Move fast pointer two steps
+
+        // Check if the two pointers meet, indicating a cycle
+        if (slow == fast) {
+            break; // Cycle detected
+        }
+    }
+
+    // If slow and fast did not meet, there is no cycle
+    if (slow != fast) {
+        return new Node(-1); // Return a new node with value -1 indicating no cycle
+    }
+
+    // Reset slow pointer to the head to find the starting node of the cycle
+    slow = head;
+
+    // Move both pointers at the same pace until they meet
+    while (slow != fast) {
+        slow = slow->next; // Move slow pointer one step
+        fast = fast->next; // Move fast pointer one step
+    }
+
+    // Return the node where the cycle begins
+    return slow; // This is the starting node of the cycle
+}
