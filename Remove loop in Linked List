@@ -1,0 +1,44 @@
+Question: Given the head of a linked list that may contain a loop.  A loop means that the last node of the linked list is connected back to a node in the same list. The task is to remove the loop from the linked list (if it exists).
+
+code:
+class Solution {
+public:
+    // Function to remove a loop in the linked list.
+    void removeLoop(Node* head) {
+        // Initialize two pointers, fast and slow
+        Node* fast = head;
+        Node* slow = head;
+        bool found = false;  // Flag to indicate if a loop is found
+        Node* prev = slow;   // To keep track of the previous node of fast
+        
+        // Traverse the linked list using the fast and slow pointers
+        while (fast && fast->next) {
+            prev = slow;                // Update prev to the current slow node
+            slow = slow->next;          // Move slow pointer by one step
+            fast = fast->next->next;    // Move fast pointer by two steps
+            
+            // Check if slow and fast meet, indicating a loop
+            if (slow == fast) {
+                found = true;  // Loop is found
+                break;         // Exit the loop
+            }
+        }
+        
+        // If no loop was found, return
+        if (!found) return;
+
+        // Reset slow pointer to head to find the starting point of the loop
+        slow = head;
+
+        // Move both pointers until they meet again, which will be the start of the loop
+        while (fast != slow) {
+            prev = fast;           // Update prev to the current fast node
+            slow = slow->next;     // Move slow pointer by one step
+            fast = fast->next;     // Move fast pointer by one step
+        }
+        
+        // At this point, fast and slow are at the start of the loop
+        // Disconnect the loop by setting the next of the previous node to NULL
+        prev->next = NULL;  // Remove the loop
+    }
+};
