@@ -1,0 +1,109 @@
+Question: Design a data structure that works like a LRU Cache. Here cap denotes the capacity of the cache and Q denotes the number of queries. Query can be of two types:
+
+PUT x y: sets the value of the key x with value y
+GET x: gets the key of x if present else returns -1.
+The LRUCache class has two methods get() and put() which are defined as follows.
+
+get(key): returns the value of the key if it already exists in the cache otherwise returns -1.
+put(key, value): if the key is already present, update its value. If not present, add the key-value pair to the cache. If the cache reaches its capacity it should remove the least recently used item before inserting the new item.
+In the constructor of the class the capacity of the cache should be initialized.
+
+code:
+
+#include <unordered_map>
+using namespace std;
+
+// Node class to represent each entry in the cache
+class Node {
+public:
+    int key;      // Key of the node
+    int val;      // Value of the node
+    Node* next;   // Pointer to the next node in the doubly linked list
+    Node* prev;   // Pointer to the previous node in the doubly linked list
+
+    // Default constructor
+    Node() {
+        key = val = -1; // Initialize key and value to -1
+        next = prev = NULL; // Initialize next and prev pointers to NULL
+    }
+
+    // Parameterized constructor to initialize with key and value
+    Node(int k, int value) {
+        key = k; // Set the key
+        val = value; // Set the value
+        next = prev = NULL; // Initialize next and prev pointers to NULL
+    }
+};
+
+// LRUCache class to implement the Least Recently Used Cache
+class LRUCache {
+private:
+    unordered_map<int, Node*> mp; // Map to store key and corresponding node
+    int capacity; // Maximum capacity of the cache
+    Node* head; // Head of the doubly linked list (dummy node)
+    Node* tail; // Tail of the doubly linked list (dummy node)
+
+    // Function to insert a node right after the head
+    void insertAfterHead(Node* node) {
+        Node* nextNode = head->next; // Get the current first node
+        head->next = node; // Insert new node after head
+        node->prev = head; // Set the previous pointer of new node to head
+        node->next = nextNode; // Set the next pointer of new node
+        nextNode->prev = node; // Set the previous pointer of next node to new node
+    }
+
+    // Function to delete a node from the doubly linked list
+    void deleteNode(Node* node) {
+        Node* before = node->prev; // Get the previous node
+        Node* after = node->next; // Get the next node
+        before->next = after; // Link the previous node to the next node
+        after->prev = before; // Link the next node to the previous node
+    }
+
+public:
+    // Constructor for initializing the cache capacity with the given value.
+    LRUCache(int cap) {
+        capacity = cap; // Set the capacity
+        mp.clear(); // Clear the map
+        head = new Node(); // Create a dummy head node
+        tail = new Node(); // Create a dummy tail node
+        head->next = tail; // Link head to tail
+        tail->prev = head; // Link tail to head
+    }
+
+    // Function to return value corresponding to the key.
+    int get(int key) {
+        // Check if the key exists in the map
+        if (mp.find(key) == mp.end()) return -1; // Return -1 if not found
+        Node* node = mp[key]; // Retrieve the node
+        int val = node->val; // Get the value of the node
+        deleteNode(node); // Remove the node from its current position
+        insertAfterHead(node); // Move the accessed node to the front
+        return val; // Return the value
+    }
+
+    // Function for storing key-value pair.
+    void put(int key, int value) {
+        // Check if the key already exists in the cache
+        if (mp.find(key) != mp.end()) {
+            Node* node = mp[key]; // Retrieve the existing node
+            node->val = value; // Update the value
+            deleteNode(node); // Remove the node from its current position
+            insertAfterHead(node); // Move the node to the front
+            return; // Exit the function
+        }
+
+        // If the cache is at capacity, remove the least recently used item
+        if (mp.size() == capacity) {
+            Node* NodeToDelete = tail->prev; // Get the least recently used node
+            mp.erase(NodeToDelete->key); // Remove it from the map
+            deleteNode(NodeToDelete); // Remove it from the linked list
+            delete NodeToDelete; // Free the memory
+        }
+
+        // Create a new node for the key-value pair
+        Node* newNode = new Node(key, value);
+        mp[key] = newNode; // Add the new node to the map
+        insertAfterHead(newNode); // Insert the new node at the front
+    }
+};
