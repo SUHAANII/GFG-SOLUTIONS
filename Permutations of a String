@@ -1,0 +1,40 @@
+Question: Given a string s, which may contain duplicate characters, your task is to generate and return an array of all unique permutations of the string. You can return your answer in any order.
+
+code:
+// Function to generate all unique permutations of a given string
+void generate(int i, set<string> &st, string &s, int n) {
+    // Base case: if the index i is greater than or equal to the length of the string, return
+    if (i >= n) return;
+
+    // Insert the current permutation (string) into the set to ensure uniqueness
+    st.insert(s);
+
+    // Loop through the string starting from index i to n
+    for (int j = i; j < n; j++) {
+        // Swap characters at index i and j
+        swap(s[i], s[j]);
+
+        // Recursively call generate with the next index (i+1)
+        generate(i + 1, st, s, n);
+
+        // Swap back to restore the original string for the next iteration
+        swap(s[i], s[j]);
+    }
+}
+
+// Function to find all unique permutations of the input string
+vector<string> findPermutation(string &s) {
+    // Get the length of the string
+    int n = s.length();
+    
+    // Create a set to store unique permutations
+    set<string> st;
+    
+    // Call the recursive generate function starting from index 0
+    generate(0, st, s, n);
+    
+    // Convert the set of unique permutations to a vector for the final result
+    vector<string> ans(st.begin(), st.end());
+    
+    // Return the vector of unique permutations
+    return ans;
