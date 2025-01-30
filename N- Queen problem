@@ -1,0 +1,58 @@
+Question: The n-queens puzzle is the problem of placing n queens on a (n × n) chessboard such that no two queens can attack each other. Note that two queens attack each other if they are placed on the same row, the same column, or the same diagonal.
+
+Given an integer n, find all distinct solutions to the n-queens puzzle.
+You can return your answer in any order but each solution should represent a distinct board configuration of the queen placements, where the solutions are represented as permutations of [1, 2, 3, ..., n]. In this representation, the number in the ith position denotes the row in which the queen is placed in the ith column.
+For eg. below figure represents a chessboard [3 1 4 2].
+
+code:
+
+class Solution {
+public:
+    // Function to find all solutions for the N-Queens problem
+    vector<vector<int>> nQueen(int n) {
+        // Initialize a 2D vector to store all valid configurations of queens
+        vector<vector<int>> result;
+        // Create a 1D vector to represent the board, initialized to 0 (no queens placed)
+        vector<int> board(n, 0);
+        // Start solving from the first column (0)
+        solve(0, n, board, result);
+        // Return the list of valid configurations
+        return result;
+    }
+
+private:
+    // Recursive function to place queens column by column
+    void solve(int col, int n, vector<int>& board, vector<vector<int>>& result) {
+        // Base case: If all queens are placed (col equals n), store the current configuration
+        if (col == n) {
+            result.push_back(board); // Add the current board configuration to the result
+            return; // Exit the function
+        }
+        
+        // Try placing a queen in each row of the current column
+        for (int row = 0; row < n; row++) {
+            // Check if placing a queen at (col, row) is safe
+            if (isSafe(board, col, row)) {
+                // Place the queen (store row + 1 to avoid zero-indexing)
+                board[col] = row + 1; 
+                // Recursively try to place the next queen in the next column
+                solve(col + 1, n, board, result);
+                // Note: Backtracking happens automatically since we will overwrite board[col] in the next iteration
+            }
+        }
+    }
+    
+    // Function to check if it's safe to place a queen at (col, row)
+    bool isSafe(vector<int>& board, int col, int row) {
+        // Check all previously placed queens
+        for (int i = 0; i < col; i++) {
+            // Get the row index of the placed queen (0-indexed)
+            int placedRow = board[i] - 1; 
+            // Check if there's a conflict with the current row or diagonals
+            if (placedRow == row || abs(placedRow - row) == abs(i - col)) {
+                return false; // Not safe to place the queen
+            }
+        }
+        return true; // Safe to place the queen
+    }
+};
