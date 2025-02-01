@@ -1,0 +1,66 @@
+Question: You are given a two-dimensional mat[][] of size n*m containing English alphabets and a string word. Check if the word exists on the mat. The word can be constructed by using letters from adjacent cells, either horizontally or vertically. The same cell cannot be used more than once.
+
+code:  
+
+
+public:
+    // Depth-First Search (DFS) function to find the word in the matrix
+    bool dfs(int i, int j, int k, vector<vector<int>>& vis, string &word, vector<vector<char>>& mat) {
+        // If k equals the length of the word, we have found the entire word
+        if (k == word.length()) return true;
+
+        // Mark the current cell as visited
+        vis[i][j] = 1;
+
+        // Define the directions for moving in the matrix (up, left, down, right)
+        vector<int> row = {0, -1, 0, 1}; // Row changes
+        vector<int> col = {-1, 0, 1, 0}; // Column changes
+
+        bool chk = false; // Variable to check if the word can be found
+
+        // Explore all four possible directions
+        for (int w = 0; w < 4; w++) {
+            int nr = i + row[w]; // New row index
+            int nc = j + col[w]; // New column index
+
+            // Check if the new indices are within bounds and not visited
+            // Also check if the current character matches the corresponding character in the word
+            if (nr >= 0 && nr < mat.size() && nc >= 0 && nc < mat[0].size() && vis[nr][nc] == 0 && word[k] == mat[nr][nc]) {
+                // Recursively call dfs for the next character in the word
+                chk = chk || dfs(nr, nc, k + 1, vis, word, mat);
+            }
+        }
+
+        // Unmark the current cell (backtrack)
+        vis[i][j] = 0;
+
+        // Return true if the word can be formed, otherwise false
+        return chk;
+    }
+
+    // Function to check if a word exists in the given matrix
+    bool isWordExist(vector<vector<char>>& mat, string& word) {
+        // Get the dimensions of the matrix
+        int n = mat.size();
+        int m = mat[0].size();
+
+        // Iterate through each cell in the matrix
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // If the first character of the word matches the current cell
+                if (mat[i][j] == word[0]) {
+                    // Create a visited matrix initialized to 0 (not visited)
+                    vector<vector<int>> vis(n, vector<int>(m, 0));
+                    
+                    // Start the DFS from the current cell for the next character in the word
+                    bool chk = dfs(i, j, 1, vis, word, mat);
+                    
+                    // If the word is found, return true
+                    if (chk) return true;
+                }
+            }
+        }
+        
+        // If the word is not found in the matrix, return false
+        return false;
+    }
