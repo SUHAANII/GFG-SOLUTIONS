@@ -1,0 +1,54 @@
+Question: Given a root of a binary tree with n nodes, the task is to find its level order traversal. Level order traversal of a tree is breadth-first traversal for the tree.
+
+code:
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node *root) {
+        // Create a queue to hold nodes for processing
+        queue<Node*> q;
+        // This will store the final result of level order traversal
+        vector<vector<int>> ans;
+
+        // Check if the root is null; if so, return an empty result
+        if (root == nullptr) {
+            return ans;
+        }
+
+        // Start by pushing the root node into the queue
+        q.push(root);
+
+        // Continue processing until the queue is empty
+        while (!q.empty()) {
+            // Create a vector to store the current level's values
+            vector<int> curr;
+            // Get the number of nodes at the current level
+            int levelSize = q.size();
+
+            // Process all nodes at the current level
+            for (int i = 0; i < levelSize; i++) {
+                // Get the front node from the queue
+                Node* temp = q.front();
+                // Remove the front node from the queue
+                q.pop();
+                // Add the node's value to the current level's vector
+                curr.push_back(temp->data);
+
+                // If the left child exists, add it to the queue for the next level
+                if (temp->left) {
+                    q.push(temp->left);
+                }
+                // If the right child exists, add it to the queue for the next level
+                if (temp->right) {
+                    q.push(temp->right);
+                }
+            }
+
+            // After processing all nodes at the current level, add the current level's values to the result
+            ans.push_back(curr);
+        }
+
+        // Return the result containing all levels of the binary tree
+        return ans;
+    }
+};
