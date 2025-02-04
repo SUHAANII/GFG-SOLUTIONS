@@ -27,3 +27,21 @@ class Solution {
     return ans;
 }
 };
+or........................
+
+int solve(Node* root,int &maxi){
+     if(root==nullptr) return -1;
+     
+     int leftheight=1+solve(root->left,maxi);
+     int rightheight=1+solve(root->right,maxi);
+     // finding diameter upto that node
+     int dia=leftheight+rightheight;
+      maxi=max(maxi,dia);
+      // returning max so that it will be used for upper nodes
+      return max(leftheight,rightheight);
+ }
+    int diameter(Node* root) {
+        // Your code here
+        int maxi=0;
+        int t=solve(root,maxi);
+        return maxi;
