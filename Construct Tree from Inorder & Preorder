@@ -1,0 +1,43 @@
+Question: Given two arrays representing the inorder and preorder traversals of a binary tree, construct the tree and return the root node of the constructed tree.
+
+Note: The output is written in postorder traversal.
+code:
+class Solution {
+public:
+    int idx = 0; // Index for tracking the current node in the preorder traversal
+
+    // Recursive function to construct the binary tree
+    Node* Solve(vector<int>& inorder, vector<int>& preorder, int s, int e) {
+        // Base condition: if start index is greater than end index, return NULL (no subtree)
+        if (s > e)
+            return NULL;
+
+        // Create a new node with the current value from the preorder traversal
+        Node* root = new Node(preorder[idx++]);
+
+        int k; // Variable to hold the index of the current root in the inorder traversal
+
+        // Find the index of the root in the inorder traversal
+        for (int l = s; l <= e; l++) {
+            if (inorder[l] == root->data) {
+                k = l; // Store the index where the root is found
+                break; // Exit the loop once the root is found
+            }
+        }
+
+        // Recursively construct the left subtree using the left part of the inorder array
+        root->left = Solve(inorder, preorder, s, k - 1);
+        
+        // Recursively construct the right subtree using the right part of the inorder array
+        root->right = Solve(inorder, preorder, k + 1, e);
+
+        // Return the constructed subtree rooted at 'root'
+        return root;
+    }
+
+    // Function to build the tree from given inorder and preorder traversals
+    Node* buildTree(vector<int>& inorder, vector<int>& preorder) {
+        // Start the recursive construction from the full range of the inorder array
+        return Solve(inorder, preorder, 0, inorder.size() - 1);
+    }
+};
