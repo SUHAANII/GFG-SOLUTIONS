@@ -1,0 +1,85 @@
+Question: Given a Binary Tree, find its Boundary Traversal. The traversal should be in the following order: 
+
+Left Boundary: This includes all the nodes on the path from the root to the leftmost leaf node. You must prefer the left child over the right child when traversing. Do not include leaf nodes in this section.
+
+Leaf Nodes: All leaf nodes, in left-to-right order, that are not part of the left or right boundary.
+
+Reverse Right Boundary: This includes all the nodes on the path from the rightmost leaf node to the root, traversed in reverse order. You must prefer the right child over the left child when traversing. Do not include the root in this section if it was already included in the left boundary.
+
+Note: If the root doesn't have a left subtree or right subtree, then the root itself is the left or right boundary. 
+
+code:
+
+class Solution {
+public:
+    // Function to traverse the left boundary of the tree
+    void leftpart(Node* root, vector<int>& ans) {
+        // Base case: if the node is NULL or it's a leaf node, return
+        if (root == NULL || (root->left == NULL && root->right == NULL)) {
+            return;
+        }
+        
+        // Add the current node's data to the answer vector
+        ans.push_back(root->data);
+        
+        // Recur for the left child if it exists; otherwise, recur for the right child
+        if (root->left)
+            leftpart(root->left, ans);
+        else
+            leftpart(root->right, ans);
+    }
+
+    // Function to traverse the leaf nodes of the tree
+    void bottompart(Node* root, vector<int>& ans) {
+        // Base case: if the node is NULL, return
+        if (root == NULL)
+            return;
+        
+        // If it's a leaf node, add its data to the answer vector
+        if (root->left == NULL && root->right == NULL) {
+            ans.push_back(root->data);
+            return;
+        }
+        
+        // Recur for the left and right children
+        bottompart(root->left, ans);
+        bottompart(root->right, ans);
+    }
+
+    // Function to traverse the right boundary of the tree
+    void rightpart(Node* root, vector<int>& ans) {
+        // Base case: if the node is NULL or it's a leaf node, return
+        if (root == NULL || (root->left == NULL && root->right == NULL)) {
+            return;
+        }
+        
+        // Recur for the right child if it exists; otherwise, recur for the left child
+        if (root->right)
+            rightpart(root->right, ans);
+        else
+            rightpart(root->left, ans);
+        
+        // Add the current node's data to the answer vector after the recursive calls
+        ans.push_back(root->data);
+    }
+    
+    // Main function to perform boundary traversal of the tree
+    vector<int> boundaryTraversal(Node* root) {
+        vector<int> ans; // Vector to store the boundary traversal result
+        
+        // If the tree is empty, return an empty vector
+        if (root == NULL)
+            return ans;
+        
+        // Add the root node's data to the answer vector
+        ans.push_back(root->data);
+        
+        // Traverse the left boundary, leaf nodes, and right boundary
+        leftpart(root->left, ans); // Left part excluding the root
+        bottompart(root->left, ans); // Leaf nodes from the left subtree
+        bottompart(root->right, ans); // Leaf nodes from the right subtree
+        rightpart(root->right, ans); // Right part excluding the root
+        
+        return ans; // Return the complete boundary traversal
+    }
+};
