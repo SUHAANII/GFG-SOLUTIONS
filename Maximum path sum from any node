@@ -1,0 +1,42 @@
+Question: Given a binary tree, the task is to find the maximum path sum. The path may start and end at any node in the tree.
+
+code:
+
+class Solution {
+public:
+    // Helper function to calculate the maximum path sum
+    int f(Node* root, int &maxi) {
+        // Base case: if the current node is NULL, return 0
+        if (root == NULL) return 0;
+
+        // Recursively calculate the maximum sum from the left and right children
+        int leftSum = f(root->left, maxi);
+        int rightSum = f(root->right, maxi);
+
+        // If the left sum is negative, we ignore it (take 0 instead)
+        if (leftSum < 0) leftSum = 0;
+
+        // If the right sum is negative, we ignore it (take 0 instead)
+        if (rightSum < 0) rightSum = 0;
+
+        // Update the maximum path sum found so far
+        // The path can be through the current node and both children
+        maxi = max(maxi, root->data + leftSum + rightSum);
+
+        // Return the maximum sum of the path that can be extended to the parent
+        // This is the current node value plus the greater of the left or right sum
+        return root->data + max(leftSum, rightSum);
+    }
+
+    // Main function to find the maximum path sum in the binary tree
+    int findMaxSum(Node* root) {
+        // Initialize maxi to the smallest integer value
+        int maxi = INT_MIN;
+
+        // Call the helper function to compute the maximum path sum
+        int TEMP = f(root, maxi);
+
+        // Return the maximum path sum found
+        return maxi;
+    }
+};
