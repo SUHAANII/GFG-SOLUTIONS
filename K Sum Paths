@@ -1,0 +1,52 @@
+Question: Given a binary tree and an integer k, determine the number of downward-only paths where the sum of the node values in the path equals k. A path can start and end at any node within the tree but must always move downward (from parent to child).
+code:
+
+class Solution {
+public:
+    // Helper function to find the number of paths that sum to k
+    void solve(Node* root, int& k, unordered_map<int, int>& mp, int& ans, int& sum) {
+        // Base case: if the current node is null, return
+        if (!root) return;
+
+        // Add the current node's value to the running sum
+        sum += root->data;
+
+        // Check if there is a prefix sum that equals (current sum - k)
+        // If so, it means there are paths that sum to k
+        if (mp.find(sum - k) != mp.end()) {
+            ans += mp[sum - k]; // Increment the answer by the number of times this prefix sum has occurred
+        }
+
+        // Record the current sum in the map
+        mp[sum]++;
+
+        // Recur for the left and right children
+        solve(root->left, k, mp, ans, sum);
+        solve(root->right, k, mp, ans, sum);
+
+        // After exploring the children, backtrack: remove the current sum from the map
+        mp[sum]--;
+
+        // Subtract the current node's value from the running sum to backtrack
+        sum -= root->data;
+    }
+
+    // Main function to count paths that sum to k
+    int sumK(Node* root, int k) {
+        // Map to store the frequency of prefix sums
+        unordered_map<int, int> mp;
+        mp[0] = 1; // Initialize with sum 0 having one occurrence (for paths that start from the root)
+
+        // If the tree is empty, return 0
+        if (!root) return 0;
+
+        int ans = 0; // Variable to store the number of paths found
+        int sum = 0; // Variable to store the current running sum
+
+        // Call the helper function to find paths
+        solve(root, k, mp, ans, sum);
+
+        // Return the total number of paths that sum to k
+        return ans;
+    }
+};
