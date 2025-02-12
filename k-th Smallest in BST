@@ -1,0 +1,38 @@
+Question: Given a BST and an integer k, the task is to find the kth smallest element in the BST. If there is no kth smallest element present then return -1.
+
+code:
+class Solution {
+public:
+    // Function to perform an inorder traversal of the BST
+    // This will fill the 'inorder' vector with the elements in sorted order
+    void inorderTraversal(Node* root, vector<int> &inorder) {
+        // Base case: if the current node is null, return
+        if (!root)
+            return;
+        
+        // Recursively traverse the left subtree
+        inorderTraversal(root->left, inorder);
+        
+        // Visit the current node and add its data to the 'inorder' vector
+        inorder.push_back(root->data);
+        
+        // Recursively traverse the right subtree
+        inorderTraversal(root->right, inorder);
+    }
+    
+    // Function to find the Kth smallest element in the BST
+    int kthSmallest(Node *root, int k) {
+        // Vector to store the inorder traversal of the BST
+        vector<int> inorder;
+        
+        // Fill the 'inorder' vector with the elements of the BST
+        inorderTraversal(root, inorder);
+        
+        // Check if k is valid; if k-1 exceeds the size of the vector, return -1
+        if (k - 1 >= inorder.size())
+            return -1;
+        
+        // Return the Kth smallest element (0-based index, hence k-1)
+        return inorder[k - 1];
+    }
+};
