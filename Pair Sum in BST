@@ -1,0 +1,63 @@
+Question: Given a Binary Search Tree(BST) and a target. Check whether there's a pair of Nodes in the BST with value summing up to the target. 
+
+code:
+
+class Solution {
+public:
+    // Function to perform inorder traversal of the binary tree
+    void inorder(Node *root, vector<int> &v) {
+        // Base case: if the current node is NULL, return
+        if (root == NULL)
+            return;
+
+        // Recursive call to traverse the left subtree
+        inorder(root->left, v);
+        
+        // Add the current node's data to the vector
+        v.push_back(root->data);
+        
+        // Recursive call to traverse the right subtree
+        inorder(root->right, v);
+    }
+
+    // Function to find if there are two elements in the BST that sum up to the target
+    bool findTarget(Node *root, int target) {
+        // Vector to store the inorder traversal of the tree
+        vector<int> v;
+        
+        // Perform inorder traversal and fill the vector with node values
+        inorder(root, v);
+        
+        // Get the size of the vector
+        int n = v.size();
+        
+        // Initialize two pointers for the two-sum approach
+        int l = 0; // Pointer starting from the beginning of the vector
+        int r = n - 1; // Pointer starting from the end of the vector
+        
+        // Variable to hold the sum of the two pointed values
+        int sum = 0;
+        
+        // Continue until the two pointers meet
+        while (l < r) {
+            // Calculate the sum of the values at the two pointers
+            sum = v[l] + v[r];
+
+            // Check if the sum equals the target
+            if (sum == target)
+                return true; // Target found
+            
+            // If the sum is less than the target, move the left pointer to the right
+            else if (sum < target) {
+                l++;
+            }
+            // If the sum is greater than the target, move the right pointer to the left
+            else if (sum > target) {
+                r--;
+            }
+        }
+        
+        // If no such pair is found, return false
+        return false;
+    }
+};
