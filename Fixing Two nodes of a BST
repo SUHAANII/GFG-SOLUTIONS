@@ -1,0 +1,64 @@
+Question: Given the root of a Binary search tree(BST), where exactly two nodes were swapped by mistake. Your task is to fix (or correct) the BST by swapping them back. Do not change the structure of the tree.
+Note: It is guaranteed that the given input will form BST, except for 2 nodes that will be wrong. All changes must be reflected in the original Binary search tree(BST).
+
+code:
+class Solution {
+public:
+    // Function to correct a Binary Search Tree (BST)
+    void correctBST(Node* root) {
+        // Vector to hold the in-order traversal of the BST nodes
+        vector<Node*> vec;
+        Node* temp1 = nullptr; // To hold the first misplaced node
+        Node* temp2 = nullptr; // To hold the second misplaced node
+        int i, j;
+
+        // Perform in-order traversal and populate the vector
+        inorder(root, vec);
+
+        // Identify the first misplaced node
+        for (i = 0; i < vec.size() - 1; i++) {
+            // If the current node's data is greater than the next node's data,
+            // we have found a violation of the BST property
+            if (vec[i]->data > vec[i + 1]->data) {
+                temp1 = vec[i]; // Store the first misplaced node
+                break; // Exit the loop as we only need the first violation
+            }
+        }
+
+        // Identify the second misplaced node
+        for (j = vec.size() - 1; j > 0; j--) {
+            // If the current node's data is less than the previous node's data,
+            // we have found another violation of the BST property
+            if (vec[j]->data < vec[j - 1]->data) {
+                temp2 = vec[j]; // Store the second misplaced node
+                break; // Exit the loop as we only need the first violation from the right
+            }
+        }
+
+        // If both misplaced nodes are found, swap their values to correct the BST
+        if (temp1 && temp2) {
+            swap(temp1, temp2);
+        }
+    }
+
+    // Helper function to perform in-order traversal of the BST
+    void inorder(Node* node, vector<Node*>& vec) {
+        if (node == nullptr) return; // Base case: if the node is null, return
+
+        // Traverse the left subtree
+        inorder(node->left, vec);
+        // Visit the current node and add it to the vector
+        vec.push_back(node);
+        // Traverse the right subtree
+        inorder(node->right, vec);
+    }
+
+    // Function to swap the data of two nodes
+    void swap(Node* temp1, Node* temp2) {
+        int temp; // Temporary variable for swapping
+        // Swap the data of the two nodes
+        temp = temp1->data;
+        temp1->data = temp2->data;
+        temp2->data = temp;
+    }
+};
