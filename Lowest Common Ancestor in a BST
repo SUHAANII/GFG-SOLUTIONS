@@ -1,0 +1,51 @@
+Question: Given a Binary Search Tree (with all values unique) and two nodes n1 and n2 (n1 != n2). You may assume that both nodes exist in the tree. Find the Lowest Common Ancestor (LCA) of the given two nodes in the BST.
+
+LCA between two nodes n1 and n2 is defined as the lowest node that has both n1 and n2 as descendants (where we allow a node to be a descendant of itself).
+code:
+
+class Solution {
+public:
+    // This function traverses the tree and stores the path to the node `n` in the vector `first`.
+    bool traverse(vector<Node*> &first, Node *root, Node *n) {
+        // Base case: if the current node is null, return false.
+        if (!root) return false;
+
+        // Add the current node to the path.
+        first.push_back(root);
+
+        // If the current node is the target node `n`, return true.
+        if (root == n) return true;
+
+        // Recursively traverse the left and right subtrees.
+        // If either subtree contains the target node, return true.
+        if (traverse(first, root->left, n) || traverse(first, root->right, n)) {
+            return true;
+        }
+
+        // If the target node is not found in either subtree, remove the current node from the path (backtrack).
+        first.pop_back();
+        return false; // Target node not found in this path.
+    }
+
+    // This function finds the Lowest Common Ancestor (LCA) of nodes `n1` and `n2`.
+    Node* LCA(Node* root, Node* n1, Node* n2) {
+        // Create two vectors to store paths to n1 and n2.
+        vector<Node*> first;
+        vector<Node*> second;
+
+        // Traverse the tree to find the path to n1 and store it in `first`.
+        traverse(first, root, n1);
+        // Traverse the tree to find the path to n2 and store it in `second`.
+        traverse(second, root, n2);
+
+        // Find the last common node in the paths to n1 and n2.
+        int i;
+        for (i = 0; i < first.size() && i < second.size(); i++) {
+            // Compare nodes in both paths; stop at the first mismatch.
+            if (first[i] != second[i]) break;
+        }
+
+        // Return the last common node, which is the LCA of n1 and n2.
+        return first[i - 1];
+    }
+};
