@@ -1,0 +1,83 @@
+Question: Serialization is to store a tree in an array so that it can be later restored and deserialization is reading tree back from the array. Complete the functions
+
+serialize() : stores the tree into an array a and returns the array.
+deSerialize() : deserializes the array to the tree and returns the root of the tree.
+Note: Multiple nodes can have the same data and the node values are always positive integers. Your code will be correct if the tree returned by deSerialize(serialize(input_tree)) is same as the input tree. Driver code will print the in-order traversal of the tree returned by deSerialize(serialize(input_tree)).
+
+code:
+class Solution {
+public:
+    // Function to serialize a tree and return a list containing nodes of the tree.
+    vector<int> serialize(Node *root) {
+        // Initialize an empty vector to store the serialized tree nodes
+        vector<int> ans;
+        
+        // If the tree is empty (root is NULL), return the empty vector
+        if (root == NULL) return ans;
+        
+        // Create a queue to perform level order traversal
+        queue<Node*> q;
+        q.push(root); // Start with the root node
+        
+        // Perform level order traversal until the queue is empty
+        while (q.size() > 0) {
+            // Get the front node from the queue
+            auto node = q.front();
+            q.pop(); // Remove the node from the queue
+            
+            // If the current node is NULL, push -1 to indicate this in the serialized output
+            if (node == NULL) {
+                ans.push_back(-1);
+            } else {
+                // Otherwise, push the node's data to the result vector
+                ans.push_back(node->data);
+                // Push left and right children to the queue for further processing
+                q.push(node->left);
+                q.push(node->right);
+            }
+        }
+        
+        // Return the serialized representation of the tree
+        return ans;
+    }
+
+    // Function to deserialize a list and construct the tree.
+    Node *deSerialize(vector<int> &arr) {
+        // If the input array is empty, return NULL (no tree to construct)
+        if (arr.size() == 0) return NULL;
+        
+        // Create the root node of the tree using the first element of the array
+        Node* root = new Node(arr[0]);
+        
+        // Create a queue to help with level order construction of the tree
+        queue<Node*> Q;
+        Q.push(root); // Start with the root node
+        
+        // Initialize an index to track the position in the array
+        int i = 1;
+        
+        // Process the queue until it is empty or we have processed all elements in the array
+        while (Q.size() > 0 && i < arr.size()) {
+            // Get the front node from the queue
+            Node* curr = Q.front();
+            Q.pop(); // Remove the node from the queue
+            
+            // If the next element in the array is not -1, create the left child
+            if (arr[i] != -1) {
+                curr->left = new Node(arr[i]); // Create left child node
+                Q.push(curr->left); // Add left child to the queue for further processing
+            }
+            i++; // Move to the next element in the array
+            
+            // Check if there is a right child to create
+            if (i < arr.size() && arr[i] != -1) {
+                curr->right = new Node(arr[i]); // Create right child node
+                Q.push(curr->right); // Add right child to the queue for further processing
+            }
+            i++; // Move to the next element in the array
+        }
+        
+        // Return the constructed tree's root node
+        return root;
+    }
+};
