@@ -1,0 +1,14 @@
+Question:Given an array arr[] of positive integers and an integer k, Your task is to return k largest elements in decreasing order. 
+code:
+vector<int> ans; // Declare a vector to store the result
+sort(arr.begin(), arr.end()); // Sort the input array in ascending order
+int i = arr.size() - 1; // Initialize 'i' to the last index of the sorted array
+
+// Loop until 'k' becomes 0
+while (k) {
+    ans.push_back(arr[i]); // Add the current largest element to the result vector
+    i--; // Move to the next largest element (previous index)
+    k--; // Decrease 'k' to keep track of how many elements have been added
+}
+
+return ans; // Return the vector containing the largest 'k' elements
