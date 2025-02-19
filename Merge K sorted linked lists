@@ -1,0 +1,47 @@
+Question: Given an array arr[] of n sorted linked lists of different sizes. The task is to merge them in such a way that after merging they will be a single sorted linked list, then return the head of the merged linked list.
+
+code:
+class Node {
+public:
+    int data;     // Data held by the node
+    Node* next;   // Pointer to the next node in the list
+
+    Node(int val) : data(val), next(nullptr) {} // Constructor to initialize the node
+};
+
+class Solution {
+public:
+    Node* mergeKLists(vector<Node*>& arr) {
+        // This function merges k sorted linked lists and returns the head of the merged list
+        
+        vector<int> values; // Vector to store all node values from the linked lists
+
+        // Iterate through each linked list in the input array
+        for (auto it : arr) {
+            Node* cur = it; // Start from the head of the current linked list
+            
+            // Traverse the current linked list
+            while (cur != NULL) {
+                values.push_back(cur->data); // Add the current node's data to the values vector
+                cur = cur->next; // Move to the next node
+            }
+        }
+        
+        // Sort the collected values to arrange them in ascending order
+        sort(values.begin(), values.end());
+
+        // Create the head of the new merged linked list using the first sorted value
+        Node* head = new Node(values[0]);
+        Node* rot = head; // Pointer to track the last node in the new list
+        
+        // Loop through the sorted values starting from the second element
+        for (int i = 1; i < values.size(); ++i) {
+            Node* tmp = new Node(values[i]); // Create a new node for each sorted value
+            rot->next = tmp; // Link the new node to the last node in the merged list
+            rot = rot->next; // Move the pointer to the newly added node
+        }
+        
+        // Return the head of the merged linked list
+        return head;
+    }
+};
