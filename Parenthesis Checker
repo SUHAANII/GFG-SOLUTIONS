@@ -1,0 +1,55 @@
+Question: Given a string s, composed of different combinations of '(' , ')', '{', '}', '[', ']', verify the validity of the arrangement.
+An input string is valid if:
+
+         1. Open brackets must be closed by the same type of brackets.
+         2. Open brackets must be closed in the correct order.
+code:
+  class Solution {
+public:
+    // Function to check if the input string 's' has balanced parentheses
+    bool isBalanced(string& s) {
+        // Get the length of the string
+        int n = s.length();
+        // Create a stack to keep track of opening brackets
+        stack<char> st;
+
+        // Iterate through each character in the string
+        for (int i = 0; i < n; i++) {
+            // If the character is an opening bracket, push it onto the stack
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+                st.push(s[i]);
+            }
+            // If the character is a closing parenthesis ')'
+            else if (s[i] == ')') {
+                // Check if the stack is not empty and the top is the matching opening bracket
+                if (!st.empty() && st.top() == '(') {
+                    // If they match, pop the opening bracket from the stack
+                    st.pop();
+                } else {
+                    // If they do not match or the stack is empty, return false (unbalanced)
+                    return 0;
+                }
+            }
+            // If the character is a closing brace '}'
+            else if (s[i] == '}') {
+                // Check for matching opening brace
+                if (!st.empty() && st.top() == '{') {
+                    st.pop();
+                } else {
+                    return 0; // Return false if unbalanced
+                }
+            }
+            // If the character is a closing bracket ']'
+            else if (s[i] == ']') {
+                // Check for matching opening bracket
+                if (!st.empty() && st.top() == '[') {
+                    st.pop();
+                } else {
+                    return 0; // Return false if unbalanced
+                }
+            }
+        }
+        // If the stack is empty at the end, all brackets are balanced; return true
+        return st.empty();
+    }
+};
