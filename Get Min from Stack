@@ -1,0 +1,61 @@
+Question: Given q queries, You task is to implement the following four functions for a stack:
+
+push(x) – Insert an integer x onto the stack.
+pop() – Remove the top element from the stack.
+peek() - Return the top element from the stack. If the stack is empty, return -1.
+getMin() – Retrieve the minimum element from the stack in O(1) time. If the stack is empty, return -1.
+Each query can be one of the following:
+
+1 x : Push x onto the stack.
+2 : Pop the top element from the stack.
+3: Return the top element from the stack. If the stack is empty, return -1.
+4: Return the minimum element from the stack.
+
+code:
+
+class Solution {
+public:
+    // Stack to hold pairs of integers
+    stack<pair<int, int>> st;
+    // Variable to keep track of the minimum value
+    int min_val = INT_MAX;
+
+    // Constructor to initialize the Solution object
+    Solution() {
+        // No specific initialization needed here
+    }
+
+    // Add an element to the top of the Stack
+    void push(int x) {
+        // Push the element x onto the stack along with the current minimum value
+        st.push({x, min_val});
+        // Update the minimum value to be the lesser of the current minimum and the new element
+        min_val = min(min_val, x);
+    }
+
+    // Remove the top element from the Stack
+    void pop() {
+        // If the stack is empty, there's nothing to pop
+        if (st.empty()) return;
+        // Update the minimum value to the second element of the top pair (previous minimum)
+        min_val = st.top().second;
+        // Remove the top element from the stack
+        st.pop();
+    }
+
+    // Returns the top element of the Stack
+    int peek() {
+        // If the stack is empty, return -1 (indicating no top element)
+        if (st.empty()) return -1;
+        // Return the first element of the top pair (the actual top value)
+        return st.top().first;
+    }
+
+    // Finds the minimum element of the Stack
+    int getMin() {
+        // If the stack is empty, return -1 (indicating no minimum value)
+        if (st.empty()) return -1;
+        // Return the current minimum value
+        return min_val;
+    }
+};
