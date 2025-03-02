@@ -1,0 +1,39 @@
+questiom: Given an array arr[] of integers and an integer k, your task is to find the maximum value for each contiguous subarray of size k. The output should be an array of maximum values corresponding to each contiguous subarray.
+
+
+code:
+class Solution {
+public:
+    vector<int> maxOfSubarrays(vector<int>& a, int k) {
+        // Create a multiset to store the elements of the current window
+        multiset<int> st;
+        
+        // Insert the first 'k' elements into the multiset
+        for (int i = 0; i < k; i++) {
+            st.insert(a[i]);
+        }
+        
+        // Vector to store the maximums of each subarray
+        vector<int> ans;
+        
+        int j = 0; // This will track the start of the current window
+        
+        // Iterate through the array starting from the k-th element
+        for (int i = k; i < a.size(); i++) {
+            // The maximum of the current window is the last element in the multiset
+            ans.push_back(*st.rbegin());
+            
+            // Remove the element that is sliding out of the window
+            st.erase(st.find(a[j++]));
+            
+            // Add the new element that is entering the window
+            st.insert(a[i]);
+        }
+        
+        // Add the maximum of the last window to the result
+        ans.push_back(*st.rbegin());
+        
+        // Return the vector containing the maximums of all subarrays
+        return ans;
+    }
+};
