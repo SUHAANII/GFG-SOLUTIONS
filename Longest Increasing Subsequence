@@ -1,0 +1,33 @@
+Question: Given an array arr[] of non-negative integers, the task is to find the length of the Longest Strictly Increasing Subsequence (LIS).
+
+A subsequence is strictly increasing if each element in the subsequence is strictly less than the next element.
+code:
+
+class Solution {
+public:
+    // Function to find the length of the longest increasing subsequence
+    int lis(vector<int>& arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // This vector will store the smallest tail for all increasing subsequences
+        // of various lengths found so far
+        vector<int> sub;
+        
+        // Iterate through each number in the input array
+        for (int num : arr) {
+            // Use lower_bound to find the first element in 'sub' that is not less than 'num'
+            auto it = lower_bound(sub.begin(), sub.end(), num);
+            
+            // If 'it' points to the end of 'sub', it means 'num' is greater than
+            // all elements in 'sub', so we can extend our subsequence
+            if (it == sub.end())
+                sub.push_back(num); // Add 'num' to the end of 'sub'
+            else
+                *it = num; // Replace the found position with 'num'
+        }
+        
+        // The size of 'sub' gives us the length of the longest increasing subsequence
+        return sub.size();
+    }
+};
