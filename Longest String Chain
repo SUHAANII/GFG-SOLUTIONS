@@ -1,0 +1,57 @@
+Question: You are given an array of words where each word consists of lowercase English letters.
+wordA is a predecessor of wordB if and only if we can insert exactly one letter anywhere in wordA without changing the order of the other characters to make it equal to wordB. For example, "abc" is a predecessor of "abac", while "cba" is not a predecessor of "bcad".
+
+A word chain is a sequence of words [word1, word2, ..., wordk] with k >= 1, where word1 is a predecessor of word2, word2 is a predecessor of word3, and so on. A single word is trivially a word chain with k = 1.
+
+Return the length of the longest possible word chain with words chosen from the given list of words in any order.
+
+code:
+
+class Solution {
+public:
+    int longestStringChain(vector<string>& words) {
+        // Initialize the maximum length of string chain found
+        int ans = 1;
+
+        // Create a vector of unordered sets to store words of different lengths (1 to 10)
+        vector<unordered_set<string>> arr(11);
+        
+        // Map to store the longest chain ending with each word
+        unordered_map<string, int> m;
+
+        // Populate the unordered map and vector with words from the input
+        for (auto &s : words) {
+            // If the word has a length of 1, initialize its chain length to 1
+            if (s.size() == 1) m[s] = 1;
+            // Insert the word into the appropriate set based on its length
+            arr[s.size()].insert(s);
+        }
+
+        // Iterate through possible word lengths from 2 to 10
+        for (int i = 2; i <= 10; i++) {
+            // For each word of length i
+            for (auto &s : arr[i]) {
+                // Initialize the chain length for this word as 1
+                m[s] = 1;
+
+                // Try removing each character from the word to form a new word
+                for (int j = 0; j < s.size(); j++) {
+                    // Create a new string by removing the character at index j
+                    string ns = s.substr(0, j) + s.substr(j + 1);
+                    
+                    // Check if the new string exists in the set of words of length i-1
+                    if (arr[i - 1].count(ns)) {
+                        // Update the longest chain length for the current word
+                        m[s] = max(m[s], 1 + m[ns]);
+                    }
+                    
+                    // Update the overall maximum chain length found so far
+                    ans = max(ans, m[s]);
+                }
+            }
+        }
+        
+        // Return the maximum length of string chain found
+        return ans;
+    }
+};
