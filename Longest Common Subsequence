@@ -1,0 +1,38 @@
+question: Given two strings s1 and s2, return the length of their longest common subsequence (LCS). If there is no common subsequence, return 0.
+
+A subsequence is a sequence that can be derived from the given string by deleting some or no elements without changing the order of the remaining elements. For example, "ABE" is a subsequence of "ABCDE".
+code:
+
+class Solution {
+public:
+    // Function to find the length of the longest common subsequence (LCS) of two strings
+    int lcs(string &s1, string &s2) {
+        // Get the lengths of the input strings
+        int n = s1.length(); // Length of the first string
+        int m = s2.length(); // Length of the second string
+        
+        // Create two vectors to store the previous and current row of LCS values
+        vector<int> prev(m + 1, 0); // Previous row initialized to 0
+        vector<int> curr(m + 1, 0); // Current row initialized to 0
+        
+        // Iterate through each character of the first string
+        for (int i = 1; i <= n; i++) {
+            // Iterate through each character of the second string
+            for (int j = 1; j <= m; j++) {
+                // If characters match, increment the count for LCS
+                if (s1[i - 1] == s2[j - 1]) {
+                    curr[j] = 1 + prev[j - 1]; // LCS length increases by 1
+                } else {
+                    // If characters do not match, take the maximum value from
+                    // the previous row or the current column
+                    curr[j] = max(prev[j], curr[j - 1]);
+                }
+            }
+            // Move the current row to previous for the next iteration
+            prev = curr;
+        }
+        
+        // The length of the longest common subsequence is found in prev[m]
+        return prev[m];
+    }
+};
