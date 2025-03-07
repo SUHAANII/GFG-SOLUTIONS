@@ -1,0 +1,43 @@
+ question: Given a string s, return the length of the longest palindromic subsequence.
+
+A subsequence is a sequence that can be derived from the given sequence by deleting some or no elements without changing the order of the remaining elements.
+
+A palindromic sequence is a sequence that reads the same forward and backward.
+
+code:
+
+class Solution {
+public:
+    // Recursive function to find the length of the longest palindromic subsequence
+    int solve(string &s, int i, int j, vector<vector<int>>& dp) {
+        // Base case: If the starting index exceeds the ending index, return 0
+        if (i > j) return 0;
+        
+        // Base case: If both indices point to the same character, it's a palindrome of length 1
+        if (i == j) return 1;
+
+        // Check if the result is already computed and stored in dp table
+        if (dp[i][j] != -1) return dp[i][j];
+
+        // If characters at both ends are the same, they contribute to the palindrome
+        if (s[i] == s[j]) {
+            // Add 2 (for the two matching characters) and solve for the inner substring
+            return dp[i][j] = 2 + solve(s, i + 1, j - 1, dp);
+        } else {
+            // If characters are different, find the maximum by either excluding the left or the right character
+            return dp[i][j] = max(solve(s, i + 1, j, dp), solve(s, i, j - 1, dp));
+        }
+    }
+
+    // Function to initiate the process of finding the longest palindromic subsequence
+    int longestPalinSubseq(string &s) {
+        // Get the length of the input string
+        int n = s.size();
+        
+        // Create a 2D vector (dp table) initialized with -1 to store results of subproblems
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        
+        // Call the recursive function starting from the full range of the string
+        return solve(s, 0, n - 1, dp);
+    }
+};
