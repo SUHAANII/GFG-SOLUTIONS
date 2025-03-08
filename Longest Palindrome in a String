@@ -1,0 +1,56 @@
+Question: Given a string s, your task is to find the longest palindromic substring within s.
+
+A substring is a contiguous sequence of characters within a string, defined as s[i...j] where 0 ≤ i ≤ j < len(s).
+
+A palindrome is a string that reads the same forward and backward. More formally, s is a palindrome if reverse(s) == s.
+
+Note: If there are multiple palindromic substrings with the same length, return the first occurrence of the longest palindromic substring from left to right.
+code:
+
+class Solution {
+public:
+    // Helper function to check if the substring s[i...j] is a palindrome
+    bool ispalindrome(int i, int j, string &s, vector<vector<int>> &dp) {
+        // If the indices cross, it's a palindrome (single character or empty)
+        if (i >= j) return true;
+
+        // If we have already computed the result for this substring, return it
+        if (dp[i][j] != -1) return dp[i][j];
+
+        // Check if the characters at the current indices are the same
+        if (s[i] == s[j]) {
+            // Recursively check the inner substring
+            return dp[i][j] = ispalindrome(i + 1, j - 1, s, dp);
+        }
+
+        // If characters don't match, it's not a palindrome
+        return dp[i][j] = false;
+    }
+
+    // Function to find the longest palindromic substring in s
+    string longestPalindrome(string &s) {
+        // Get the length of the string
+        int n = s.size();
+        
+        // Create a 2D vector for dynamic programming, initialized to -1
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+
+        int maxlen = 0; // To track the maximum length of palindrome found
+        int a = -1;     // To track the starting index of the longest palindrome
+
+        // Iterate through all possible substrings
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                // Check if the substring s[i...j] is a palindrome
+                // and if its length is greater than the current max length
+                if (ispalindrome(i, j, s, dp) && j - i + 1 > maxlen) {
+                    maxlen = j - i + 1; // Update max length
+                    a = i;              // Update starting index
+                }
+            }
+        }
+
+        // Return the longest palindromic substring
+        return s.substr(a, maxlen);
+    }
+};
