@@ -1,0 +1,44 @@
+Question: Given a string s, count all palindromic sub-strings present in the string. The length of the palindromic sub-string must be greater than or equal to 2. 
+code:
+
+
+class Solution {
+  public:
+    // Function to count palindromic substrings in the given string 's'
+    int countPS(string &s) {
+        int n = s.size(); // Get the size of the string
+        int ans = 0;      // Variable to store the total count of palindromic substrings
+
+        // Iterate through each character in the string to consider it as the center of a palindrome
+        for(int mid = 0; mid < n; mid++) {
+            int count = 1; // Initialize count for odd-length palindromes (single character center)
+
+            // Count odd-length palindromes centered at 'mid'
+            for(int i = 1; i < n - mid && mid - i >= 0; i++) {
+                // Check if characters at both sides of 'mid' are equal
+                if(s[mid - i] == s[mid + i]) {
+                    count += 1; // Increment count for each matching pair
+                } else {
+                    break; // Exit if characters don't match
+                }
+            }
+
+            ans += count; // Add the count of odd-length palindromes to the answer
+            count = 0;    // Reset count for even-length palindromes
+
+            // Count even-length palindromes centered between 'mid' and 'mid + 1'
+            for(int i = 0; i < n - mid - 1 && mid - i >= 0; i++) {
+                // Check if characters at both sides of the center are equal
+                if(s[mid - i] == s[mid + i + 1]) {
+                    count += 1; // Increment count for each matching pair
+                } else {
+                    break; // Exit if characters don't match
+                }
+            }
+
+            ans += count; // Add the count of even-length palindromes to the answer
+        }
+
+        return ans - n; // Return the total count of palindromic substrings (excluding single characters)
+    }
+};
