@@ -1,0 +1,40 @@
+Question: Given two strings s1 and s2. Return the minimum number of operations required to convert s1 to s2.
+The possible operations are permitted:
+
+Insert a character at any position of the string.
+Remove any character from the string.
+Replace any character from the string with any other character.
+
+code:
+
+class Solution {
+public:
+    int dp[1001][1001]; 
+    
+    // Helper function to compute edit distance
+    int solve(int i, int j, string& s1, string& s2) {
+        // Base cases
+        if (i == s1.size()) return s2.size() - j; // If s1 is empty, insert all characters of s2
+        if (j == s2.size()) return s1.size() - i; // If s2 is empty, remove all characters of s1
+
+        // Check if already computed
+        if (dp[i][j] != -1) return dp[i][j];
+
+        // If characters match, move to the next character
+        if (s1[i] == s2[j]) return dp[i][j] = solve(i + 1, j + 1, s1, s2);
+
+        // Calculate the minimum edit distance for insert, delete, replace
+        int insert_op = 1 + solve(i, j + 1, s1, s2);
+        int delete_op = 1 + solve(i + 1, j, s1, s2);   
+        int replace_op = 1 + solve(i + 1, j + 1, s1, s2); 
+
+        // Store and return the minimum of the three operations
+        return dp[i][j] = min({insert_op, delete_op, replace_op});
+    }
+
+    // Function to initiate the edit distance calculation
+    int editDistance(string s1, string s2) {
+        memset(dp, -1, sizeof(dp)); // Initialize dp array
+        return solve(0, 0, s1, s2); 
+    }
+};
