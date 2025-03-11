@@ -1,0 +1,23 @@
+question: There are n stairs, a person standing at the bottom wants to reach the top. The person can climb either 1 stair or 2 stairs at a time. Your task is to count the number of ways, the person can reach the top (order does matter).
+
+code:
+
+class Solution {
+  public:
+    int countWays(int n) {
+        // Base cases
+        if (n == 0) return 1; // 1 way to stay at the ground
+        if (n == 1) return 1; // 1 way to climb 1 step
+
+        int prev2 = 1; // Ways to climb 0 steps
+        int prev1 = 1; // Ways to climb 1 step
+
+        for (int i = 2; i <= n; i++) {
+            int current = prev1 + prev2; // Current ways is the sum of the previous two
+            prev2 = prev1; // Update prev2 to the last prev1
+            prev1 = current; // Update prev1 to the current
+        }
+        
+        return prev1; // Return the number of ways to climb n steps
+    }
+};
