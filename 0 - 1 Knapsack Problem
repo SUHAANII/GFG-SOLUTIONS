@@ -1,0 +1,44 @@
+question: Given n items, each with a specific weight and value, and a knapsack with a capacity of W, the task is to put the items in the knapsack such that the sum of weights of the items <= W and the sum of values associated with them is maximized. 
+
+Note: You can either place an item entirely in the bag or leave it out entirely. Also, each item is available in single quantity.
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the maximum value that can be obtained
+    // with a given weight capacity W, using the values and weights provided.
+    int knapsack(int W, vector<int> &val, vector<int> &wt) {
+        // Get the number of items
+        int n = wt.size();
+        
+        // Create two vectors to store the maximum value for each weight capacity
+        // 'prev' will hold the results of the previous row (i-1 items)
+        // 'curr' will hold the results of the current row (i items)
+        vector<int> prev(W + 1, 0), curr(W + 1, 0);
+        
+        // Iterate through each item
+        for (int i = 1; i <= n; i++) {
+            // Iterate through each weight capacity from 0 to W
+            for (int w = 0; w <= W; w++) {
+                // If the weight of the current item is less than or equal to the current weight capacity
+                if (wt[i - 1] <= w) {
+                    // Calculate the maximum value by either including the current item
+                    // or excluding it. We take the maximum of:
+                    // 1. The value of the current item + the maximum value with the remaining weight (w - wt[i-1])
+                    // 2. The maximum value without including the current item (prev[w])
+                    curr[w] = max(val[i - 1] + prev[w - wt[i - 1]], prev[w]);
+                } else {
+                    // If the current item's weight is more than the current capacity,
+                    // we cannot include it, so we take the value from the previous row
+                    curr[w] = prev[w];
+                }
+            }
+            // After processing all weights for the current item, update 'prev' to be 'curr'
+            prev = curr;
+        }
+        
+        // The maximum value for the full capacity W after considering all items
+        return prev[W];
+    }
+};
