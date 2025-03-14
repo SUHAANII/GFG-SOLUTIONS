@@ -1,0 +1,33 @@
+question: Given an integer array coins[ ] representing different denominations of currency and an integer sum, find the number of ways you can make sum by using different combinations from coins[ ]. 
+Note: Assume that you have an infinite supply of each type of coin. Therefore, you can use any coin as many times as you want.
+Answers are guaranteed to fit into a 32-bit integer. 
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of ways to make a given sum using the provided coins
+    int count(vector<int>& coins, int sum) {
+        // Get the number of different coins available
+        int n = coins.size();
+        
+        // Create a DP array to store the number of ways to make each amount up to 'sum'
+        vector<int> dp(sum + 1, 0);
+        
+        // There is one way to make the sum of 0: use no coins at all
+        dp[0] = 1;
+        
+        // Iterate over each coin
+        for (int i = 0; i < n; i++) {
+            // For each coin, update the DP array for all sums from the coin's value to 'sum'
+            for (int s = coins[i]; s <= sum; s++) {
+                // Update the number of ways to make the sum 's'
+                // by adding the number of ways to make the sum 's - coins[i]'
+                dp[s] += dp[s - coins[i]];
+            }
+        }
+
+        // Return the number of ways to make the target sum
+        return dp[sum];
+    }
+};
