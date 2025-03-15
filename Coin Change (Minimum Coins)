@@ -1,0 +1,58 @@
+question: You are given an array coins[], where each element represents a coin of a different denomination, and a target value sum. You have an unlimited supply of each coin type {coins1, coins2, ..., coinsm}.
+
+Your task is to determine the minimum number of coins needed to obtain the target sum. If it is not possible to form the sum using the given coins, return -1.
+
+code:
+
+class Solution {
+public:
+    // Recursive function to solve the minimum coins problem
+    int solve(vector<int>& coins, int sum, int idx, vector<vector<int>>& dp) {
+        // Base case: if we've considered all coin types
+        if (idx == coins.size()) {
+            return INT_MAX; // No solution found
+        }
+        
+        // Base case: if the remaining sum is 0
+        if (sum == 0) {
+            return 0; // No more coins needed
+        }
+        
+        // Check if the result is already computed
+        if (dp[sum][idx] != -1) {
+            return dp[sum][idx]; // Return the cached result
+        }
+        
+        int count = INT_MAX; // Initialize count to maximum
+        
+        // Include the current coin if it does not exceed the remaining sum
+        if (coins[idx] <= sum) {
+            // Recursively call for the remaining sum after including the current coin
+            int temp = solve(coins, sum - coins[idx], idx, dp);
+            if (temp != INT_MAX) {
+                count = min(1 + temp, count); // Update count if a valid solution is found
+            }
+        }
+        
+        // Explore the case of not including the current coin
+        count = min(solve(coins, sum, idx + 1, dp), count);
+        
+        // Store the computed result in the dp array
+        return dp[sum][idx] = count;
+    }
+    
+    // Function to find the minimum number of coins needed to make the given sum
+    int minCoins(vector<int>& coins, int sum) {
+        // Initialize a 2D dp array with -1 (indicating uncomputed states)
+        vector<vector<int>> dp(sum + 1, vector<int>(coins.size() + 1, -1));
+        
+        // Sort the coins in descending order (optional, but can improve performance)
+        sort(coins.begin(), coins.end(), greater<int>());
+        
+        // Call the recursive function starting from the first coin
+        int ans = solve(coins, sum, 0, dp);
+        
+        // Return -1 if no solution is found, otherwise return the answer
+        return ans == INT_MAX ? -1 : ans;
+    }
+};
