@@ -1,0 +1,16 @@
+question: Given an array of positive integers arr[] and a value sum, determine if there is a subset of arr[] with sum equal to given sum. 
+
+code:
+
+class Solution {
+public:
+    // Function to determine if there is a subset of the given array that sums up to a specified value
+    bool isSubsetSum(vector<int>& arr, int sum) {
+        // Get the size of the input array
+        int n = (int)arr.size();
+        
+        // Create a bitset to keep track of achievable sums
+        // The size is 10001 to accommodate sums from 0 to 10000
+        bitset<10001> b; 
+        
+        // Initialize the bitset to indicate that
