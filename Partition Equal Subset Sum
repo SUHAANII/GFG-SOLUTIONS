@@ -1,0 +1,40 @@
+question: Given an array arr[], determine if it can be partitioned into two subsets such that the sum of elements in both parts is the same.
+
+Note: Each element must be in exactly one subset.
+code:
+
+class Solution {
+public:
+    // Recursive function to determine if a subset with a given sum can be formed
+    bool solve(vector<int>& arr, int sum, int i, vector<vector<int>>& dp) {
+        // Base case: if sum is 0, we found a subset that satisfies the condition
+        if (sum == 0) return true;
+        // If we have considered all elements or sum becomes negative, return false
+        if (i >= arr.size() || sum < 0) return false;
+        // Check if the result is already computed and stored in dp
+        if (dp[i][sum] != -1) return dp[i][sum];
+
+        // Recursive calls:
+        // 1. Include the current element in the subset and reduce the sum
+        // 2. Exclude the current element from the subset
+        return dp[i][sum] = solve(arr, sum - arr[i], i + 1, dp) | solve(arr, sum, i + 1, dp);
+    }
+
+    // Main function to check if the array can be partitioned into two subsets with equal sum
+    bool equalPartition(vector<int>& arr) {
+        // Get the total number of elements in the array
+        int n = arr.size();
+        // Calculate the total sum of the array elements
+        int sum = accumulate(arr.begin(), arr.end(), 0);
+        // If the total sum is odd, it's impossible to partition into two equal subsets
+        if (sum % 2 != 0) return false;
+
+        // Calculate half of the total sum
+        int half = sum / 2;
+        // Initialize a 2D vector for memoization, filled with -1
+        vector<vector<int>> dp(n, vector<int>(half + 1, -1));
+        
+        // Call the solve function to determine if a subset with sum equal to half exists
+        return solve(arr, half, 0, dp);
+    }
+};
