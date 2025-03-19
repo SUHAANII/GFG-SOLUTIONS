@@ -1,0 +1,58 @@
+question: In the stock market, a person buys a stock and sells it on some future date. You are given an array prices[] representing stock prices on different days and a positive integer k, find out the maximum profit a person can make in at-most k transactions.
+
+A transaction consists of buying and subsequently selling a stock and new transaction can start only when the previous transaction has been completed.
+
+code:
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int k) {
+        // Get the number of days (prices)
+        int n = prices.size();
+        
+        // Create a 2D vector for dynamic programming
+        // curr will hold the current state results
+        // next will hold the results for the next iteration
+        vector<vector<int>> curr(k + 2, vector<int>(2, 0));
+        vector<vector<int>> next(k + 2, vector<int>(2, 0));
+
+        // Iterate over the prices array from the last day to the first
+        for (int i = n - 1; i >= 0; i--) {
+            // Iterate over the number of allowed transactions from k to 0
+            for (int limit = k; limit >= 0; limit--) {
+                // Iterate over the buy/sell state (1 for buy, 0 for sell)
+                for (int buy = 0; buy <= 1; buy++) {
+                    int ans = 0; // Initialize the answer for this state
+                    int include = 0; // Profit if we include this transaction
+                    int exclude = 0; // Profit if we exclude this transaction
+
+                    // We can only make a transaction if we haven't exhausted our limit
+                    if (limit < k) {
+                        if (buy) {
+                            // If we're in a buy state, we can either:
+                            // 1. Buy the stock (subtract price) and move to the next state (not buying now)
+                            include = -1 * prices[i] + next[limit][false];
+                            // 2. Exclude this transaction (stay in the same state)
+                            exclude = next[limit][true];  
+                        } else {
+                            // If we're in a sell state, we can either:
+                            // 1. Sell the stock (add price) and move to the next state (buying again)
+                            include = prices[i] + next[limit + 1][true];   
+                            // 2. Exclude this transaction (stay in the same state)
+                            exclude = next[limit][false];   
+                        }
+                    }
+                
+                    // Update the current state with the maximum profit we can achieve
+                    ans = max(include, exclude);
+                    curr[limit][buy] = ans; // Store the result in the current DP table
+                }
+            }
+            // Move to the next state for the next iteration
+            next = curr;
+        }
+
+        // The answer for no transactions left and in a buy state (1) is stored in next[0][1]
+        return next[0][1];
+    }
+};
