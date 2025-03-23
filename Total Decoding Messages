@@ -1,0 +1,47 @@
+question: A message containing letters A-Z is being encoded to numbers using the following mapping:
+
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+
+You are given a string digits. You have to determine the total number of ways that message can be decoded.
+
+code:
+
+int solve(int i, int n, string &digits, vector<int>& dp) {
+    // Base case: If we've reached the end of the string, there's one way to decode it (the empty way)
+    if (i >= n) return 1;
+
+    // Check if the result for this index has already been computed
+    if (dp[i] != -1) return dp[i];
+
+    // If the current digit is '0', it cannot be decoded, so return 0
+    if (digits[i] == '0') return 0;
+
+    // Initialize ways to decode from this index
+    int take2 = 0;
+
+    // Decode by taking one digit (move to the next index)
+    int take1 = solve(i + 1, n, digits, dp);
+
+    // Check if we can take two digits (i.e., digits[i] and digits[i+1])
+    // Ensure we don't go out of bounds and that the two-digit number is <= 26
+    if (i + 1 < n && stoi(digits.substr(i, 2)) <= 26) {
+        take2 = solve(i + 2, n, digits, dp);
+    }
+
+    // Store the total ways to decode from this index in the dp array
+    return dp[i] = take1 + take2;
+}
+
+int countWays(string &digits) {
+    // Get the length of the input string
+    int n = digits.size();
+
+    // Initialize a dp array with -1 to indicate uncomputed states
+    vector<int> dp(n, -1);
+
+    // Start the recursive decoding process from index 0
+    return solve(0, n, digits, dp);
+}
