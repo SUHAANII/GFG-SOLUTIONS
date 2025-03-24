@@ -1,0 +1,43 @@
+question: Given an array arr[] which represents the dimensions of a sequence of matrices where the ith matrix has the dimensions (arr[i-1] x arr[i]) for i>=1, find the most efficient way to multiply these matrices together. The efficient way is the one that involves the least number of multiplications.
+
+code:
+
+class Solution {
+public:
+    // 2D vector to store the minimum cost of matrix multiplication
+    vector<vector<int>> dp;
+
+    // Recursive function to calculate the minimum cost of matrix multiplication
+    int answer(int start, int end, vector<int> &arr) {
+        // Base case: if the range is invalid (end <= start), no cost
+        if (end <= start) return 0;
+
+        // If the cost has already been computed, return it
+        if (dp[start][end] != INT_MAX) return dp[start][end];
+
+        int ans = INT_MAX; // Initialize answer to maximum possible value
+
+        // Try every possible split point between start and end
+        for (int i = start; i < end; i++) {
+            // Calculate the cost of multiplying the matrices
+            int cost = answer(start, i, arr) + answer(i + 1, end, arr) + arr[start] * arr[i + 1] * arr[end + 1];
+            // Update the answer with the minimum cost found
+            ans = min(ans, cost);
+        }
+
+        // Store the computed minimum cost in the dp table
+        return dp[start][end] = ans;
+    }
+
+    // Function to initiate the matrix multiplication process
+    int matrixMultiplication(vector<int> &arr) {
+        // Get the number of matrices (n-1 matrices for n dimensions)
+        int n = arr.size();
+        
+        // Initialize the dp table with INT_MAX (indicating uncomputed states)
+        dp.assign(n, vector<int>(n, INT_MAX));
+        
+        // Start the recursive calculation from the first to the last matrix
+        return answer(0, n - 2, arr);
+    }
+};
