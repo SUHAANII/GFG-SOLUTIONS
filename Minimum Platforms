@@ -1,0 +1,48 @@
+question: You are given the arrival times arr[] and departure times dep[] of all trains that arrive at a railway station on the same day. Your task is to determine the minimum number of platforms required at the station to ensure that no train is kept waiting.
+
+At any given time, the same platform cannot be used for both the arrival of one train and the departure of another. Therefore, when two trains arrive at the same time, or when one arrives before another departs, additional platforms are required to accommodate both trains.
+
+code:
+
+class Solution {
+public:
+    // Function to find the minimum number of platforms required at the
+    // railway station such that no train waits.
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        // Initialize the result with 1 platform as a minimum.
+        int res = 1;
+
+        // Sort the arrival and departure times.
+        sort(arr.begin(), arr.end());
+        sort(dep.begin(), dep.end());
+
+        // Temporary variable to track the number of platforms needed at any time.
+        int temp = 0;
+
+        // Get the size of the arrival and departure arrays.
+        int n1 = arr.size();
+        int n2 = dep.size();
+        
+        // Initialize pointers for arrival and departure arrays.
+        int i = 0, j = 0;
+
+        // Loop until we reach the end of either the arrival or departure list.
+        while (i < n1 && j < n2) {
+            // If the next train arrives before or when the current train departs,
+            // we need a platform for the arriving train.
+            if (arr[i] <= dep[j]) {
+                // Increment the count of platforms needed.
+                i++, temp++;
+                // Update the result if the current platforms needed is greater.
+                res = max(res, temp);
+            } else {
+                // If a train departs before the next train arrives,
+                // we can free up a platform.
+                temp--, j++;
+            }
+        }
+
+        // Return the maximum number of platforms needed at any time.
+        return res;
+    }
+};
