@@ -1,0 +1,52 @@
+question: You are given a set of activities, each with a start time and a finish time, represented by the arrays start[] and finish[], respectively. A single person can perform only one activity at a time, meaning no two activities can overlap. Your task is to determine the maximum number of activities that a person can complete in a day
+
+code:
+
+class Solution {
+  public:
+    // Function to select the maximum number of activities that don't overlap
+    int activitySelection(vector<int> &start, vector<int> &finish) {
+        // Get the number of activities
+        int n = start.size();
+        // Initialize the count of selected activities to 1 (selecting the first one)
+        int activities = 1;
+        // Variable to track the end time of the last selected activity
+        int currEnd;
+        
+        // Create a vector of pairs to hold start and finish times of activities
+        vector<pair<int, int>> arr(n);
+        
+        // Populate the vector with start and finish times
+        for(int i = 0; i < n; i++) {
+            arr[i].first = start[i];   // Start time
+            arr[i].second = finish[i];  // Finish time
+        }
+        
+        // Sort the activities based on their finish times
+        sort(arr.begin(), arr.end(), [](pair<int,int> a, pair<int,int> b) {
+            // If finish times are the same, sort by start times
+            if(a.second == b.second) {
+                return a.first < b.first;
+            }
+            // Otherwise, sort by finish times
+            return a.second < b.second;
+        });
+        
+        // Set the end time of the first selected activity
+        currEnd = arr[0].second;
+        
+        // Iterate through the sorted activities starting from the second one
+        for(int i = 1; i < n; i++) {
+            // If the start time of the current activity is greater than the end time of the last selected activity
+            if(arr[i].first > currEnd) {
+                // Select this activity
+                activities++;
+                // Update the end time to the finish time of the newly selected activity
+                currEnd = arr[i].second;
+            }
+        }
+        
+        // Return the total number of selected activities
+        return activities;
+    }
+};
