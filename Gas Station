@@ -1,0 +1,37 @@
+question: There are some gas stations along a circular route. You are given two integer arrays gas[] denoted as the amount of gas present at each station and cost[] denoted as the cost of travelling to the next station. You have a car with an unlimited gas tank. You begin the journey with an empty tank from one of the gas stations. Return the index of the starting gas station if it's possible to travel around the circuit without running out of gas at any station in a clockwise direction. If there is no such starting station exists, return -1.
+Note: If a solution exists, it is guaranteed to be unique.
+
+
+code:
+
+class Solution {
+  public:
+    // Function to find the starting gas station index
+    int startStation(vector<int> &gas, vector<int> &cost) {
+        // Get the number of gas stations
+        int n = gas.size();
+        
+        // Iterate through each gas station as a potential starting point
+        for(int i = 0; i < n; i++) {
+            // Initialize current gas to zero for this starting point
+            int cur_gas = 0;
+
+            // Check the circuit starting from station i
+            for(int j = i; j < i + n; j++) {
+                // Add gas available at the current station
+                cur_gas += gas[j % n];
+                // Subtract the cost to travel to the next station
+                cur_gas -= cost[j % n];
+                
+                // If at any point we have less than 0 gas, break out of the loop
+                if(cur_gas < 0)
+                    break;
+            }
+            // If we were able to complete the loop without running out of gas
+            if(cur_gas >= 0) 
+                return i; // Return the starting index
+        }
+        // If no valid starting station is found, return -1
+        return -1;
+    }
+};
