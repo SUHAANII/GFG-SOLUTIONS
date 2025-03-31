@@ -1,0 +1,37 @@
+question: Given a string s of lowercase English alphabets, your task is to return the maximum number of substrings formed, after possible partitions (probably zero) of s such that no two substrings have a common character.
+
+code:
+
+class Solution {
+public:
+    // Function to find the maximum number of partitions in the string
+    int maxPartitions(string &s) {
+        // Get the length of the string
+        int n = s.length();
+        
+        // Map to store the last occurrence index of each digit (0-9)
+        map<int, int> last;
+        
+        // Iterate through the string and record the last index of each digit
+        for (int i = 0; i < n; i++) {
+            last[s[i] - '0'] = i; // Store the index of the last occurrence of the digit
+        }
+
+        int res = 0; // To count the number of partitions
+        int size = 0; // Not used in this context
+        int end = 0; // To track the end index of the current partition
+
+        // Iterate through the string again to determine partitions
+        for (int i = 0; i < n; i++) {
+            // Update the end index to the maximum last occurrence of the current digit
+            end = max(end, last[s[i] - '0']);
+            
+            // If the current index matches the end index, a partition can be made
+            if (i == end) {
+                res++; // Increment the partition count
+            }
+        }
+
+        return res; // Return the total number of partitions
+    }
+};
