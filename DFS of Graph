@@ -1,0 +1,32 @@
+question: Given a connected undirected graph represented by a 2-d adjacency list adj[][], where each adj[i] represents the list of vertices connected to vertex i. Perform a Depth First Search (DFS) traversal starting from vertex 0, visiting vertices from left to right as per the given adjacency list, and return a list containing the DFS traversal of the graph.
+
+Note: Do traverse in the same order as they are in the given adjacency list.
+
+code:
+
+class Solution {
+  public:
+     // Recursive DFS function
+    void solve(int node, vector<vector<int>>& adj, vector<int>& vis, vector<int>& ans) {
+        vis[node] = 1;       // Mark the current node as visited
+        ans.push_back(node); // Add the node to the traversal list
+        
+        // Explore all adjacent nodes (left to right)
+        for (auto &it : adj[node]) {
+            if (!vis[it]) {  // If the adjacent node is unvisited
+                solve(it, adj, vis, ans); // Recursively visit it
+            }
+        }
+    }
+    
+    vector<int> dfs(vector<vector<int>>& adj) {
+        int n = adj.size(); // Number of vertices
+        vector<int> vis(n, 0); // Visited array initialized to 0 (unvisited)
+        vector<int> ans; // To store DFS traversal order
+        
+        int start = 0; // Start DFS from node 0
+        solve(start, adj, vis, ans); // Initiate DFS
+        
+        return ans; // Return the traversal order
+    }
+};
