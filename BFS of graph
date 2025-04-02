@@ -1,0 +1,52 @@
+question: Given a connected undirected graph containing V vertices, represented by a 2-d adjacency list adj[][], where each adj[i] represents the list of vertices connected to vertex i. Perform a Breadth First Search (BFS) traversal starting from vertex 0, visiting vertices from left to right according to the given adjacency list, and return a list containing the BFS traversal of the graph.
+
+Note: Do traverse in the same order as they are in the given adjacency list.
+
+code:
+class Solution {
+public:
+    // Function to return Breadth First Traversal of given graph.
+    vector<int> bfs(vector<vector<int>> &adj) {
+        // Get the number of nodes in the graph
+        int n = adj.size();
+        
+        // Vector to store the result of the BFS traversal
+        vector<int> res;
+        
+        // Vector to keep track of visited nodes, initialized to 0 (not visited)
+        vector<int> vis(n, 0);
+        
+        // Queue to facilitate the BFS traversal
+        queue<int> q;
+        
+        // Start BFS from the first node (node 0)
+        q.push(0);
+        
+        // Mark the starting node as visited
+        vis[0] = 1;
+        
+        // Continue until there are no more nodes to process in the queue
+        while (!q.empty()) {
+            // Get the front node from the queue
+            int node = q.front();
+            // Remove the front node from the queue
+            q.pop();
+            // Add the current node to the result list
+            res.push_back(node);
+            
+            // Iterate through all adjacent nodes of the current node
+            for (auto it : adj[node]) {
+                // If the adjacent node has not been visited
+                if (!vis[it]) {
+                    // Add the adjacent node to the queue for processing
+                    q.push(it);
+                    // Mark the adjacent node as visited
+                    vis[it] = 1;
+                }
+            }
+        }
+        
+        // Return the result of the BFS traversal
+        return res;
+    }
+};
