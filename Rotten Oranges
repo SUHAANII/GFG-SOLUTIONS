@@ -1,0 +1,77 @@
+question: Given a matrix mat[][] of dimension n * m where each cell in the matrix can have values 0, 1 or 2 which has the following meaning:
+0 : Empty cell
+1 : Cell have fresh oranges
+2 : Cell have rotten oranges
+
+We have to determine what is the earliest time after which all the oranges are rotten. A rotten orange at index (i, j) can rot other fresh orange at indexes (i-1, j), (i+1, j), (i, j-1), (i, j+1) (up, down, left and right) in a unit time.
+
+Note: Your task is to return the minimum time to rot all the fresh oranges. If not possible returns -1.
+
+
+
+Code:
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& mat) {
+        // Initialize a counter for fresh oranges
+        int onse = 0;
+
+        // Count the number of fresh oranges (represented by 1)
+        for(auto i : mat) 
+            for(auto j : i) 
+                onse += j == 1;
+
+        // Get the dimensions of the matrix
+        int n = mat.size();       // Number of rows
+        int m = mat[0].size();    // Number of columns
+
+        // Create a queue to hold the positions of rotten oranges (represented by 2)
+        queue<pair<int,int>> q;
+
+        // Add all rotten oranges to the queue and mark them as processed (set to 0)
+        for(int i = 0; i < n; i++) 
+            for(int j = 0; j < m; j++)
+                if(mat[i][j] == 2) {
+                    q.push({i, j}); // Push the position of the rotten orange
+                    mat[i][j] = 0;  // Mark it as processed
+                }
+
+        int curr = 0; // To count the number of minutes passed
+        // Process the queue until there are no more rotten oranges or fresh oranges left
+        while(!q.empty() && onse > 0) {
+            int s = q.size(); // Number of rotten oranges to process in this minute
+            curr++; // Increment the minute counter
+            
+            // Process all rotten oranges at the current level
+            while(s--) {
+                auto t = q.front(); // Get the front element (position of a rotten orange)
+                q.pop(); // Remove it from the queue
+                
+                // Directions for adjacent cells (right, left, up, down)
+                int dx[4] = {0, 0, -1, 1};
+                int dy[4] = {1, -1, 0, 0};
+
+                // Check all 4 adjacent cells
+                for(int i = 0; i < 4; i++) {
+                    int x = t.first + dx[i]; // New row index
+                    int y = t.second + dy[i]; // New column index
+
+                    // Check if the new position is within bounds and is a fresh orange
+                    if(x >= 0 && y >= 0 && x < n && y < m && mat[x][y] == 1) {
+                        mat[x][y] = 0; // Mark the fresh orange as processed
+                        onse--; // Decrease the count of fresh oranges
+                        
+                        // Add the new rotten orange to the queue
+                        q.push({x, y});
+                    }
+                }
+            }
+        }
+        
+        // If there are still fresh oranges left, return -1 (not all oranges can rot)
+        if(onse != 0) return -1;
+        
+        // Return the total number of minutes taken to rot all oranges
+        return curr;
+    }
+};
