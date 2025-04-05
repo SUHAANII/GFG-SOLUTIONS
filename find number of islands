@@ -1,0 +1,67 @@
+question: Given a grid of size n*m (n is the number of rows and m is the number of columns in the grid) consisting of 'W's (Water) and 'L's (Land). Find the number of islands.
+
+Note: An island is either surrounded by water or the boundary of a grid and is formed by connecting adjacent lands horizontally or vertically or diagonally i.e., in all 8 directions.
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of islands in the grid
+    int countIslands(vector<vector<char>>& grid) {
+        // Directions for 8 possible movements (N, S, E, W, NE, NW, SE, SW)
+        int dx[8] = {0, 0, 1, -1, 1, 1, -1, -1};
+        int dy[8] = {1, -1, 0, 0, -1, 1, -1, 1};
+        
+        // Get the number of rows (n) and columns (m) in the grid
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        // Initialize the count of islands
+        int cnt = 0;
+
+        // Iterate over each cell in the grid
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                
+                // If the cell is water ('W'), skip it
+                if(grid[i][j] == 'W')
+                    continue;
+                    
+                // Initialize a queue to perform BFS
+                queue<pair<int,int>> q; 
+                // Push the current land cell's coordinates onto the queue
+                q.push({i, j});
+                
+                // Mark the current cell as visited by converting it to water ('W')
+                grid[i][j] = 'W';
+                // Increment the island count
+                cnt += 1;
+                
+                // Perform BFS to explore the entire island
+                while(!q.empty()) {
+                    // Get the front cell from the queue
+                    auto f = q.front();
+                    q.pop();
+                    
+                    // Explore all 8 possible directions
+                    for(int k = 0; k < 8; k++) {
+                        // Calculate the new coordinates
+                        int nx = f.first + dx[k];
+                        int ny = f.second + dy[k];
+                        
+                        // Check if the new coordinates are within bounds and the cell is land ('L')
+                        if(nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == 'L') {
+                            // Push the new land cell's coordinates onto the queue
+                            q.push({nx, ny});
+                            // Mark the new cell as visited
+                            grid[nx][ny] = 'W';
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Return the total count of islands found
+        return cnt;
+    }
+};
