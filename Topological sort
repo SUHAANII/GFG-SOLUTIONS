@@ -1,0 +1,61 @@
+question: Given a Directed Acyclic Graph (DAG) of V (0 to V-1) vertices and E edges represented as a 2D list of edges[][], where each entry edges[i] = [u, v] denotes an directed edge u -> v. Return topological sort for the given graph.
+
+Topological sorting for Directed Acyclic Graph (DAG) is a linear ordering of vertices such that for every directed edge u -> v, vertex u comes before v in the ordering.
+Note: As there are multiple Topological orders possible, you may return any of them. If your returned Topological sort is correct then the output will be true else false.
+
+
+code"
+
+
+class Solution {
+public:
+    // Function to perform DFS and fill the stack with the topological sort order
+    void solve(vector<vector<int>>& adj, vector<bool>& visited, int src, stack<int>& st) {
+        // Mark the current node as visited
+        visited[src] = true;
+        
+        // Traverse all the neighbors of the current node
+        for (auto nbr : adj[src]) {
+            // If the neighbor has not been visited, recursively call solve
+            if (!visited[nbr]) {
+                solve(adj, visited, nbr, st);
+            }
+        }
+        // Push the current node onto the stack after all its neighbors are processed
+        st.push(src);
+    }
+
+    // Function to perform topological sorting on a directed graph
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+        // Create an adjacency list for the graph
+        vector<vector<int>> adj(V);
+        // Create a visited array to track visited nodes
+        vector<bool> visited(V, false);
+        // Vector to store the final topological sort order
+        vector<int> ans;
+
+        // Build the adjacency list from the edges
+        for (auto& edge : edges) {
+            adj[edge[0]].push_back(edge[1]); // edge[0] -> edge[1]
+        }
+
+        // Stack to store the topological sort order
+        stack<int> st;
+
+        // Perform DFS on each node
+        for (int i = 0; i < V; i++) {
+            // If the node has not been visited, call solve
+            if (!visited[i]) {
+                solve(adj, visited, i, st);
+            }
+        }
+
+        // Pop all elements from the stack to get the topological sort order
+        while (!st.empty()) {
+            ans.push_back(st.top()); // Get the top element
+            st.pop(); // Remove the top element from the stack
+        }
+
+        return ans; // Return the topological sort order
+    }
+};
