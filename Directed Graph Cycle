@@ -1,0 +1,58 @@
+question: Given a Directed Graph with V vertices (Numbered from 0 to V-1) and E edges, check whether it contains any cycle or not.
+The graph is represented as a 2D vector edges[][], where each entry edges[i] = [u, v] denotes an edge from verticex u to v.
+
+code:
+
+class Solution {
+public:
+    // Function to check if the directed graph has a cycle
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // Create an adjacency list for the graph
+        vector<vector<int>> adj(V);
+        // Create a vector to keep track of the in-degrees of each vertex
+        vector<int> degree(V);
+        
+        // Queue to perform BFS
+        queue<int> qu;
+        // Counter to keep track of the number of vertices processed
+        int count = 0;
+        
+        // Build the adjacency list and in-degree count
+        for(auto &i : edges) {
+            int u = i[0], v = i[1];
+            // Check for self-loop; if found, return true (cycle exists)
+            if(u == v) return true;
+            // Increment the in-degree of vertex v
+            degree[v]++;
+            // Add edge from u to v in the adjacency list
+            adj[u].push_back(v);
+        }
+        
+        // Initialize the queue with all vertices having an in-degree of 0
+        for(int i = 0; i < V; i++) {
+            if(degree[i] == 0) {
+                qu.push(i); // Push vertex with 0 in-degree to the queue
+                count++;    // Increment the count of processed vertices
+            }
+        }
+        
+        // Perform BFS
+        while(!qu.empty()) {
+            int curr = qu.front(); // Get the front vertex from the queue
+            qu.pop();              // Remove it from the queue
+            
+            // Decrease the in-degree of all adjacent vertices
+            for(auto i : adj[curr]) {
+                degree[i]--; // Decrease the in-degree of vertex i
+                // If in-degree becomes 0, add it to the queue
+                if(degree[i] == 0) {
+                    qu.push(i);
+                    count++; // Increment the count of processed vertices
+                }
+            }
+        }
+        
+        // If count of processed vertices is less than V, a cycle exists
+        return (count < V);
+    }
+};
