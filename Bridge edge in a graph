@@ -1,0 +1,53 @@
+question: Given an undirected graph with V vertices numbered from 0 to V-1 and E edges, represented by 2d array edges[][], where edges[i]=[u,v] represents the edge between the vertices u and v. Determine whether a specific edge between two vertices (c, d) is a bridge.
+
+Note:
+
+An edge is called a bridge if removing it increases the number of connected components of the graph.
+if there’s only one path between c and d (which is the edge itself), then that edge is a bridge.
+
+code:
+
+class Solution {
+public:
+    // Depth First Search (DFS) function
+    void dfs(int node, vector<int> adj[], int c, int d, vector<int>& vis) {
+        // Mark the current node as visited
+        vis[node] = true;
+
+        // Explore all adjacent nodes
+        for (auto it : adj[node]) {
+            // If the adjacent node has not been visited
+            // and it's not the edge we want to ignore (c, d)
+            if (!vis[it] && !(node == c && it == d)) {
+                // Recursively call DFS for the adjacent node
+                dfs(it, adj, c, d, vis);
+            }
+        }
+    }
+
+    // Function to determine if the edge (c, d) is a bridge
+    bool isBridge(int V, vector<vector<int>>& edges, int c, int d) {
+        // Create an adjacency list for the graph
+        vector<int> adj[V];
+        for (int i = 0; i < edges.size(); i++) {
+            int u = edges[i][0]; // Start node of the edge
+            int v = edges[i][1]; // End node of the edge
+            // Add the edge to the adjacency list (undirected graph)
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        // Initialize a visited array to track visited nodes
+        vector<int> vis(V, 0);
+        // Perform DFS starting from node 'c', ignoring the edge (c, d)
+        dfs(c, adj, c, d, vis);
+
+        // If we can reach 'd' from 'c' without using edge (c, d),
+        // then (c, d) is not a bridge
+        if (vis[d]) return false;
+
+        // If we cannot reach 'd', then (c, d) is a bridge
+        return true;
+        // Code here
+    }
+};
