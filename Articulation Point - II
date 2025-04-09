@@ -1,0 +1,77 @@
+question: You are given an undirected graph with V vertices and E edges. The graph is represented as a 2D array edges[][], where each element edges[i] = [u, v] indicates an undirected edge between vertices u and v.
+Your task is to return all the articulation points (or cut vertices) in the graph.
+An articulation point is a vertex whose removal, along with all its connected edges, increases the number of connected components in the graph.
+
+Note: The graph may be disconnected, i.e., it may consist of more than one connected component.
+If no such point exists, return {-1}.
+
+code:
+class Solution {
+public:
+    // Function to find articulation points using DFS
+    void findArticulationPoints(int u, int parent, vector<int>& disc, vector<int>& low,
+                                vector<bool>& isArticulation, vector<vector<int>>& adj, int& time) {
+        
+        // Initialize discovery time and low value for the current node
+        disc[u] = low[u] = ++time;
+        int children = 0; // Count of children in the DFS tree
+
+        // Explore all adjacent vertices (neighbors) of the current vertex
+        for(auto v: adj[u]) {
+            if(disc[v] == -1) { // If v is not visited
+                children++; // Increment child count
+                
+                // Recursively call for DFS on the unvisited vertex v
+                findArticulationPoints(v, u, disc, low, isArticulation, adj, time);
+                
+                // Check if the subtree rooted at v has a connection back to one of the ancestors of u
+                low[u] = min(low[u], low[v]);
+                
+                // Check articulation point conditions
+                // Case 1: u is root and has more than one child
+                if(parent == -1 && children > 1) 
+                    isArticulation[u] = true;
+                
+                // Case 2: u is not root and low value of one of its child is greater than or equal to the discovery time of u
+                if (parent != -1 && low[v] >= disc[u]) 
+                    isArticulation[u] = true;
+                
+            } else if (v != parent) { // If v is already visited and is not the parent
+                // Update low value of u for parent function calls
+                low[u] = min(low[u], disc[v]);
+            }
+        }
+    }
+
+    // Main function to find all articulation points in a graph
+    vector<int> articulationPoints(int n, vector<vector<int>>& edges) {
+        // Create an adjacency list for the graph
+        vector<vector<int>> adj(n);
+        for(auto e: edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]); // Undirected graph
+        }
+
+        // Initialize discovery time and low value arrays
+        vector<int> disc(n, -1), low(n, -1);
+        vector<bool> isArticulation(n, false); // Track articulation points
+        int time = 0; // Time variable for discovery time
+
+        // Perform DFS for each unvisited vertex
+        for(int i = 0; i < n; i++) {
+            if(disc[i] == -1)
+                findArticulationPoints(i, -1, disc, low, isArticulation, adj, time);
+        }
+        
+        // Collect all articulation points
+        vector<int> res;
+        for(int i = 0; i < n; i++)
+            if(isArticulation[i])
+                res.push_back(i);
+
+        // If no articulation points are found, return -1
+        if(res.empty())
+            return {-1};
+        return res; // Return the list of articulation points
+    }
+};
