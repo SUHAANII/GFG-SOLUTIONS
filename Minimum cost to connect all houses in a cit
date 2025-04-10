@@ -1,0 +1,92 @@
+question: Given a 2D array houses[][], consisting of n 2D coordinates {x, y} where each coordinate represents the location of each house, the task is to find the minimum cost to connect all the houses of the city.
+
+The cost of connecting two houses is the Manhattan Distance between the two points (xi, yi) and (xj, yj) i.e., |xi – xj| + |yi – yj|, where |p| denotes the absolute value of p.
+
+code:
+
+#include <vector>
+#include <queue>
+#include <utility>
+#include <cmath>
+using namespace std;
+
+// Class to represent a Disjoint Set (Union-Find) data structure
+class DisjointSet {
+private:
+    vector<int> parent; // Vector to store the parent of each node
+    vector<int> size;   // Vector to store the size of each set
+
+public:
+    // Constructor to initialize the Disjoint Set with n elements
+    DisjointSet(int n) {
+        parent.resize(n); // Resize parent vector to n
+        size.resize(n, 1); // Initialize size of each set to 1
+        for (int i = 0; i < n; i++) 
+            parent[i] = i; // Each element is its own parent initially
+    }
+
+    // Function to find the representative (parent) of a node
+    int findUPar(int node) {
+        // If the node is its own parent, return it
+        if (node == parent[node]) 
+            return node;
+        // Path compression: update the parent of the node to its grandparent
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    // Function to union two sets based on their sizes
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u); // Find the parent of u
+        int ulp_v = findUPar(v); // Find the parent of v
+        if (ulp_u == ulp_v) return; // If they are already in the same set, do nothing
+        
+        // Union by size: attach the smaller tree under the larger tree
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v; // Make ulp_v the parent of ulp_u
+            size[ulp_v] += size[ulp_u]; // Update the size of the new root
+        } else {
+            parent[ulp_v] = ulp_u; // Make ulp_u the parent of ulp_v
+            size[ulp_u] += size[ulp_v]; // Update the size of the new root
+        }
+    }
+};
+
+// Class to solve the problem
+class Solution {
+public:
+    // Function to calculate the minimum cost to connect all houses
+    int minCost(vector<vector<int>>& houses) {
+        DisjointSet ds(houses.size()); // Create a Disjoint Set for the houses
+        
+        // Priority queue to store edges based on their distance
+        priority_queue<pair<int, pair<int, int>>, 
+                       vector<pair<int, pair<int, int>>>, 
+                       greater<pair<int, pair<int, int>>>> pq;
+
+        // Calculate distances between all pairs of houses and push them to the priority queue
+        for (int i = 0; i < houses.size() - 1; i++) {
+            for (int j = i + 1; j < houses.size(); j++) {
+                // Calculate Manhattan distance
+                int dis = abs(houses[i][0] - houses[j][0]) + abs(houses[i][1] - houses[j][1]);
+                pq.push({dis, {i, j}}); // Push the distance and the pair of indices
+            }
+        }
+
+        int ans = 0; // Variable to store the total minimum cost
+        
+        // Process edges in order of increasing distance
+        while (!pq.empty()) {
+            int cost = pq.top().first; // Get the minimum cost edge
+            int u = pq.top().second.first; // First house index
+            int v = pq.top().second.second; // Second house index
+            pq.pop(); // Remove the edge from the queue
+            
+            // If u and v are in different sets, connect them
+            if (ds.findUPar(u) != ds.findUPar(v)) {
+                ans += cost; // Add the cost to the total
+                ds.unionBySize(u, v); // Union the two sets
+            }
+        }
+        return ans; // Return the total minimum cost
+    }
+};
