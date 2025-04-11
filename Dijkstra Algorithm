@@ -1,0 +1,29 @@
+Question: Given an undirected, weighted graph with V vertices numbered from 0 to V-1 and E edges, represented by 2d array edges[][], where edges[i]=[u, v, w] represents the edge between the nodes u and v having w edge weight.
+You have to find the shortest distance of all the vertices from the source vertex src, and return an array of integers where the ith element denotes the shortest distance between ith node and source vertex src.
+
+Note: The Graph is connected and doesn't contain any negative weight edge.
+
+code:
+
+ vector<vector<pair<int,int>>>v(V);
+        for(auto &x:edges){
+            v[x[0]].push_back({x[2],x[1]});
+            v[x[1]].push_back({x[2],x[0]});
+        }
+        vector<int>ans(V,INT_MAX);
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<>>pq;
+        pq.push({0,src});
+        ans[src]=0;
+        while(!pq.empty()){
+            auto x=pq.top();
+            int i=x.second;
+            int d=x.first;
+            pq.pop();
+            for(auto &y:v[i]){
+                if(ans[y.second]>y.first+d){
+                    ans[y.second]=y.first+d;
+                    pq.push({ans[y.second],y.second});
+                }
+            }
+        }
+        return ans;
