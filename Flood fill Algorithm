@@ -1,0 +1,66 @@
+
+question: You are given a 2D grid image[][] of size n*m, where each image[i][j] represents the color of a pixel in the image. Also provided a coordinate(sr, sc) representing the starting pixel (row and column) and a new color value newColor.
+
+Your task is to perform a flood fill starting from the pixel (sr, sc), changing its color to newColor and the color of all the connected pixels that have the same original color. Two pixels are considered connected if they are adjacent horizontally or vertically (not diagonally) and have the same original color.
+
+
+code:
+
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        // Get the dimensions of the image
+        int n = image.size(); // Number of rows
+        int m = image[0].size(); // Number of columns
+        
+        // Create a copy of the original image to modify
+        vector<vector<int>> adj(image.begin(), image.end());
+        // Create a visited matrix to keep track of which pixels have been processed
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        
+        // Initialize a queue for BFS (Breadth-First Search)
+        queue<pair<int, int>> q;
+        
+        // Directions for moving up, right, down, and left
+        vector<vector<int>> dir = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
+        
+        // Start from the given pixel (sr, sc)
+        q.push({sr, sc});
+        
+        // Store the original color of the starting pixel
+        int ans = image[sr][sc];
+        
+        // Change the color of the starting pixel to the new color
+        adj[sr][sc] = newColor;
+        // Mark the starting pixel as visited
+        vis[sr][sc] = 1;
+        
+        // Process the queue until it's empty
+        while (!q.empty()) {
+            // Get the front pixel from the queue
+            auto it = q.front();
+            int row = it.first; // Current row
+            int col = it.second; // Current column
+            q.pop(); // Remove the pixel from the queue
+            
+            // Explore all four possible directions
+            for (auto it : dir) {
+                int nr = row + it[0]; // New row
+                int nc = col + it[1]; // New column
+                
+                // Check if the new position is within bounds and matches the original color
+                if (nr >= 0 && nc >= 0 && nr < n && nc < m && !vis[nr][nc] && adj[nr][nc] == ans) {
+                    // Add the new position to the queue for processing
+                    q.push({nr, nc});
+                    // Change the color of the new pixel to the new color
+                    adj[nr][nc] = newColor;
+                    // Mark the new pixel as visited
+                    vis[nr][nc] = 1;
+                }
+            }
+        }
+        
+        // Return the modified image with the new color
+        return adj;
+    }
+};
