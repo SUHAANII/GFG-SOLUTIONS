@@ -1,0 +1,45 @@
+question: Given an weighted graph with V vertices numbered from 0 to V-1 and E edges, represented by a 2d array edges[][], where edges[i] = [u, v, w] represents a direct edge from node u to v having w edge weight. You are also given a source vertex src.
+
+Your task is to compute the shortest distances from the source to all other vertices. If a vertex is unreachable from the source, its distance should be marked as 108. Additionally, if the graph contains a negative weight cycle, return [-1] to indicate that shortest paths cannot be reliably computed.
+
+
+code:
+
+// Initialize a vector `dist` of size `V` (number of vertices) with a large value (1e8) to represent infinity.
+// This will hold the shortest distance from the source vertex to each vertex.
+vector<int> dist(V, 1e8);
+
+// Set the distance from the source vertex to itself as 0.
+dist[src] = 0;
+
+// Perform the Bellman-Ford algorithm, which relaxes edges V-1 times.
+for(int i = 0; i < V - 1; i++) {
+    // Iterate over all edges in the graph.
+    for(auto &it : edges) {
+        int u = it[0]; // Starting vertex of the edge.
+        int v = it[1]; // Ending vertex of the edge.
+        int w = it[2]; // Weight of the edge.
+
+        // Check if the distance to the starting vertex `u` is not infinity.
+        // If yes, and if the distance to `u` plus the weight `w` is less than the current known distance to `v`,
+        // then update the distance to `v`.
+        if(dist[u] != 1e8 && dist[u] + w < dist[v]) {
+            dist[v] = dist[u] + w; // Update the distance to `v`.
+        }
+    }
+}
+
+// After V-1 iterations, check for negative weight cycles.
+for(auto &it : edges) {
+    int u = it[0]; // Starting vertex of the edge.
+    int v = it[1]; // Ending vertex of the edge.
+    int w = it[2]; // Weight of the edge.
+
+    // If we can still relax an edge, it indicates a negative weight cycle.
+    if(dist[u] != 1e8 && dist[u] + w < dist[v]) {
+        return {-1}; // Return -1 to indicate the presence of a negative weight cycle.
+    }
+}
+
+// If no negative weight cycles are found, return the distances from the source to all vertices.
+return dist;
