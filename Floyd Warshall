@@ -1,0 +1,38 @@
+question: You are given an weighted directed graph, represented by an adjacency matrix, dist[][] of size n x n, where dist[i][j] represents the weight of the edge from node i to node j. If there is no direct edge, dist[i][j] is set to a large value (i.e., 108) to represent infinity.
+The graph may contain negative edge weights, but it does not contain any negative weight cycles.
+
+Your task is to find the shortest distance between every pair of nodes i and j in the graph.
+
+Note: Modify the distances for every pair in place.
+
+code:
+
+class Solution {
+public:
+    void floydWarshall(vector<vector<int>> &dist) {
+        // Get the number of vertices in the graph
+        int n = dist.size();
+        // Define a large value to represent infinity
+        int INF = 1e8;
+
+        // Initialize the diagonal of the distance matrix to 0
+        // This means that the distance from any vertex to itself is zero
+        for (int i = 0; i < n; i++) dist[i][i] = 0;
+
+        // Iterate through each vertex as an intermediate vertex
+        for (int via = 0; via < n; via++) {
+            // For each pair of vertices (i, j)
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    // Check if the distance from i to via and via to j is not infinity
+                    if (dist[i][via] < INF && dist[via][j] < INF) {
+                        // Calculate the new distance through the intermediate vertex
+                        int newDist = dist[i][via] + dist[via][j];
+                        // If the new distance is shorter, update the distance matrix
+                        if (newDist < dist[i][j]) dist[i][j] = newDist;
+                    }
+                }
+            }
+        }
+    }
+};
