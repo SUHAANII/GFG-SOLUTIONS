@@ -1,0 +1,99 @@
+question: Given an undirected, weighted graph with V vertices numbered from 0 to V-1 and E edges, represented by a 2d array edges[][], where edges[i] = [u, v, w] represents the edge between the nodes u and v having w edge weight.
+Your task is to find the minimum weight cycle in this graph.
+
+code:
+
+// Class to represent a pair of node and weight for the graph edges
+class Pair {
+public:
+    int node;   // The node connected by the edge
+    int weight; // The weight of the edge
+
+    // Constructor to initialize the node and weight
+    Pair(int node, int weight) : node(node), weight(weight) {}
+
+    // Overloading the less-than operator for comparison
+    bool operator<(const Pair& other) const {
+        // Compare based on node first, then weight
+        if (node != other.node)
+            return node < other.node;
+        return weight < other.weight;
+    }
+};
+
+// Main solution class
+class Solution {
+private:
+    // Dijkstra's algorithm to find the shortest path from src to dest
+    int dijkstra(int src, int dest, int V, const vector<set<Pair>>& adj) {
+        // Distance array initialized to maximum integer value
+        vector<int> dist(V, INT_MAX);
+        dist[src] = 0; // Distance to source is 0
+
+        // Priority queue to select the minimum distance node
+        typedef pair<int, int> pii; // {distance, node}
+        priority_queue<pii, vector<pii>, greater<pii>> pq; // Min-heap
+        pq.push(make_pair(0, src)); // Start with the source node
+
+        // Process the priority queue
+        while (!pq.empty()) {
+            pii top = pq.top(); pq.pop(); // Get the node with the smallest distance
+            int d = top.first; // Current distance
+            int u = top.second; // Current node
+
+            // If the distance is greater than the recorded distance, skip
+            if (d > dist[u]) continue;
+
+            // Explore all neighbors of the current node
+            for (const Pair& nei : adj[u]) {
+                // If a shorter path to the neighbor is found
+                if (dist[nei.node] > dist[u] + nei.weight) {
+                    dist[nei.node] = dist[u] + nei.weight; // Update distance
+                    pq.push(make_pair(dist[nei.node], nei.node)); // Push to the queue
+                }
+            }
+        }
+
+        // Return the shortest distance to the destination
+        return dist[dest];
+    }
+
+public:
+    // Function to find the minimum cycle weight in the graph
+    int findMinCycle(int V, vector<vector<int>>& edges) {
+        // Adjacency list representation of the graph
+        vector<set<Pair>> adj(V);
+
+        // Build the adjacency list from edges
+        for (const auto& edge : edges) {
+            int u = edge[0], v = edge[1], w = edge[2];
+            adj[u].insert(Pair(v, w)); // Add edge u -> v
+            adj[v].insert(Pair(u, w)); // Add edge v -> u (undirected graph)
+        }
+
+        int ans = INT_MAX; // Initialize answer to maximum value
+
+        // Iterate through each edge to find cycles
+        for (const auto& edge : edges) {
+            int u = edge[0], v = edge[1], w = edge[2];
+
+            // Remove the current edge to check for cycles
+            adj[u].erase(Pair(v, w));
+            adj[v].erase(Pair(u, w));
+
+            // Calculate the shortest path from u to v without the edge
+            int minDist = dijkstra(u, v, V, adj);
+            // If a path exists, update the answer with the cycle weight
+            if (minDist != INT_MAX) {
+                ans = min(ans, minDist + w); // Include the removed edge's weight
+            }
+
+            // Add the edge back to restore the graph
+            adj[u].insert(Pair(v, w));
+            adj[v].insert(Pair(u, w));
+        }
+
+        // Return -1 if no cycle is found, otherwise return the minimum cycle weight
+        return (ans == INT_MAX ? -1 : ans);
+    }
+};
