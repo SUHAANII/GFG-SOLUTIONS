@@ -1,0 +1,52 @@
+question: Implement Trie class and complete insert(), search() and isPrefix() function for the following queries :
+
+Type 1 : (1, word), calls insert(word) function and insert word in the Trie
+Type 2 : (2, word), calls search(word) function and check whether word exists in Trie or not.
+Type 3 : (3, word), calls isPrefix(word) function and check whether word exists as a prefix of any string in Trie or not.
+Examples :
+
+code:
+
+#include <unordered_set>
+#include <string>
+using namespace std;
+
+// Define the Trie class
+class Trie {
+    // Use an unordered_set to store the words in the Trie
+    unordered_set<string> us;
+
+public:
+    // Constructor to initialize the Trie
+    Trie() {}
+
+    // Method to insert a word into the Trie
+    void insert(string &word) {
+        // Insert the word into the unordered_set
+        us.insert(word);
+    }
+
+    // Method to search for a word in the Trie
+    bool search(string &word) {
+        // Check if the word exists in the unordered_set
+        if (us.find(word) != us.end())
+            return true; // Word found, return true
+        return false; // Word not found, return false
+    }
+
+    // Method to check if any word in the Trie starts with the given prefix
+    bool isPrefix(string &word) {
+        int n = word.length(); // Get the length of the prefix word
+        // Iterate through each word in the unordered_set
+        for (auto s : us) {
+            // Check if the current word is at least as long as the prefix
+            if (s.length() >= n) {
+                // Extract the substring of the current word that matches the length of the prefix
+                string str = s.substr(0, n);
+                // Check if the prefix matches the substring
+                if (word == str) return true; // Prefix found, return true
+            }
+        }
+        return false; // No matching prefix found, return false
+    }
+};
