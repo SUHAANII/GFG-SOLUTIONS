@@ -1,0 +1,64 @@
+question: Given an array arr[] of non-negative integers of size n. Find the maximum possible XOR between two numbers present in the array.
+
+code
+
+class Solution {
+public:
+    // TrieNode structure representing each node in the Trie
+    struct TrieNode {
+        TrieNode* child[2] = {nullptr, nullptr}; // Array to hold child nodes for 0 and 1
+    };
+
+    // Function to insert a number into the Trie
+    void insert(TrieNode* root, int num) {
+        TrieNode* node = root; // Start at the root node
+        // Iterate from the most significant bit (20th bit) to the least significant bit (0th bit)
+        for (int i = 20; i >= 0; --i) {
+            int bit = (num >> i) & 1; // Get the current bit of the number
+            // If the child node for this bit does not exist, create it
+            if (!node->child[bit]) {
+                node->child[bit] = new TrieNode();
+            }
+            // Move to the child node
+            node = node->child[bit];
+        }
+    }
+
+    // Function to find the maximum XOR of a number with the numbers already in the Trie
+    int findMaxXor(TrieNode* root, int num) {
+        TrieNode* node = root; // Start at the root node
+        int maxXor = 0; // Variable to store the maximum XOR value
+        // Iterate from the most significant bit (20th bit) to the least significant bit (0th bit)
+        for (int i = 20; i >= 0; --i) {
+            int bit = (num >> i) & 1; // Get the current bit of the number
+            int opp = 1 - bit; // Get the opposite bit (0 becomes 1 and vice versa)
+            // If there is a child node for the opposite bit, it can contribute to a larger XOR
+            if (node->child[opp]) {
+                maxXor |= (1 << i); // Update the maxXor with the current bit set
+                node = node->child[opp]; // Move to the opposite child node
+            } else {
+                node = node->child[bit]; // Move to the same bit child node
+            }
+        }
+        return maxXor; // Return the maximum XOR value found
+    }
+
+    // Function to find the maximum XOR of any two numbers in the array
+    int maxXor(vector<int> &arr) {
+        TrieNode* root = new TrieNode(); // Create a new Trie root
+        int maxResult = 0; // Variable to store the overall maximum XOR result
+
+        // Insert the first element into the Trie
+        insert(root, arr[0]);
+
+        // For each subsequent element in the array
+        for (int i = 1; i < arr.size(); ++i) {
+            // Find the maximum XOR with the current number and update maxResult
+            maxResult = max(maxResult, findMaxXor(root, arr[i]));
+            // Insert the current number into the Trie
+            insert(root, arr[i]);
+        }
+
+        return maxResult; // Return the maximum XOR result
+    }
+};
