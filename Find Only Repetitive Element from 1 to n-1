@@ -1,0 +1,32 @@
+Question: Given an array arr[] of size n, filled with numbers from 1 to n-1 in random order. The array has only one repetitive element. Your task is to find the repetitive element.
+
+Note: It is guaranteed that there is a repeating element present in the array.
+
+code:
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& arr) {
+        // The function aims to find the duplicate number in an array
+        // where the numbers range from 1 to n (inclusive) and n is the size of the array.
+
+        // Loop through each element in the array
+        for(int i = 0; i < arr.size(); i++) {
+            // Calculate the correct index for the current element
+            int index = arr[i] - 1; // Subtract 1 to convert to 0-based index
+            
+            // Check if the current element is not in its correct position
+            if(arr[index] != arr[i]) {
+                // If the element is not in the correct position, swap it with the element at its correct index
+                swap(arr[i], arr[index]);
+                // After swapping, we need to recheck the new element at index i
+                // It may also be out of place, hence decrement i to stay on the same index
+                i--; // Decrement i to ensure we check the swapped element again
+            }
+        }
+
+        // At the end of the rearrangement, the duplicate number will be at the last position
+        // Return the last element as it is guaranteed to be the duplicate
+        return arr[arr.size() - 1];
+    }
+};
