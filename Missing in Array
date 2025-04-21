@@ -1,0 +1,27 @@
+question: You are given an array arr[] of size n - 1 that contains distinct integers in the range from 1 to n (inclusive). This array represents a permutation of the integers from 1 to n with one element missing. Your task is to identify and return the missing element.
+
+
+
+code:
+class Solution {
+public:
+    // Function to find the missing number in an array of size n
+    int missingNum(vector<int>& arr) {
+        // Initialize the variable ans to hold the result
+        int ans = 0;
+
+        // XOR each element in the input array with ans
+        for (int x : arr) {
+            ans ^= x;  // The XOR operation will combine all elements in the array
+        }
+        
+        // XOR all numbers from 1 to n (where n = arr.size() + 1)
+        // This includes the number that is missing from the array
+        for (int i = 1; i <= arr.size() + 1; ++i) {
+            ans ^= i;  // XOR each number in the range from 1 to n
+        }
+        
+        // The result stored in ans will be the missing number
+        return ans; 
+    }
+};
