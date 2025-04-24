@@ -1,0 +1,23 @@
+question: Given an array of integers arr[] where, every element appears thrice except for one which occurs once.
+Find that element which occurs once.
+
+code:
+
+class Solution {
+public:
+    // Function to find the element that appears only once in the array
+    int getSingle(vector<int> &arr) {
+        // Create an unordered map to store the frequency of each element
+        unordered_map<int,int> mp;
+
+        // Iterate through each element in the input array
+        for(int x : arr) {
+            // Increment the count for the current element in the map
+            mp[x]++;
+        }
+        
+        // Use find_if to locate the first element in the map that has a frequency of 1
+        return find_if(mp.begin(), mp.end(), 
+                        [](const auto& pair) { return pair.second == 1; })->first;
+    }
+};
