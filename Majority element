@@ -1,0 +1,35 @@
+question: Given an array arr[]. Find the majority element in the array. If no majority element exists, return -1.
+
+Note: A majority element in an array is an element that appears strictly more than arr.size()/2 times in the array.
+code:
+class Solution {
+public:
+    // Function to find the majority element in the array
+    int majorityElement(vector<int>& arr) {
+        // Get the size of the array
+        int n = arr.size();
+        
+        // Sort the array in non-decreasing order
+        sort(arr.begin(), arr.end());
+        
+        // The majority element, if it exists, will be at the middle index after sorting
+        int t = arr[n / 2];
+        
+        // Initialize a counter to count occurrences of the majority element
+        int c = 0;
+        
+        // Loop through the array to count how many times 't' appears
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == t) {
+                c++; // Increment counter if the current element equals 't'
+            }
+        }
+        
+        // Check if the count is greater than half the size of the array
+        if (c > n / 2) {
+            return t; // Return 't' if it is the majority element
+        } else {
+            return -1; // Return -1 if there is no majority element
+        }
+    }
+};
