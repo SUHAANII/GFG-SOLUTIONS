@@ -1,0 +1,52 @@
+question: You are given a binary tree, and the task is to determine whether it satisfies the properties of a max-heap.
+
+A binary tree is considered a max-heap if it satisfies the following conditions:
+
+Completeness: Every level of the tree, except possibly the last, is completely filled, and all nodes are as far left as possible.
+Max-Heap Property: The value of each node is greater than or equal to the values of its children.
+code:
+
+class Solution {
+public:
+    // Function to check if a binary tree is a heap
+    bool isHeap(Node* tree) {
+        // Create a queue to perform level order traversal
+        queue<Node*> q;
+        q.push(tree); // Start with the root node
+        
+        // Continue until there are no more nodes to process
+        while(!q.empty()) {
+            int n = q.size(); // Get the number of nodes at the current level
+            bool shouldWeHave = true; // Flag to track if we should expect children
+            
+            // Process each node at the current level
+            for(int i = 0; i < n; i++) {
+                Node* node = q.front(); // Get the front node from the queue
+                q.pop(); // Remove the node from the queue
+                
+                // Check the left child
+                if(node->left) {
+                    // If we shouldn't have children or the left child is greater than the current node, return false
+                    if(!shouldWeHave || node->left->data > node->data)
+                        return false;
+                    else
+                        q.push(node->left); // Add the left child to the queue
+                }
+                else 
+                    shouldWeHave = false; // No left child means we shouldn't have more children
+                
+                // Check the right child
+                if(node->right) {
+                    // If we shouldn't have children or the right child is greater than the current node, return false
+                    if(!shouldWeHave || node->right->data > node->data)
+                        return false;
+                    else
+                        q.push(node->right); // Add the right child to the queue
+                }
+                else 
+                    shouldWeHave = false; // No right child means we shouldn't have more children
+            }
+        }
+        return true; // If all nodes satisfy the heap property, return true
+    }
+};
