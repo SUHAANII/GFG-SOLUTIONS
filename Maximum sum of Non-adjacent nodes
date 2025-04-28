@@ -1,0 +1,40 @@
+question: Given a binary tree with a value associated with each node. Your task is to select a subset of nodes such that the sum of their values is maximized, with the condition that no two selected nodes are directly connected that is, if a node is included in the subset, neither its parent nor its children can be included.
+
+code:
+class Solution {
+    // Helper function to calculate the maximum sum of non-adjacent nodes
+    int helper(Node *root, int can, map<pair<Node *, int>, int> &mp) {
+        // Base case: if the current node is NULL, return 0
+        if(root == NULL) return 0;
+
+        // Initialize the answer to the minimum integer value
+        int ans = INT_MIN;
+
+        // Check if the result for this node and 'can' state is already computed
+        if(mp.count({root, can}) != 0) return mp[{root, can}];
+
+        // If we can include the current node (can == 1)
+        if(can) 
+            // Calculate the maximum sum including the current node
+            // Add the value of the current node and the sums from its children (left and right) 
+            // when their children cannot be included (can = 0)
+            ans = root->data + helper(root->left, 0, mp) + helper(root->right, 0, mp);
+
+        // Calculate the maximum sum by considering not including the current node (can = 1)
+        // Here, we can choose to include either the left or right child
+        ans = max(ans, helper(root->left, 1, mp) + helper(root->right, 1, mp));
+
+        // Store the computed result in the map for future reference
+        return mp[{root, can}] = ans;
+    }
+
+public:
+    // Function to return the maximum sum of non-adjacent nodes
+    int getMaxSum(Node *root) {
+        // Create a map to memoize results for (node, can) pairs
+        map<pair<Node *, int>, int> mp;
+
+        // Start the helper function with the root node and allowing inclusion (can = 1)
+        return helper(root, 1, mp);
+    }
+};
