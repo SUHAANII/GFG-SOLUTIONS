@@ -1,0 +1,50 @@
+question: Given the head of a linked list where nodes can contain values 0s, 1s, and 2s only. Your task is to rearrange the list so that all 0s appear at the beginning, followed by all 1s, and all 2s are placed at the end.
+
+code:
+
+class Solution {
+public:
+    Node* segregate(Node* head) {
+        // Initialize counters for the number of 0s, 1s, and 2s
+        int i = 0, j = 0, k = 0;
+        Node* ptr = head; // Pointer to traverse the linked list
+        
+        // First pass: Count the number of 0s, 1s, and 2s in the linked list
+        while (ptr != NULL) {
+            if (ptr->data == 0) 
+                i++; // Increment count for 0s
+            else if (ptr->data == 1) 
+                j++; // Increment count for 1s
+            else 
+                k++; // Increment count for 2s
+            ptr = ptr->next; // Move to the next node
+        }
+        
+        ptr = head; // Reset pointer to the head of the list for the second pass
+        
+        // Second pass: Update the linked list with 0s, 1s, and 2s based on the counts
+        // Fill in 0s
+        while (ptr != NULL && i != 0) {
+            ptr->data = 0; // Set current node's data to 0
+            ptr = ptr->next; // Move to the next node
+            i--; // Decrease the count of 0s
+        }
+        
+        // Fill in 1s
+        while (ptr != NULL && j != 0) {
+            ptr->data = 1; // Set current node's data to 1
+            ptr = ptr->next; // Move to the next node
+            j--; // Decrease the count of 1s
+        }
+        
+        // Fill in 2s
+        while (ptr != NULL && k != 0) {
+            ptr->data = 2; // Set current node's data to 2
+            ptr = ptr->next; // Move to the next node
+            k--; // Decrease the count of 2s
+        }
+        
+        // Return the modified head of the linked list
+        return head;
+    }
+};
