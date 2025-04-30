@@ -1,0 +1,48 @@
+question: Given the head of a linked list, determine whether the list contains a loop. If a loop is present, return the number of nodes in the loop, otherwise return 0.
+
+Note: 'c' is the position of the node which is the next pointer of the last node of the linkedlist. If c is 0, then there is no loop.
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the length of a loop in the linked list.
+    int countNodesinLoop(Node *head) {
+        // Check if the linked list is empty or has only one node.
+        if (!head || (!head->next)) return 0;
+
+        // Initialize two pointers: slow and fast.
+        // Slow moves one step at a time, fast moves two steps at a time.
+        Node *slow = head->next; 
+        Node *fast = head->next->next;
+
+        // Loop to detect if there is a cycle in the linked list.
+        while (fast != NULL && slow != NULL && slow != fast) {
+            // If fast pointer reaches the end of the list, there is no loop.
+            if (fast->next == NULL || fast->next->next == NULL) return 0;
+
+            // Move slow pointer one step forward.
+            slow = slow->next;
+            // Move fast pointer two steps forward.
+            fast = fast->next->next;
+        }
+
+        // If fast pointer is NULL, it means there is no loop.
+        if (!fast) return 0;
+
+        // If we found a loop, initialize a counter to count the nodes in the loop.
+        int cnt = 1;
+        // Move slow pointer to the next node.
+        slow = slow->next;
+
+        // Count the nodes in the loop until we meet the slow pointer again.
+        while (slow != fast) {
+            cnt++;          // Increment the counter for each node.
+            slow = slow->next; // Move to the next node in the loop.
+        }
+
+        // Return the count of nodes in the loop.
+        return cnt;
+    }
+};
