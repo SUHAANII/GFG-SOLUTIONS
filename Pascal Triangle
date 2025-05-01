@@ -1,0 +1,49 @@
+question: Given a positive integer n, return the nth row of pascal's triangle.
+Pascal's triangle is a triangular array of the binomial coefficients formed by summing up the elements of previous row.
+
+code:
+
+class Solution {
+public:
+    vector<int> nthRowOfPascalTriangle(int n) {
+        // Check if n is 1, return the first row of Pascal's Triangle
+        if(n == 1) return {1};
+
+        // Initialize a 2D vector to hold the rows of Pascal's Triangle
+        vector<vector<int>> triangle;
+        // Start with the first row
+        triangle.push_back({1});
+        
+        // Loop to generate rows of Pascal's Triangle until the (n-1)th row
+        for(int i = 1; i < n - 1; i++) {
+            vector<int> curr; // Vector to hold the current row
+            
+            // Loop to fill the current row based on the previous row
+            for(int j = 0; j <= i; j++) {
+                // The first and last elements of each row are always 1
+                if(j == 0 || j == i) {
+                    curr.push_back(1);
+                } else {
+                    // Each interior element is the sum of the two elements above it
+                    curr.push_back(triangle[i - 1][j - 1] + triangle[i - 1][j]);
+                }
+            }
+            // Add the current row to the triangle
+            triangle.push_back(curr);
+        }
+
+        // Prepare the final row to return (the nth row)
+        vector<int> curr; 
+        for(int i = 0; i < n; i++) {
+            // The first and last elements of the nth row are always 1
+            if(i == 0 || i == n - 1) {
+                curr.push_back(1);
+            } else {
+                // Each interior element is the sum of the two elements above it in the (n-1)th row
+                curr.push_back(triangle[n - 2][i - 1] + triangle[n - 2][i]);
+            }
+        }
+        // Return the nth row of Pascal's Triangle
+        return curr;
+    }
+};
