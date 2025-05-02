@@ -1,0 +1,19 @@
+question: Given an array of integers arr[] that is first strictly increasing and then maybe strictly decreasing, find the bitonic point, that is the maximum element in the array.
+Bitonic Point is a point before which elements are strictly increasing and after which elements are strictly decreasing.
+
+Note: It is guaranteed that the array contains exactly one bitonic point.
+
+code:
+
+// User function template for C++
+class Solution {
+  public:
+    // Function to find the maximum element in a vector of integers
+    int findMaximum(vector<int> &arr) {
+        // Using the standard library function max_element to find the maximum value
+        // `arr.begin()` gives an iterator to the start of the vector
+        // `arr.end()` gives an iterator to the end of the vector
+        // *max_element returns the maximum value found in the range [arr.begin(), arr.end())
+        return *max_element(arr.begin(), arr.end());
+    }
+};
