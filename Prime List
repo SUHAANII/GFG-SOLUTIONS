@@ -1,0 +1,66 @@
+question: You are given the head of a linked list. You have to replace all the values of the nodes with the nearest prime number. If more than one prime number exists at an equal distance, choose the smallest one. Return the head of the modified linked list.
+
+code:  
+
+class Solution {
+public:
+    // Function to generate a list of prime numbers up to a specified maximum value using the Sieve of Eratosthenes
+    vector<int> sieveof(int max) {
+        // Create a boolean vector to track prime status of numbers from 0 to max
+        vector<bool> pr(max, true);
+        vector<int> primes; // Vector to store the prime numbers
+        pr[0] = false; // 0 is not a prime number
+        pr[1] = false; // 1 is not a prime number
+        
+        // Start the sieve process
+        for (int i = 2; i * i <= max; i++) {
+            if (pr[i]) { // If i is still marked as prime
+                // Mark all multiples of i as non-prime
+                for (int p = i * i; p <= max; p += i) {
+                    pr[p] = false; // Mark p as non-prime
+                }
+            }
+        }
+        
+        // Collect all prime numbers into the primes vector
+        for (int i = 2; i <= max; i++) {
+            if (pr[i]) {
+                primes.push_back(i); // Add prime number to the list
+            }
+        }
+        return primes; // Return the list of prime numbers
+    }
+
+    // Function to replace values in a linked list with the nearest prime number
+    Node* primeList(Node* head) {
+        // Define a maximum value for the sieve
+        int max = 1e4 + 100; // Slightly above 10,000 to ensure coverage
+        vector<int> seive = sieveof(max); // Generate prime numbers up to max
+        
+        Node* temp = head; // Pointer to traverse the linked list
+        while (temp) { // Traverse the linked list until the end
+            int curr = temp->val; // Current node value
+            // Find the lower bound of curr in the list of primes
+            auto it = lower_bound(seive.begin(), seive.end(), curr);
+            
+            // If curr is less than the smallest prime number
+            if (it == seive.begin()) {
+                temp->val = *it; // Replace with the smallest prime
+            } else {
+                int x = *it; // The next prime number greater than or equal to curr
+                auto it2 = --it; // Move iterator back to find the previous prime
+                int y = *it2; // The prime number just before curr
+                
+                // Determine which prime is closer to curr
+                // If the difference to y is greater than the difference to x
+                if ((curr - y) > (x - curr)) {
+                    temp->val = x; // Replace with x (the next prime)
+                } else {
+                    temp->val = y; // Replace with y (the previous prime)
+                }
+            }
+            temp = temp->next; // Move to the next node in the linked list
+        }
+        return head; // Return the modified linked list
+    }
+};
