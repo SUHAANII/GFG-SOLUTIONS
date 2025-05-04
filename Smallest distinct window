@@ -1,0 +1,47 @@
+question: Given a string str, your task is to find the length of the smallest window that contains all the characters of the given string at least once.
+
+code: 
+class Solution {
+public:
+    int findSubString(string& str) {
+        // Create a set to store unique characters in the string
+        set<char> st;
+        for (auto v : str) st.insert(v); // Insert each character into the set
+
+        int head = -1;           // Pointer for the end of the current window
+        int tail = 0;           // Pointer for the start of the current window
+        int cnt = 0;            // Count of unique characters in the current window
+        int n = str.size();     // Length of the input string
+        int ans = INT_MAX;      // Variable to store the minimum length of substring
+
+        // Start moving the tail pointer to explore the string
+        while (tail < n) {
+            // Expand the window by moving the head pointer
+            while (head + 1 < n && cnt < st.size()) {
+                head++; // Move head to the right
+                mp[str[head]]++; // Count the occurrence of the character at head
+                // If it's the first occurrence of this character, increase the count of unique characters
+                if (mp[str[head]] == 1) cnt++;
+            }
+
+            // If the current window contains all unique characters
+            if (cnt == st.size()) {
+                // Update the minimum length of the substring found
+                ans = min(ans, head - tail + 1);
+            }
+
+            // If the tail has surpassed the head, we need to adjust the pointers
+            if (tail > head) {
+                tail++; // Move tail to the right
+                head = tail - 1; // Reset head to be just before tail
+            } else {
+                // Shrink the window from the left by moving the tail
+                mp[str[tail]]--; // Decrease the count of the character at tail
+                // If the count of this character drops to zero, decrease the unique count
+                if (mp[str[tail]] == 0) cnt--;
+                tail++; // Move tail to the right
+            }
+        }
+        return ans; // Return the minimum length of substring containing all unique characters
+    }
+};
