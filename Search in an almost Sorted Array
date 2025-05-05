@@ -1,0 +1,48 @@
+question: Given a sorted integer array arr[] consisting of distinct elements, where some elements of the array are moved to either of the adjacent positions, i.e. arr[i] may be present at arr[i-1] or arr[i+1].
+Given an integer target.  You have to return the index ( 0-based ) of the target in the array. If target is not present return -1.
+
+code"
+
+class Solution {
+public:
+    // Function to find the target value in the given array
+    int findTarget(vector<int>& arr, int target) {
+        // Get the size of the array
+        int n = arr.size();
+        
+        // Initialize start and end pointers for binary search
+        int s = 0;
+        int e = n - 1;
+
+        // Continue searching while start index is less than or equal to end index
+        while (s <= e) {
+            // Calculate the middle index
+            int mid = (s + e) / 2;
+
+            // Check if the middle element is the target
+            if (arr[mid] == target) {
+                return mid; // Return the index if found
+            }
+            // Check if the left neighbor is the target
+            else if (mid > 0 && arr[mid - 1] == target) {
+                return mid - 1; // Return the left neighbor's index if found
+            }
+            // Check if the right neighbor is the target
+            else if (mid < n - 1 && arr[mid + 1] == target) {
+                return mid + 1; // Return the right neighbor's index if found
+            }
+
+            // If the middle element is greater than the target, search in the left half
+            if (arr[mid] > target) {
+                e = mid - 1; // Move the end pointer to mid - 1
+            } 
+            // If the middle element is less than the target, search in the right half
+            else {
+                s = mid + 1; // Move the start pointer to mid + 1
+            }
+        }
+        
+        // If the target is not found, return -1
+        return -1;
+    }
+};
