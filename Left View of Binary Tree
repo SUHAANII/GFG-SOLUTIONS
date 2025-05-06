@@ -1,0 +1,58 @@
+qustion: You are given the root of a binary tree. Your task is to return the left view of the binary tree. The left view of a binary tree is the set of nodes visible when the tree is viewed from the left side.
+
+If the tree is empty, return an empty list.
+
+cod:
+
+class Solution {
+public:
+    // Function to get the left view of a binary tree
+    vector<int> leftView(Node *root) {
+        // Initialize a vector to store the left view nodes
+        vector<int> ans;
+
+        // If the root is null, return an empty vector
+        if (!root) {
+            return ans;
+        }
+
+        // Create a queue to perform level order traversal
+        queue<Node*> q;
+        // Push the root node into the queue
+        q.push(root);
+
+        // Continue until there are nodes in the queue
+        while (q.size()) {
+            // Get the number of nodes at the current level
+            int sz = q.size();
+            // Initialize an index to track the first node at this level
+            int i = 0;
+
+            // Process all nodes at the current level
+            while (sz--) {
+                // Get the front node from the queue
+                auto b = q.front(); 
+                q.pop(); // Remove the front node from the queue
+
+                // Check if it's the first node of the current level
+                if (i == 0) {
+                    // Add the data of the first node to the answer vector
+                    ans.push_back(b->data);
+                }
+                // Increment index since we've processed one node
+                i++;
+
+                // If the left child exists, push it into the queue
+                if (b->left) {
+                    q.push(b->left);
+                }
+                // If the right child exists, push it into the queue
+                if (b->right) {
+                    q.push(b->right);
+                }
+            }
+        }
+        // Return the vector containing the left view of the tree
+        return ans;
+    }
+};
