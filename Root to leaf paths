@@ -1,0 +1,45 @@
+question: Given a Binary Tree, you need to find all the possible paths from the root node to all the leaf nodes of the binary tree.
+
+Note: The paths should be returned such that paths from the left subtree of any node are listed first, followed by paths from the right subtree.
+
+Code"
+class Solution {
+public:
+    // Depth-First Search (DFS) function to explore paths from root to leaf nodes
+    void dfs(Node* root, vector<vector<int>>& ans, vector<int>& path) {
+        // Check if the current node is a leaf node (no left or right children)
+        if (!root->left && !root->right) {
+            // Add the current node's data to the path
+            path.push_back(root->data);
+            // Store the current path in the answer list
+            ans.push_back(path);
+            // Backtrack: remove the last added node from the path
+            path.pop_back();
+            return; // Exit the function as we've reached a leaf
+        }
+        
+        // Add the current node's data to the path
+        path.push_back(root->data);
+        
+        // If there's a left child, recursively explore the left subtree
+        if (root->left) {
+            dfs(root->left, ans, path);
+        }
+        
+        // If there's a right child, recursively explore the right subtree
+        if (root->right) {
+            dfs(root->right, ans, path);
+        }
+        
+        // Backtrack: remove the last added node from the path before returning
+        path.pop_back();
+    }
+
+    // Main function to find all paths from root to leaf nodes
+    vector<vector<int>> Paths(Node* root) {
+        vector<vector<int>> ans; // To store all paths
+        vector<int> path; // To store the current path
+        dfs(root, ans, path); // Start DFS from the root
+        return ans; // Return the list of paths
+    }
+};
