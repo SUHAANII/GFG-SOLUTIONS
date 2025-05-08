@@ -1,0 +1,50 @@
+question: Given a sorted array arr[] that represents an Arithmetic Progression (AP) with exactly one missing element, find the missing number.
+
+Note: An element will always exist that, upon inserting into a sequence forms Arithmetic progression. If the given sequence already forms a valid complete AP, return the (n+1)-th element that would come next in the sequence.
+
+code:
+
+class Solution {
+  public:
+    // Function to find the missing number in an arithmetic progression
+    int findMissing(vector<int> &arr) {
+        // Calculate the common difference using the first two elements
+        int diff = arr[1] - arr[0];
+
+        // Check if the difference is positive
+        if (diff > 0) {
+            // Loop through the array from the second element to the second last
+            for (int i = 1; i < arr.size() - 1; i++) {
+                // Calculate the difference between consecutive elements
+                int d = arr[i + 1] - arr[i];
+
+                // If the difference matches the expected common difference, continue
+                if (d == diff) continue;
+
+                // If the expected difference is greater than the current difference,
+                // it means the missing element is before the current element
+                if (diff > d) return arr[i] - d;
+                // Otherwise, the missing element is after the current element
+                else if (diff < d) return arr[i] + diff;
+            }
+        } else {
+            // If the difference is non-positive, handle the case for decreasing sequences
+            for (int i = 1; i < arr.size() - 1; i++) {
+                // Calculate the difference between consecutive elements
+                int d = arr[i + 1] - arr[i];
+
+                // If the difference matches the expected common difference, continue
+                if (d == diff) continue;
+
+                // If the expected difference is less than the current difference,
+                // it means the missing element is before the current element
+                if (diff < d) return arr[i] - d;
+                // Otherwise, the missing element is after the current element
+                else if (diff > d) return arr[i] + diff;
+            }
+        }
+
+        // If no missing element was found in the loop, return the last element plus the common difference
+        return *(arr.end() - 1) + diff;
+    }
+};
