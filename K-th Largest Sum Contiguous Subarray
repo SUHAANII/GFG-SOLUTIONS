@@ -1,0 +1,35 @@
+question: Given an array arr[] of size n, find the sum of the K-th largest sum among all contiguous subarrays. In other words, identify the K-th largest sum from all possible subarrays and return it.
+
+
+
+code:
+class Solution {
+public:
+    // Function to find the k-th largest sum of contiguous subarrays
+    int kthLargest(vector<int> &arr, int k) {
+        int n = arr.size(); // Get the size of the input array
+        // Create a min-heap (priority queue) to store the k largest sums
+        priority_queue<int, vector<int>, greater<int>> pq;
+
+        // Iterate through each starting index of the subarray
+        for (int i = 0; i < n; i++) {
+            int sum = 0; // Initialize the sum for the current subarray
+
+            // Iterate through each ending index of the subarray
+            for (int j = i; j < n; j++) {
+                sum += arr[j]; // Add the current element to the sum
+
+                // Push the current sum into the min-heap
+                pq.push(sum);
+
+                // If the size of the heap exceeds k, remove the smallest element
+                if (pq.size() > k) {
+                    pq.pop(); // This keeps only the k largest sums in the heap
+                }
+            }
+        }
+
+        // The top of the min-heap is the k-th largest sum
+        return pq.top();
+    }
+};
