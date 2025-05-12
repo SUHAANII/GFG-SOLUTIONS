@@ -1,0 +1,77 @@
+question: You are given an integer n representing the number of rooms numbered from 0 to n - 1. Additionally, you are given a 2D integer array meetings[][] where meetings[i] = [starti, endi] indicates that a meeting is scheduled during the half-closed time interval [starti, endi). All starti values are unique.
+
+Meeting Allocation Rules:
+
+When a meeting starts, assign it to the available room with the smallest number.
+If no rooms are free, delay the meeting until the earliest room becomes available. The delayed meeting retains its original duration.
+When a room becomes free, assign it to the delayed meeting with the earliest original start time.
+Determine the room number that hosts the most meetings. If multiple rooms have the same highest number of meetings, return the smallest room number among them.
+
+code:
+
+class Solution {
+public:
+    int mostBooked(int n, vector<vector<int>> &meetings) {
+        // Get the number of meetings
+        int m = meetings.size();
+
+        // Sort meetings based on their start time
+        sort(meetings.begin(), meetings.end());
+
+        // Initialize a count array to keep track of how many times each room is booked
+        vector<int> count(n, 0);
+
+        // Priority queue to keep track of free rooms (using their indices)
+        priority_queue<int, vector<int>, greater<int>> free;
+
+        // Priority queue to keep track of busy rooms (end time and room index)
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> busy;
+
+        // Initially, all rooms are free, so push all room indices into the free queue
+        for (int i = 0; i < n; i++) {
+            free.push(i);
+        }
+
+        // Iterate through each meeting
+        for (auto u : meetings) {
+            int start = u[0]; // Meeting start time
+            int end = u[1];   // Meeting end time
+
+            // Free up rooms that have finished their meetings before the current meeting starts
+            while (!busy.empty() && busy.top().first <= start) {
+                free.push(busy.top().second); // Add the room index back to free queue
+                busy.pop(); // Remove the room from busy queue
+            }
+
+            // If there are free rooms available
+            if (!free.empty()) {
+                int room = free.top(); // Get the next available room
+                free.pop(); // Remove it from the free queue
+                count[room]++; // Increment the booking count for that room
+
+                // Push the room into the busy queue with its end time
+                busy.push({end, room});
+            } else {
+                // If no free rooms are available, find the next room to finish
+                int t = busy.top().first; // Get the earliest end time
+                int room_idx = busy.top().second; // Get the room index
+                t += (end - start); // Update the end time for this room
+
+                busy.pop(); // Remove the room from busy queue
+                busy.push({t, room_idx}); // Push it back with the updated end time
+                count[room_idx]++; // Increment the booking count for that room
+            }
+        }
+
+        // Find the room with the maximum bookings
+        int max_used = 0; // Room index with the maximum bookings
+        for (int i = 0; i < n; i++) {
+            if (count[i] > count[max_used]) {
+                max_used = i; // Update max_used if current room has more bookings
+            }
+        }
+
+        // Return the index of the room that was booked the most
+        return max_used; 
+    }
+};
