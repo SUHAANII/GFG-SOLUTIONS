@@ -1,0 +1,62 @@
+question: Given an integer n. Return the nth row of the following look-and-say pattern.
+1
+11
+21
+1211
+111221
+Look-and-Say Pattern:
+
+To generate a member of the sequence from the previous member, read off the digits of the previous member, counting the number of digits in groups of the same digit. For example:
+
+1 is read off as "one 1" or 11.
+11 is read off as "two 1s" or 21.
+21 is read off as "one 2, then one 1" or 1211.
+1211 is read off as "one 1, one 2, then two 1s" or 111221.
+111221 is read off as "three 1s, two 2s, then one 1" or 312211.
+
+
+code:
+
+class Solution {
+  public:
+    string countAndSay(int n) {
+        // Initialize the first term of the sequence
+        string prev = "1", s;
+
+        // If n is 1, return the first term "1"
+        if(n == 1) return prev;
+
+        // Loop to generate terms from the 2nd term up to the nth term
+        for(int i = 1; i < n; i++) {
+            // Reset the string for the current term
+            s = "";
+            int c = 0; // Counter for the occurrences of the current character
+            int m = prev.size(); // Get the size of the previous term
+
+            // Loop through each character in the previous term
+            for(int j = 0; j < m; j++) {
+                c++; // Increment the counter for the current character
+
+                // Check if we are at the end of the group of identical characters
+                if(j < m - 1 && prev[j] != prev[j + 1]) {
+                    // If the next character is different, append the count and character to the new term
+                    s.push_back(c + 48); // Convert count to char and append (48 is the ASCII value of '0')
+                    s.push_back(prev[j]); // Append the current character
+                    c = 0; // Reset the counter for the next group
+                }
+            }
+
+            // If there are remaining characters to account for (the last group)
+            if(c) {
+                s.push_back(c + 48); // Append the count of the last group
+                s.push_back(prev[m - 1]); // Append the last character
+            }
+
+            // Update prev to the newly generated term for the next iteration
+            prev = s;
+        }
+
+        // Return the nth term of the sequence
+        return s;
+    }
+};
