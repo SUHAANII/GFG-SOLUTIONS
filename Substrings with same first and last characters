@@ -1,0 +1,31 @@
+question: Given a string s consisting of lowercase characters, the task is to find the count of all substrings that start and end with the same character.
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of substrings with at least one repeating character
+    int countSubstring(string &s) {
+        // Initialize count with the size of the string
+        int count = s.size();
+        
+        // Create a frequency vector to count occurrences of each letter (26 letters in the alphabet)
+        vector<int> freq(26, 0);
+        
+        // Count the frequency of each character in the string
+        for (auto it : s) {
+            freq[it - 'a']++; // Increment the count for the character
+        }
+        
+        // Accessing the frequency of each character
+        for (auto it : freq) {
+            // For each character that appears 'it' times,
+            // the number of ways to choose 2 characters from 'it' is given by nC2 = (n*(n-1))/2
+            // This accounts for the number of substrings that can be formed with repeating characters
+            count += (it * (it - 1)) / 2; // Add the combinations to the total count
+        }
+        
+        // Return the total count of substrings
+        return count;
+    }
+};
