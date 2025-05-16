@@ -1,0 +1,71 @@
+question: Given a 2d integer array arr[][] of size k*n, where each row is sorted in ascending order. Your task is to find the smallest range [l, r] that includes at least one element from each of the k lists. If more than one such ranges are found, return the first one.
+
+code:
+
+class Solution {
+public:
+    vector<int> findSmallestRange(vector<vector<int>>& arr) {
+        // Create a priority queue to store the elements in sorted order
+        // The queue will store pairs of (value, (row_index, col_index))
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+        
+        // Map to keep track of the frequency of elements from each row
+        unordered_map<int, int> mp;
+        
+        // Queue to maintain the current range of values
+        queue<pair<int, int>> q;
+        
+        // Initialize variables to track the smallest range
+        int ans = INT_MAX; // This will hold the size of the smallest range found
+        vector<int> v = {-1, -1}; // This will hold the start and end of the smallest range
+        
+        int row = arr.size(); // Number of rows in the input array
+        int col = arr[0].size(); // Number of columns in the input array
+        
+        // Push the first element of each row into the priority queue
+        for (int i = 0; i < row; i++){
+            pq.push({arr[i][0], {i, 0}}); // (value, (row_index, col_index))
+        }
+        
+        // Process elements until the priority queue is empty
+        while (!pq.empty()){
+            // Get the minimum value from the priority queue
+            int min_val = pq.top().first;
+            int min_index_row = pq.top().second.first; // Row index of the min value
+            int min_index_col = pq.top().second.second; // Column index of the min value
+            
+            pq.pop(); // Remove the minimum element from the queue
+            
+            // If there are more elements in the same row, add the next element to the queue
+            if (min_index_col + 1 < col) {
+                pq.push({arr[min_index_row][min_index_col + 1], {min_index_row, min_index_col + 1}});
+            }
+            
+            // Add the current minimum value and its row index to the queue
+            q.push({min_val, min_index_row});
+            mp[min_index_row]++; // Increment the frequency of the current row
+            
+            // Check if we have at least one element from each row
+            while (mp.size() == row){
+                // Update the smallest range if the current range is smaller
+                if (ans > (q.back().first - q.front().first)){
+                    v = {q.front().first, q.back().first}; // Update the range
+                    ans = q.back().first - q.front().first; // Update the size of the smallest range
+                }
+                
+                // Remove the front element from the queue
+                int start = q.front().first; // Start of the current range
+                int index_row = q.front().second; // Row index of the front element
+                q.pop(); // Remove the front element from the queue
+                
+                // Decrement the frequency of the removed row
+                mp[index_row]--;
+                if (mp[index_row] == 0) {
+                    mp.erase(index_row); // Remove the row from the map if its frequency is zero
+                }
+            }
+        }
+        
+        return v; // Return the smallest range found
+    }
+};
