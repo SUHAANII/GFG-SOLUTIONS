@@ -1,0 +1,30 @@
+question: Given an integer array arr[] sorted in ascending order, along with three integers: A, B, and C. The task is to transform each element x in the array using the quadratic function A*(x2) + B*x + C. After applying this transformation to every element, return the modified array in sorted order.
+
+
+
+code:
+
+class Solution {
+public:
+    // Function to sort an array based on a quadratic equation
+    vector<int> sortArray(vector<int> &arr, int A, int B, int C) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Create a new vector to store the transformed values
+        vector<int> ans(n);
+        
+        // Iterate through each element of the input array
+        for(int i = 0; i < n; i++) {
+            // Apply the quadratic equation: A*x^2 + B*x + C
+            // where x is the current element arr[i]
+            ans[i] = (A * (arr[i]) * (arr[i])) + (B * arr[i]) + C;
+        }
+        
+        // Sort the transformed values in ascending order
+        sort(ans.begin(), ans.end());
+        
+        // Return the sorted array
+        return ans;
+    }
+};
