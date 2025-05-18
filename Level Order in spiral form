@@ -1,0 +1,68 @@
+question: Given a binary tree and the task is to find the spiral order traversal of the tree and return the list containing the elements.
+Spiral order Traversal mean: Starting from level 0 for root node, for all the even levels we print the node's value from right to left and for all the odd levels we print the node's value from left to right.
+For below tree, function should return [1, 2, 3, 4, 5, 6, 7]
+
+code:
+class Solution {
+public:
+    vector<int> findSpiral(Node* root) {
+        // Initialize a vector to store the result
+        vector<int> ans;
+
+        // Create a queue to perform level order traversal
+        queue<Node*> q;
+        // A flag to alternate between left-to-right and right-to-left traversal
+        bool flag = false;
+        // Start by pushing the root node into the queue
+        q.push(root);
+        // A stack to temporarily hold node values for the right-to-left traversal
+        stack<int> st;
+
+        // Continue until there are no more nodes to process in the queue
+        while (!q.empty()) {
+            // Get the number of nodes at the current level
+            int n = q.size();
+
+            // Process each node at the current level
+            for (int i = 0; i < n; i++) {
+                // Get the front node from the queue
+                Node* node = q.front();
+                // Remove the node from the queue
+                q.pop();
+
+                // If the flag is true, we are in right-to-left mode
+                if (flag) {
+                    // Add the node's data to the result vector
+                    ans.push_back(node->data);
+                } else {
+                    // If the flag is false, push the node's data onto the stack
+                    st.push(node->data);
+                }
+
+                // If the left child exists, add it to the queue for the next level
+                if (node->left) {
+                    q.push(node->left);
+                }
+
+                // If the right child exists, add it to the queue for the next level
+                if (node->right) {
+                    q.push(node->right);
+                }
+            }
+
+            // After processing all nodes at the current level,
+            // if we were in left-to-right mode, pop from the stack
+            while (!st.empty()) {
+                // Add the values from the stack to the result vector
+                ans.push_back(st.top());
+                st.pop();
+            }
+
+            // Toggle the flag for the next level
+            flag = !flag;
+        }
+
+        // Return the final spiral order traversal result
+        return ans;
+    }
+};
