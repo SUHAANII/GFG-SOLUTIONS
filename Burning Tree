@@ -1,0 +1,89 @@
+question: Given a binary tree and a target node, determine the minimum time required to burn the entire tree if the target node is set on fire. In one second, the fire spreads from a node to its left child, right child, and parent.
+Note: The tree contains unique values.
+
+code:
+
+class Solution {
+public:
+    // This function builds a map of parent nodes and finds the target node.
+    Node* buildparent(Node* root, unordered_map<Node*, Node*>& mp, int target) {
+        Node* curr = root; // Start with the root node
+        Node* res = nullptr; // To store the target node if found
+        bool unfound = true; // Flag to indicate if the target has been found
+        
+        mp[root] = nullptr; // The root has no parent
+        queue<Node*> toprocess; // Queue for level-order traversal
+        toprocess.push(curr); // Start with the root
+        
+        // Perform a level-order traversal to build the parent map
+        while (!toprocess.empty()) {
+            Node* tmp = toprocess.front(); toprocess.pop(); // Get the front node
+            
+            // Check if the current node is the target
+            if (unfound && tmp->data == target) {
+                unfound = false; // Target found
+                res = tmp; // Store the target node
+            }
+            
+            // If the left child exists, map it to the current node and add to the queue
+            if (tmp->left) {
+                mp[tmp->left] = tmp; // Set parent of left child
+                toprocess.push(tmp->left); // Add left child to the queue
+            }   
+            // If the right child exists, map it to the current node and add to the queue
+            if (tmp->right) {
+                mp[tmp->right] = tmp; // Set parent of right child
+                toprocess.push(tmp->right); // Add right child to the queue
+            }
+        }
+        return res; // Return the target node, or nullptr if not found
+    }
+
+    // This function calculates the minimum time to spread fire from the target node
+    int minTime(Node* root, int target) {
+        Node* curr = root; // Start with the root node
+        unordered_map<Node*, Node*> par; // Map to store parent nodes
+        Node* targetNode = buildparent(root, par, target); // Find the target node and build parent map
+        
+        if (!targetNode) return 0; // If target node is not found, return 0
+        
+        queue<Node*> fire; // Queue to simulate fire spread
+        fire.push(targetNode); // Start fire from the target node
+        unordered_set<Node*> vis; // Set to keep track of visited nodes
+        vis.insert(targetNode); // Mark the target node as visited
+        int times = 0; // Initialize time taken to spread fire
+        
+        // While there are nodes burning
+        while (!fire.empty()) {
+            int n = fire.size(); // Number of nodes burning in the current time unit
+            bool spread = false; // Flag to check if fire spreads in this time unit
+            
+            // Process all burning nodes in the current time unit
+            while (n--) {
+                Node* curr = fire.front(); fire.pop(); // Get the front burning node
+                
+                // Lambda function to try pushing a node into the fire queue
+                auto tryPush = [&](Node* x) {
+                    if (!vis.count(x)) { // If the node hasn't been visited
+                        fire.push(x); // Add it to the fire queue
+                        vis.insert(x); // Mark it as visited
+                        spread = true; // Fire spread in this time unit
+                    }
+                };
+                
+                // Check and push left child if it exists
+                if (curr->left)  tryPush(curr->left);
+                // Check and push right child if it exists
+                if (curr->right) tryPush(curr->right);
+                
+                // Check and push parent node if it exists
+                curr = par[curr];
+                if (curr) tryPush(curr);
+            }    
+            // If fire spread in this time unit, increment the time
+            if (spread)  
+                times++;
+        }
+        return times; // Return the total time taken for the fire to spread
+    }
+};
