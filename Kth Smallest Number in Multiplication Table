@@ -1,0 +1,38 @@
+question: Given three integers m, n and k. Consider a grid of m * n, where mat[i][j] = i * j (1 based index). The task is to return the kth smallest element in the m * n multiplication table.
+
+code:
+class Solution {
+public:
+    // Function to find the kth smallest number in a m x n multiplication table
+    int kthSmallest(int m, int n, int k) {
+        // Initialize low and high boundaries for binary search
+        int low = 1, high = m * n, ans = -1;
+
+        // Perform binary search between low and high
+        while (low <= high) {
+            // Calculate the mid point
+            int mid = low + (high - low) / 2;
+            int count = 0; // Initialize count of numbers less than or equal to mid
+            
+            // Count how many numbers are less than or equal to mid
+            for (int i = 1; i <= m; ++i) {
+                // For each row i, count how many multiples of i are <= mid
+                count += min(mid / i, n); 
+                // `mid / i` gives the maximum multiple of i that is <= mid
+                // `n` is the maximum number of entries in each row
+                // So we take the minimum of these two
+            }
+
+            // If count of numbers <= mid is at least k, mid is a potential answer
+            if (count >= k) {
+                ans = mid; // Update ans to mid
+                high = mid - 1; // Search for a smaller number
+            } else {
+                // If count is less than k, search for a larger number
+                low = mid + 1;
+            }
+        }
+        // Return the kth smallest number found
+        return ans;
+    }
+};
