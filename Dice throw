@@ -1,0 +1,44 @@
+question:Given n dice each with m faces. Find the number of ways to get sum x which is the summation of values on each face when all the dice are thrown.
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the number of ways to achieve a sum 'x' using 'm' types of coins and 'n' total coins
+    int noOfWays(int m, int n, int x) {
+        // Initialize a vector 'prev' to store the number of ways to achieve each sum from 0 to x
+        vector<int> prev(x + 1, 0);
+        // There's one way to achieve the sum of 0: by choosing no coins
+        prev[0] = 1;
+
+        // Iterate through each coin position from 1 to n
+        for (int i = 1; i <= n; i++) {
+            // Create a new vector 'curr' to store the current number of ways for this iteration
+            vector<int> curr(x + 1, 0);
+
+            // Iterate through each possible sum from 1 to x
+            for (int j = 1; j <= x; j++) {
+                // Variable to accumulate the number of ways to achieve the current sum j
+                int ans = 0;
+
+                // Iterate through each coin value from 1 to m
+                for (int k = 1; k <= m; k++) {
+                    // If the coin value is greater than the current sum, break the loop
+                    if (k > j) break;
+                    // Add the number of ways to achieve the sum (j - k) to the answer
+                    ans += prev[j - k];
+                }
+
+                // Store the accumulated number of ways to achieve the sum j in 'curr'
+                curr[j] = ans;
+            }
+
+            // Update 'prev' to be 'curr' for the next iteration
+            prev = curr;
+        }
+
+        // Return the number of ways to achieve the sum x using n coins
+        return prev[x];
+    }
+};
