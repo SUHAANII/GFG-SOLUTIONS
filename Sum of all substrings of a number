@@ -1,0 +1,47 @@
+question: Given an integer s represented as a string, the task is to get the sum of all possible sub-strings of this string.
+
+Note: The number may have leading zeros.
+It is guaranteed that the total sum will fit within a 32-bit signed integer.
+
+code:
+
+class Solution {
+public:
+    // Recursive function to calculate the sum of all substrings of a given length 'take' starting from index 'idx'
+    int solve(string &s, int idx, int take) {
+        // Base case: If the current index plus the number of digits to take exceeds the string size, return 0
+        if (idx + take > s.size()) {
+            return 0;
+        }
+
+        // Variable to hold the sum of the current substring
+        int sum = 0;
+
+        // Loop to construct the number from the substring
+        for (int i = 0; i < take; i++) {
+            sum *= 10; // Shift the current sum left by one decimal place
+            sum += (s[idx + i] - '0'); // Add the current digit to the sum
+        }
+
+        // Recursively call solve for the next index, adding the current substring's sum
+        return sum + solve(s, idx + 1, take);
+    }
+
+    // Function to calculate the total sum of all substrings of the input string
+    int sumSubstrings(string &s) {
+        // Get the length of the input string
+        int n = s.size();
+        
+        // Variable to hold the final answer
+        int ans = 0;
+
+        // Loop through all possible lengths of substrings from 1 to n
+        for (int i = 1; i <= n; i++) {
+            // Sum all substrings of the current length 'i' starting from index 0
+            ans += solve(s, 0, i);
+        }
+
+        // Return the total sum of all substrings
+        return ans;
+    }
+};
