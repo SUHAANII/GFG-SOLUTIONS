@@ -1,0 +1,32 @@
+question: Given an array arr[], return true if there is a triplet (a, b, c) from the array (where a, b, and c are on different indexes) that satisfies a2 + b2 = c2, otherwise return false.
+code:
+
+class Solution {
+public:
+    // Function to check if there exists a Pythagorean triplet in the array
+    bool pythagoreanTriplet(vector<int>& arr) {
+        // Create an unordered set to store the squares of the elements
+        unordered_set<int> sq;
+        int n = arr.size(); // Get the size of the input array
+        
+        // Populate the set with the squares of each element in the array
+        for (int i : arr)
+            sq.insert(i * i);
+        
+        // Iterate through each pair of elements in the array
+        for (int i = 0; i < n; i++) {
+            int a = arr[i]; // First element of the pair
+            
+            for (int j = i + 1; j < n; j++) {
+                int b = arr[j]; // Second element of the pair
+                
+                // Check if the sum of squares of a and b exists in the set
+                // If it exists, it means there is a c such that a^2 + b^2 = c^2
+                if (sq.count(a * a + b * b)) return true;
+            }
+        }
+        
+        // If no Pythagorean triplet is found, return false
+        return false;
+    }
+};
