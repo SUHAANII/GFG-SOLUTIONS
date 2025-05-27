@@ -1,0 +1,52 @@
+question: Given a preorder traversal of a BST, find the leaf nodes of the tree without building the tree.
+
+code:
+class Solution {
+public:
+    // Helper function to build the leaf nodes from preorder and inorder traversals
+    void helper(int s, int e, vector<int> &preorder, vector<int> &inorder, vector<int> &ans, int &index) {
+        // Base case: if the start index exceeds the end index or if we've processed all elements in preorder
+        if (s > e || index >= preorder.size()) return;
+
+        // If the current segment has only one element, it's a leaf node
+        if (s == e) {
+            ans.push_back(inorder[s]); // Add the leaf node to the answer
+            index++; // Increment the index for preorder
+            return;
+        }
+
+        // Get the current element from preorder that we are processing
+        int elem = preorder[index];
+        index++; // Move to the next element in preorder
+
+        // Find the index of the current element in the inorder array
+        int temp = -1;
+        for (int i = s; i <= e; i++) {
+            if (elem == inorder[i]) {
+                temp = i; // Store the index of the element found in inorder
+                break;
+            }
+        }
+
+        // Recursively process the left subtree (elements before the found element)
+        helper(s, temp - 1, preorder, inorder, ans, index);
+        // Recursively process the right subtree (elements after the found element)
+        helper(temp + 1, e, preorder, inorder, ans, index);
+    }
+
+    // Function to find leaf nodes from the given preorder traversal
+    vector<int> leafNodes(vector<int>& preorder) {
+        // Create a copy of the preorder array and sort it to get the inorder traversal
+        vector<int> inorder = preorder;
+        sort(inorder.begin(), inorder.end());
+
+        int index = 0; // Initialize index for tracking position in preorder
+        vector<int> ans; // Vector to store the leaf nodes
+
+        // Call the helper function with the entire range of the arrays
+        helper(0, preorder.size() - 1, preorder, inorder, ans, index);
+        
+        // Return the vector containing all the leaf nodes
+        return ans;
+    }
+};
