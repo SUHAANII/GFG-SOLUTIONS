@@ -1,0 +1,47 @@
+question: Given a binary tree root[], you need to find the sum of the nodes on the longest path from the root to any leaf node. If two or more paths have the same length, the path with the maximum sum of node values should be considered.
+
+code:
+class Solution {
+  public:
+  
+  // Helper function to traverse the tree and calculate the sum of the longest path
+  void solve(Node* root, int sumtillcurrentNode, int heighttillcurrentNode, pair<int,int>& p) {
+  
+        // Base case: if the current node is NULL, return
+        if (root == NULL) return;
+              
+        // Increment the height as we go down the tree
+        heighttillcurrentNode++;
+        
+        // Add the current node's value to the sum of the path
+        sumtillcurrentNode += root->data;
+        
+        // Check if the current height is greater than the recorded maximum height
+        if (p.first < heighttillcurrentNode) {
+            // Update the maximum height
+            p.first = heighttillcurrentNode;
+            // Update the maximum sum for this height
+            p.second = sumtillcurrentNode;
+        } 
+        // If the current height is equal to the recorded maximum height
+        else if (p.first == heighttillcurrentNode) {
+            // Update the maximum sum for this height if the current path sum is greater
+            p.second = max(p.second, sumtillcurrentNode);
+        }
+        
+        // Recursively call the function for the left child
+        solve(root->left, sumtillcurrentNode, heighttillcurrentNode, p);
+        // Recursively call the function for the right child
+        solve(root->right, sumtillcurrentNode, heighttillcurrentNode, p);
+    }
+    
+    // Main function to initiate the process and return the result
+    int sumOfLongRootToLeafPath(Node *root) {
+        // Initialize a pair to store the maximum height and corresponding sum
+        pair<int,int> p = {0, 0}; // p.first = max height, p.second = max sum at that height
+        // Start the recursive function
+        solve(root, 0, 0, p);
+        // Return the maximum sum found for the longest path
+        return p.second;
+    }
+};
