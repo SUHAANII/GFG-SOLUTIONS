@@ -1,0 +1,37 @@
+question: Given the root of a binary search tree and a number k, find the greatest number in the binary search tree that is less than or equal to k.
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the maximum value in the Binary Search Tree (BST) that is less than or equal to k
+    int findMaxFork(Node* root, int k) {
+        // Initialize a variable to store the result, starting with -1 (indicating no valid fork found)
+        int res = -1;
+
+        // Traverse the tree while there are nodes to explore
+        while (root) {
+            // Check if the current node's data matches k
+            if (root->data == k) {
+                // If it matches, we found the exact value, set res to k and break the loop
+                res = k;
+                break;
+            }
+            
+            // If the current node's data is less than k
+            if (root->data < k) {
+                // Update res to the current node's data (potential maximum fork)
+                res = root->data;
+                // Move to the right child to find a larger value that is still <= k
+                root = root->right;
+            } else {
+                // If the current node's data is greater than k, move to the left child
+                // because all values in the right subtree will be greater than k
+                root = root->left;
+            }
+        }
+        // Return the maximum value found that is less than or equal to k
+        return res; 
+    }
+};
