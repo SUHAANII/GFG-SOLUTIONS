@@ -1,0 +1,31 @@
+question: Given a matrix mat[][] of size n*n, where each row and column is sorted in non-decreasing order. Find the kth smallest element in the matrix.
+code:
+
+class Solution {
+public:
+    // Function to find the k-th smallest element in a sorted matrix
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        // Get the number of rows (m) in the matrix
+        int m = matrix.size();
+        // Calculate the total number of elements (n = m * m)
+        int n = m * m;
+        // Create an array to store the elements of the matrix
+        int arr[n];
+        // Initialize a variable to keep track of the index in the array
+        int a = 0;
+
+        // Loop through each row of the matrix
+        for (int i = 0; i < m; i++) {
+            // Loop through each column of the current row
+            for (int j = 0; j < m; j++) {
+                // Store the current element in the array
+                arr[a++] = matrix[i][j];
+            }
+        }
+
+        // Sort the array containing all elements of the matrix
+        sort(arr, arr + a);
+        // Return the k-th smallest element (k is 1-based, so we access k-1)
+        return arr[k - 1];
+    }
+};
