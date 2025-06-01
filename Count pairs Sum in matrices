@@ -1,0 +1,52 @@
+Question: Given two matrices mat1[][] and mat2[][] of size n x n, where the elements in each matrix are arranged in strictly ascending order. Specifically, each row is sorted from left to right, and the last element of a row is smaller than the first element of the next row.
+You're given a target value x, your task is to find and count all pairs {a, b} such that a is from mat1 and b is from mat2 where the sum of a + b is equal to x.
+code:
+
+class Solution {
+public:
+    // Function to count pairs from two matrices that sum up to a given value x
+    int countPairs(vector<vector<int>> &mat1, vector<vector<int>> &mat2, int x) {
+        // Get the size of the matrices (assuming both matrices are square and of size n x n)
+        int n = mat1.size();
+        
+        // Initialize indices for traversing mat1 and mat2
+        int i = 0; // Column index for mat1
+        int j = 0; // Row index for mat1
+        int k = n - 1; // Column index for mat2 (start from the last column)
+        int l = n - 1; // Row index for mat2 (start from the last row)
+        
+        int ans = 0; // Variable to count the number of valid pairs
+
+        // Loop until we have traversed all possible pairs
+        while (j < n && l >= 0) {
+            // Check if the sum of the current elements from mat1 and mat2 equals x
+            if (mat1[j][i] + mat2[l][k] == x) {
+                ans++; // Increment the count of valid pairs
+                i++; // Move to the next column in mat1
+                k--; // Move to the previous column in mat2
+            }
+            // If the sum is greater than x, move left in mat2 (decrease column index)
+            else if (mat1[j][i] + mat2[l][k] > x) {
+                k--; // Move to the previous column in mat2
+            }
+            // If the sum is less than x, move right in mat1 (increase column index)
+            else {
+                i++; // Move to the next column in mat1
+            }
+
+            // If we reach the end of a row in mat1, reset the column index and move to the next row
+            if (i >= n) {
+                i = 0; // Reset column index
+                j++; // Move to the next row in mat1
+            }
+
+            // If we reach the beginning of a column in mat2, reset the column index and move up a row
+            if (k < 0) {
+                k = n - 1; // Reset column index to the last column
+                l--; // Move to the previous row in mat2
+            }
+        }
+
+        return ans; // Return the total count of valid pairs
+    }
+};
