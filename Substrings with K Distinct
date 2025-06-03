@@ -1,0 +1,41 @@
+question: Given a string consisting of lowercase characters and an integer k, the task is to count all possible substrings (not necessarily distinct) that have exactly k distinct characters. 
+
+
+code:
+
+class Solution {
+public:
+    // Function to count substrings with exactly k distinct characters
+    int countSubstr(string& s, int k) {
+        // Initialize a counter for the number of valid substrings
+        int count = 0;
+
+        // Iterate over each character in the string as a starting point
+        for (int i = 0; i < s.size(); i++) {
+            // Create a frequency array to track the count of each character
+            vector<int> freq(26, 0);
+            // Variable to keep track of the number of distinct characters
+            int distinct = 0;
+
+            // Iterate from the starting point to the end of the string
+            for (int j = i; j < s.size(); j++) {
+                // If the character at position j is encountered for the first time
+                if (freq[s[j] - 'a'] == 0) {
+                    distinct++; // Increment the distinct character count
+                }
+                // Increment the frequency of the current character
+                freq[s[j] - 'a']++;
+                
+                // Check if the number of distinct characters is equal to k
+                if (distinct == k) {
+                    count++; // Found a valid substring, increment the count
+                }
+                // If the number of distinct characters exceeds k, break the loop
+                if (distinct > k)
+                    break; // No need to check further, we can stop
+            }
+        }
+        // Return the total count of substrings with exactly k distinct characters
+        return count;
+    }
+};
