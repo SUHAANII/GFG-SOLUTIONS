@@ -1,0 +1,62 @@
+question: Given two strings:
+
+A text string in which you want to search.
+
+A pattern string that you are looking for within the text.
+
+Return all positions (1-based indexing) where the pattern occurs as a substring in the text. If the pattern does not occur, return an empty list.
+
+All characters in both strings are lowercase English letters (a to z).
+
+code:
+class Solution {
+public:
+    vector<int> search(string &pat, string &txt) {
+        // Get the lengths of the pattern and the text
+        int n = pat.length(); // Length of the pattern
+        int m = txt.length(); // Length of the text
+        
+        // Step 1: Create the LPS (Longest Prefix Suffix) array
+        vector<int> lps(n, 0); // Initialize LPS array with zeros
+        int len = 0; // Length of the previous longest prefix suffix
+
+        // Preprocessing the pattern to fill the LPS array
+        for (int i = 1; i < n; i++) {
+            // Check for a mismatch after len matches
+            while (len > 0 && pat[len] != pat[i]) {
+                len = lps[len - 1]; // Fall back in the LPS array
+            }
+            // If there's a match, increase the length of the prefix
+            if (pat[len] == pat[i]) {
+                len++;
+            }
+            // Set the LPS value for the current index
+            lps[i] = len;
+        }
+        
+        // Step 2: Search for the pattern in the text
+        vector<int> ans; // To store the starting indices of found patterns
+        int j = 0; // Index for pattern
+
+        // Traverse the text
+        for (int i = 0; i < m; i++) {
+            // Check for a mismatch after j matches
+            while (j > 0 && pat[j] != txt[i]) {
+                j = lps[j - 1]; // Fall back in the LPS array
+            }
+            // If there's a match, move to the next character in the pattern
+            if (txt[i] == pat[j]) {
+                j++;
+            }
+                        
+            // If we found a complete match of the pattern
+            if (j == n) {
+                // Store the starting index of the match (1-based index)
+                ans.push_back(i - n + 2);
+                // Reset j using the LPS array to look for further matches
+                j = lps[n - 1];
+            } 
+        }
+        return ans; // Return the list of starting indices
+    }
+};
