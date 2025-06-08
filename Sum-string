@@ -1,0 +1,85 @@
+question: Given a string s consisting of digits, determine whether it can be classified as a sum-string.
+
+A sum-string is a string that can be split into more than two non-empty substrings such that:
+
+
+The rightmost substring is equal to the sum of the two substrings immediately before it (interpreted as integers).
+
+This condition must apply recursively to the substrings before it.
+
+The rightmost substring (and any number in the sum) must not contain leading zeroes, unless the number is exactly '0'
+
+code:
+
+class Solution {
+public:
+    // Function to add two strings representing non-negative integers
+    string s_add(string a, string b) {
+        string ans = ""; // Resultant string to hold the sum
+        int d = 0; // Carry for addition
+        int i = a.size() - 1; // Pointer for string a
+        int j = b.size() - 1; // Pointer for string b
+        
+        // Iterate while there are digits left in either string or there is a carry
+        while (i >= 0 || j >= 0 || d) {
+            int c = d; // Initialize current sum with carry
+            
+            // Add current digit of a if available
+            if (i >= 0) c += a[i--] - '0'; // Convert char to int
+            
+            // Add current digit of b if available
+            if (j >= 0) c += b[j--] - '0'; // Convert char to int
+            
+            // Append the last digit of the current sum to the result
+            ans.push_back(c % 10 + '0'); // Convert int back to char
+            d = c / 10; // Update carry
+        }
+        
+        reverse(ans.begin(), ans.end()); // Reverse the result to get the correct order
+        return ans; // Return the final sum
+    }
+
+    // Function to check if the string can be formed by the sum of two previous strings
+    bool isValid(string s, int start, string a, string b) {
+        // Iterate through the string starting from the given index
+        while (start < s.size()) {
+            // Calculate the sum of the two strings a and b
+            string c = s_add(a, b);
+            int len = c.length(); // Length of the resulting sum
+            
+            // If the remaining string is shorter than c or does not match c, return false
+            if (start + len > s.size() || s.substr(start, len) != c)
+                return false;
+            
+            start += len; // Move the start index forward by the length of c
+            a = b; // Update a to be the previous b
+            b = c; // Update b to be the new sum c
+        }
+        return true; // If all parts matched, return true
+    }
+
+    // Main function to determine if the string is a sum string
+    bool isSumString(string &s) {
+        int n = s.length(); // Length of the input string
+        
+        // Iterate over possible lengths for the first number a
+        for (int i = 1; i < n; i++) {
+            // Iterate over possible lengths for the second number b
+            for (int j = 1; i + j < n; j++) {
+                string a = s.substr(0, i); // First number
+                string b = s.substr(i, j); // Second number
+                
+                // Skip if a or b has leading zeros (unless they are "0")
+                if ((a.length() > 1 && a[0] == '0') || 
+                    (b.length() > 1 && b[0] == '0')) {
+                    continue; // Skip this combination
+                }
+
+                // Check if the rest of the string can be formed by the sum of a and b
+                if (isValid(s, i + j, a, b))
+                    return true; // Found a valid sum string
+            }
+        }
+        return false; // No valid combination found
+    }
+};
