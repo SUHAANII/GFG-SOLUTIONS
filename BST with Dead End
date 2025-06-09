@@ -1,0 +1,57 @@
+question: You are given a Binary Search Tree (BST) containing unique positive integers greater than 0.
+
+Your task is to determine whether the BST contains a dead end.
+
+Note: A dead end is a leaf node in the BST such that no new node can be inserted in the BST at or below this node while maintaining the BST property and the constraint that all node values must be > 0.
+
+code:
+
+class Solution {
+public:
+    vector<int> arr, leaf; // Vectors to store all node values and leaf node values respectively
+
+    // Function to perform inorder traversal of the binary tree
+    void inorder(Node* node) {
+        // Base case: if the node is null, return
+        if (!node)
+            return;
+        
+        // Traverse the left subtree
+        inorder(node->left);
+        
+        // Visit the current node and add its value to the arr vector
+        arr.push_back(node->data);
+        
+        // If the current node is a leaf (no left and right children), add it to the leaf vector
+        if (!node->left && !node->right)
+            leaf.push_back(node->data);
+        
+        // Traverse the right subtree
+        inorder(node->right);
+    }
+
+    // Function to check if there is a dead end in the binary tree
+    bool isDeadEnd(Node *root) {
+        // Initialize arr with a dummy value (0) to handle edge cases
+        arr = {0}; 
+        leaf = {}; // Clear the leaf vector
+        
+        // Perform inorder traversal to populate arr and leaf vectors
+        inorder(root);
+        
+        int j = 0; // Index for leaf nodes
+        // Iterate through arr starting from the second element
+        for (int i = 1; i < arr.size() && j < leaf.size(); ++i) {
+            // Check if the current element in arr is a leaf node
+            if (arr[i] == leaf[j]) {
+                // Check if the previous and next elements in arr form a dead end
+                if (arr[i-1] == leaf[j] - 1 && arr[i+1] == leaf[j] + 1)
+                    return true; // Dead end found, return true
+                ++j; // Move to the next leaf node
+            }
+        }
+        
+        // If no dead end is found, return false
+        return false;
+    }
+};
