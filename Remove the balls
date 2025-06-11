@@ -1,0 +1,42 @@
+question: You are given two arrays, color and radius, representing a sequence of balls:
+
+color[i] is the color of the i-th ball.
+
+radius[i] is the radius of the i-th ball.
+
+If two consecutive balls have the same color and radius, remove them both. Repeat this process until no more such pairs exist.
+
+
+Return the number of balls remaining after all possible removals.
+
+code:
+
+class Solution {
+public:
+    // Function to find the length of the stack after processing colors and radii
+    int findLength(vector<int> &color, vector<int> &radius) {
+        // Create a stack to hold pairs of (color, radius)
+        stack<pair<int, int>> stk; // {color, radius}
+        
+        // Get the number of elements in the color and radius vectors
+        int n = color.size();
+        
+        // Iterate through each element in the color and radius vectors
+        for (int i = 0; i < n; i++) {
+            int c = color[i]; // Current color
+            int r = radius[i]; // Current radius
+            
+            // Check if the stack is not empty and the top element matches the current pair
+            if (!stk.empty() && (stk.top().first == c && stk.top().second == r)) {
+                // If it matches, pop the top element from the stack (removing the pair)
+                stk.pop();
+            } else {
+                // If it doesn't match, push the current pair onto the stack
+                stk.push({c, r});
+            }
+        }
+        
+        // Return the size of the stack, which represents the number of unmatched pairs
+        return stk.size();
+    }
+};
