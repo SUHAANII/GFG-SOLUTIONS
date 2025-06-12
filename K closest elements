@@ -1,0 +1,53 @@
+question: You are given a sorted array arr[] of unique integers, an integer k, and a target value x. Return exactly k elements from the array closest to x, excluding x if it exists.
+
+An element a is closer to x than b if:
+
+
+|a - x| < |b - x|, or
+|a - x| == |b - x| and a > b (i.e., prefer the larger element if tied)
+
+
+Return the k closest elements in order of closeness.
+
+code:
+
+class Solution {
+public:
+    vector<int> printKClosest(vector<int> arr, int k, int x) {
+        // Find the index of the largest element that is less than or equal to x
+        int idx1 = upper_bound(arr.begin(), arr.end(), x - 1) - arr.begin() - 1;
+        
+        // Find the index of the smallest element that is greater than or equal to x
+        int idx2 = lower_bound(arr.begin(), arr.end(), x + 1) - arr.begin();
+        
+        vector<int> ans; // Vector to store the k closest elements
+        int n = arr.size(); // Size of the input array
+        
+        // Use two pointers to find k closest elements
+        while ((idx1 >= 0 || idx2 < n) && k) {
+            // Calculate the absolute difference from x for both pointers
+            // Use INT_MAX as a placeholder for out of bounds
+            int diff1 = (idx1 < 0 ? INT_MAX : abs(arr[idx1] - x)); // Difference for left pointer
+            int diff2 = (idx2 >= n ? INT_MAX : abs(arr[idx2] - x)); // Difference for right pointer
+            
+            // Compare the differences to decide which element to add to the answer
+            if (diff1 < diff2) {
+                // If the left element is closer to x
+                ans.push_back(arr[idx1]); // Add the left element to the answer
+                --idx1; // Move the left pointer to the left
+            } else if (diff1 > diff2) {
+                // If the right element is closer to x
+                ans.push_back(arr[idx2]); // Add the right element to the answer
+                ++idx2; // Move the right pointer to the right
+            } else {
+                // If both elements are equally close to x
+                // Prefer the right (larger) element
+                ans.push_back(arr[idx2]); // Add the right element to the answer
+                ++idx2; // Move the right pointer to the right
+            }
+            --k; // Decrease the count of elements to find
+        }
+        
+        return ans; // Return the vector containing the k closest elements
+    }
+};
