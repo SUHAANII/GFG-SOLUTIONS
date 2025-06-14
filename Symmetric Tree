@@ -1,0 +1,31 @@
+question: Given the root of a binary tree, check whether it is symmetric, i.e., whether the tree is a mirror image of itself.
+
+
+A binary tree is symmetric if the left subtree is a mirror reflection of the right subtree.
+
+code:
+
+class Solution {
+public:
+    // Helper function to compare two subtrees
+    bool solve(Node* l, Node* r) {
+        // If both nodes are NULL, they are symmetric
+        if (l == NULL && r == NULL) return true;
+        
+        // If one of the nodes is NULL or the data doesn't match, they are not symmetric
+        if (l == NULL || r == NULL || l->data != r->data) return false;
+
+        // Recursively check the left subtree of 'l' with the right subtree of 'r'
+        // and the right subtree of 'l' with the left subtree of 'r'
+        return solve(l->left, r->right) && solve(l->right, r->left);
+    }
+
+    // Function to check if the binary tree is symmetric
+    bool isSymmetric(Node* root) {
+        // If the tree is empty, it is symmetric
+        if (root == NULL) return true;
+
+        // Call the helper function to compare the left and right subtrees
+        return solve(root->left, root->right);
+    }
+};
