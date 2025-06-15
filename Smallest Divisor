@@ -1,0 +1,46 @@
+question: Given an integer array arr[] and an integer k (where k ≥ arr.length), find the smallest positive integer divisor such that the sum of the ceiling values of each element in arr[] divided by this divisor is less than or equal to k.
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the smallest divisor such that the sum of ceilings of 
+    // arr[i] divided by the divisor is less than or equal to k
+    int smallestDivisor(vector<int>& arr, int k) {
+        // Get the size of the array
+        int n = arr.size();
+        
+        // Initialize binary search bounds
+        int low = 1; // The smallest possible divisor (1)
+        int high = *max_element(arr.begin(), arr.end()); // The largest possible divisor (the maximum element in arr)
+        
+        // Initialize answer with a large value
+        int ans = 1e9; 
+        
+        // Perform binary search
+        while (low <= high) {
+            // Calculate the middle point to avoid overflow
+            int mid = low + (high - low) / 2;
+            int cnt = 0; // Variable to store the sum of ceilings
+            
+            // Calculate the sum of ceilings for the current 'mid' (divisor)
+            for (int x : arr) {
+                // Calculate the ceiling of x divided by mid
+                cnt += ((x + mid - 1) / mid); // This is equivalent to ceil(x / mid)
+            }
+            
+            // If the sum of ceilings is less than or equal to k
+            if (cnt <= k) {
+                ans = mid; // Update the answer with the current divisor
+                high = mid - 1; // Try to find a smaller divisor
+            } else {
+                // If the sum exceeds k, we need a larger divisor
+                low = mid + 1; // Search in the right half
+            }
+        }
+        
+        // Return the smallest valid divisor found
+        return ans;
+    }
+};
