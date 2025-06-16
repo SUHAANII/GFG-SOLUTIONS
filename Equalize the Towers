@@ -1,0 +1,54 @@
+question: You are given an array heights[] representing the heights of towers and another array cost[] where each element represents the cost of modifying the height of respective tower.
+
+The goal is to make all towers of same height by either adding or removing blocks from each tower.
+Modifying the height of tower (add or remove) 'i' by 1 unit costs cost[i].
+Return the minimum cost to equalize the heights of all towers.
+
+
+
+code:
+
+class Solution {
+public:
+    int minCost(vector<int>& h, vector<int>& cost) {
+        // Find the minimum height in the array h
+        int s = *min_element(begin(h), end(h));
+        // Get the number of elements in height array
+        int n = h.size();
+        // Find the maximum height in the array h
+        int e = *max_element(begin(h), end(h));
+        // Initialize the answer to a large value
+        long long ans = 1e11;
+
+        // Lambda function to calculate the total cost for a given height 'mid'
+        auto pos = [&](int mid) -> long long {
+            long long temp = 0; // Initialize temporary cost
+            // Loop through each height
+            for (int i = 0; i < n; i++)
+                // Calculate the cost for adjusting height h[i] to mid
+                temp += cost[i] * (abs(mid - h[i]));
+            return temp; // Return the total cost
+        };
+
+        // Binary search between the minimum and maximum heights
+        while (s <= e) {
+            // Calculate the middle point
+            long long mid = (s + e) / 2;
+            // Calculate the cost at mid height
+            long long f = pos(mid);
+            // Calculate the cost at mid - 1 height
+            long long prev = pos(mid - 1);
+            // Calculate the cost at mid + 1 height
+            long long next = pos(mid + 1);
+            // Update the minimum cost found so far
+            ans = min(ans, f);
+
+            // Adjust the search range based on the costs
+            if (prev <= next)
+                e = mid - 1; // Move left if cost decreases
+            else
+                s = mid + 1; // Move right if cost increases
+        }
+        return ans; // Return the minimum cost
+    }
+};
