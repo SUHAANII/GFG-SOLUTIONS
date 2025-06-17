@@ -1,0 +1,51 @@
+question: You are given an array arr[] of integers, where each element represents the number of coins in a pile. You are also given an integer k.
+Your task is to remove the minimum number of coins such that the absolute difference between the number of coins in any two updated piles is at most k.
+
+Note: You can also remove a pile by removing all the coins of that pile.
+
+code:
+
+#include <vector>
+#include <algorithm>
+#include <limits.h>
+
+class Solution {
+public:
+    int minimumCoins(std::vector<int>& arr, int k) {
+        int n = arr.size();
+        if (n == 0) return 0; // Handle empty array case
+
+        // Sort the array
+        std::sort(arr.begin(), arr.end());
+
+        // Calculate prefix sum
+        std::vector<int> preS(n, 0);
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+            preS[i] = sum;
+        }
+
+        // Initialize minimum coins to a large value
+        int min_c = INT_MAX;
+
+        // Iterate through each element to find the minimum coins needed
+        for (int i = 0; i < n; i++) {
+            int x = arr[i];
+
+            // Calculate coins to remove from the left of x
+            int left_c = (i > 0) ? preS[i - 1] : 0;
+
+            // Find the first element greater than x + k
+            int j = std::upper_bound(arr.begin(), arr.end(), x + k) - arr.begin();
+
+            // Calculate coins to remove from the right
+            int right_c = (j > 0) ? (preS[n - 1] - preS[j - 1]) - (n - j) * (x + k) : 0;
+
+            // Update minimum coins needed
+            min_c = std::min(min_c, left_c + right_c);
+        }
+
+        return min_c;
+    }
+};
