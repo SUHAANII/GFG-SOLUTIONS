@@ -1,0 +1,51 @@
+question: Given a string s, find all possible ways to partition it such that every substring in the partition is a palindrome.
+
+code:
+
+class Solution {
+public:
+    // Function to check if a substring s[start:end] is a palindrome
+    bool isPalindrome(const string &s, int start, int end) {
+        // Check characters from both ends moving towards the center
+        while (start < end) {
+            // If characters don't match, it's not a palindrome
+            if (s[start++] != s[end--]) return false;
+        }
+        // If all characters matched, it's a palindrome
+        return true;
+    }
+
+    // DFS function to find all palindrome partitions
+    void dfs(int i, string &s, vector<string> &path, vector<vector<string>> &res) {
+        // If we reach the end of the string, add the current path to results
+        if (i == s.length()) {
+            res.push_back(path); // Add the current partitioning to results
+            return;
+        }
+        
+        // Iterate through the string to find palindromic substrings
+        for (int j = i; j < s.length(); ++j) {
+            // Check if the substring s[i:j] is a palindrome
+            if (isPalindrome(s, i, j)) {
+                // If it is, add it to the current path
+                path.push_back(s.substr(i, j - i + 1)); // Extract palindromic substring
+                // Recurse to find partitions for the remaining substring
+                dfs(j + 1, s, path, res); // Move to the next index after the palindrome
+                // Backtrack: remove the last added substring to try new partitions
+                path.pop_back(); // Remove the last palindrome from the path
+            }
+        }
+    }
+
+    // Main function to initiate the palindrome partitioning process
+    vector<vector<string>> palinParts(string &s) {
+        // Vector to hold the resulting partitions
+        vector<vector<string>> res;
+        // Vector to hold the current path of palindromic substrings
+        vector<string> path;
+        // Start DFS from the beginning of the string
+        dfs(0, s, path, res);
+        // Return all found palindrome partitions
+        return res;
+    }
+};
