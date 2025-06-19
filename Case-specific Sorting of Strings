@@ -1,0 +1,66 @@
+question: Given a string s consisting of only uppercase and lowercase characters. The task is to sort uppercase and lowercase letters separately such that if the ith place in the original string had an Uppercase character then it should not have a lowercase character after being sorted and vice versa.
+
+code:
+
+class Solution {
+public:
+    // Function to sort characters in a string such that uppercase
+    // and lowercase letters maintain their relative positions
+    string caseSort(string& s) {
+        // Initialize vectors to count occurrences of uppercase and lowercase letters
+        vector<int> u(26, 0); // For uppercase letters A-Z
+        vector<int> l(26, 0); // For lowercase letters a-z
+
+        // Count the occurrences of each character in the string
+        for (char c : s) {
+            if (c >= 'A' && c <= 'Z') {
+                // Increment the count for the uppercase letter
+                u[c - 'A']++;
+            }
+            if (c >= 'a' && c <= 'z') {
+                // Increment the count for the lowercase letter
+                l[c - 'a']++;
+            }
+        }
+
+        // Create a string to store sorted uppercase letters
+        string U = "";
+        for (int i = 0; i < 26; i++) {
+            // Append each uppercase letter to U based on its count
+            while (u[i] > 0) {
+                U += ('A' + i); // Convert index back to character
+                u[i]--; // Decrease the count
+            }
+        }
+
+        // Create a string to store sorted lowercase letters
+        string L = "";
+        for (int i = 0; i < 26; i++) {
+            // Append each lowercase letter to L based on its count
+            while (l[i] > 0) {
+                L += ('a' + i); // Convert index back to character
+                l[i]--; // Decrease the count
+            }
+        }
+
+        // Initialize indices for the sorted uppercase and lowercase strings
+        int ui = 0, li = 0;
+        // Iterate through the original string to replace characters
+        for (int i = 0; i < s.length(); i++) {
+            char c = s[i];
+            if (c >= 'A' && c <= 'Z') {
+                // Replace with the next sorted uppercase letter
+                s[i] = U[ui];
+                ui++; // Move to the next uppercase letter
+            }
+            if (c >= 'a' && c <= 'z') {
+                // Replace with the next sorted lowercase letter
+                s[i] = L[li];
+                li++; // Move to the next lowercase letter
+            }
+        }
+
+        // Return the modified string
+        return s;
+    }
+};
