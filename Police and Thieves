@@ -1,0 +1,70 @@
+question: Given an array arr[], where each element contains either a 'P' for policeman or a 'T' for thief. Find the maximum number of thieves that can be caught by the police. 
+Keep in mind the following conditions :
+
+Each policeman can catch only one thief.
+A policeman cannot catch a thief who is more than k units away from him.
+
+code:
+
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+// Function to find the maximum number of thieves that can be caught by policemen
+int catchThieves(vector<char>& arr, int k) {
+    // Queues to store the indices of policemen and thieves
+    queue<int> police, thieves;
+    int count = 0; // Counter for the number of thieves caught
+
+    // Iterate through the array to populate the queues
+    for (int i = 0; i < arr.size(); i++) {
+        if (arr[i] == 'P') {
+            // If the element is 'P', store its index in the police queue
+            police.push(i);
+        } else {
+            // If the element is 'T', store its index in the thieves queue
+            thieves.push(i);
+        }
+    }
+
+    // While there are policemen and thieves available to catch
+    while (!police.empty() && !thieves.empty()) {
+        // Get the indices of the front policeman and thief
+        int policeIndex = police.front();
+        int thiefIndex = thieves.front();
+
+        // Check if the policeman can catch the thief
+        if (abs(policeIndex - thiefIndex) <= k) {
+            // If the distance is within the limit, catch the thief
+            count++; // Increment the count of caught thieves
+            police.pop(); // Remove this policeman from the queue
+            thieves.pop(); // Remove this thief from the queue
+        } else if (policeIndex < thiefIndex) {
+            // If the policeman is to the left of the thief and can't catch him
+            police.pop(); // Move to the next policeman
+        } else {
+            // If the thief is to the left of the policeman and can't be caught
+            thieves.pop(); // Move to the next thief
+        }
+    }
+
+    return count; // Return the total number of thieves caught
+}
+
+int main() {
+    // Test case 1
+    vector<char> arr1 = {'P', 'T', 'T', 'P', 'T'};
+    int k1 = 1;
+    // Call the function and print the result
+    cout << "Maximum thieves caught: " << catchThieves(arr1, k1) << endl; // Output: 2
+
+    // Test case 2
+    vector<char> arr2 = {'T', 'T', 'P', 'P', 'T', 'P'};
+    int k2 = 2;
+    // Call the function and print the result
+    cout << "Maximum thieves caught: " << catchThieves(arr2, k2) << endl; // Output: 3
+
+    return 0; // Exit the program
+}
