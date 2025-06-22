@@ -1,0 +1,64 @@
+question: Given an array arr[] of distinct positive integers. Your task is to find the largest subset such that for every pair of elements (x, y) in the subset, either x divides y or y divides x.
+Note : If multiple subsets of the same maximum length exist, return the one that is lexicographically greatest, after sorting the subset in ascending order.
+
+code:
+
+class Solution {
+public:
+    vector<int> largestSubset(vector<int>& arr) {
+        // Get the size of the input array
+        int n = arr.size(), mx = 0;
+        
+        // Create a 2D vector to store the largest divisible subset ending at each index
+        vector<vector<int>> dp(n);
+        
+        // Vector to store the final answer
+        vector<int> ans;
+        
+        // Sort the array to ensure that we can easily check divisibility
+        sort(arr.begin(), arr.end());
+        
+        // Iterate through each element in the sorted array
+        for(int i = 0; i < n; i++) {
+            // Initialize the subset for the current element
+            dp[i] = {arr[i]};
+            
+            // Check all previous elements to find valid subsets
+            for(int j = 0; j < i; j++) {
+                // Check if arr[i] can be added to the subset ending at dp[j]
+                if (1 + dp[j].size() >= dp[i].size() && arr[i] % arr[j] == 0) {
+                    // Create a temporary vector to hold the potential new subset
+                    vector<int> temp = dp[i];
+                    temp.pop_back(); // Remove the current element to add a new one
+                    
+                    // If the new subset size equals the current size, choose the lexicographically larger one
+                    if (1 + dp[j].size() == dp[i].size()) {
+                        temp = dp[j]; // Start from dp[j]
+                        temp.push_back(arr[i]); // Add the current element
+                        dp[i] = max(dp[i], temp); // Update dp[i] with the larger subset
+                    } else {
+                        // If the new subset is larger, simply update dp[i]
+                        dp[i] = dp[j];
+                        dp[i].push_back(arr[i]);
+                    }
+                }
+            }
+            // Update the maximum size found so far
+            mx = max(mx, (int) dp[i].size());
+        }
+        
+        // Find the largest subset from the dp array
+        for (int i = 0; i < n; i++) {
+            // If the size of the current subset matches the maximum size
+            if(dp[i].size() == mx) {
+                // If ans is empty, initialize it with the current subset
+                if(ans.empty())
+                    ans = dp[i];
+                // Update ans with the lexicographically larger subset if applicable
+                ans = max(ans, dp[i]);
+            }
+        }
+        // Return the largest subset found
+        return ans;
+    }
+};
