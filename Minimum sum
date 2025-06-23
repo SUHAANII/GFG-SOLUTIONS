@@ -1,0 +1,73 @@
+question: Given an array arr[ ] consisting of digits, your task is to form two numbers using all the digits such that their sum is minimized. Return the minimum possible sum as a string with no leading zeroes.
+
+code:
+
+class Solution {
+public:
+    // Function to find the minimum sum of two numbers formed by the digits of the array
+    string minSum(vector<int> &arr) {
+        // Sort the input array to arrange digits in ascending order
+        sort(arr.begin(), arr.end());
+        
+        string num1 = ""; // String to store the first number
+        string num2 = ""; // String to store the second number
+        int i = 0; // Index to iterate through the sorted array
+        
+        // Distribute digits between num1 and num2
+        while(i < arr.size()) {
+            // Add digit to num1 if available
+            if(i < arr.size()) {
+                num1 += '0' + arr[i]; // Convert int to char and append
+                i++;
+            }
+            // Add digit to num2 if available
+            if(i < arr.size()) {
+                num2 += '0' + arr[i]; // Convert int to char and append
+                i++;
+            }
+        }
+        
+        string sum = ""; // String to store the sum of num1 and num2
+        int i1 = num1.length() - 1; // Index for num1 (from the end)
+        int i2 = num2.length() - 1; // Index for num2 (from the end)
+        int carry = 0; // Variable to store carry during addition
+        
+        // Add num1 and num2 digit by digit from the end
+        while(i1 >= 0 || i2 >= 0 || carry > 0) {
+            int n1 = 0, n2 = 0; // Variables to store current digits
+            
+            // Get current digit from num1 if available
+            if(i1 >= 0) {
+                n1 = num1[i1] - '0'; // Convert char to int
+                i1--; // Move to the next digit
+            }
+            // Get current digit from num2 if available
+            if(i2 >= 0) {
+                n2 = num2[i2] - '0'; // Convert char to int
+                i2--; // Move to the next digit
+            }
+            
+            // Calculate the sum of the current digits and carry
+            int currSum = n1 + n2 + carry;
+            carry = currSum / 10; // Update carry for the next iteration
+            int curr = currSum % 10; // Get the current digit to store in the sum
+            
+            sum += '0' + curr; // Append the current digit to the sum
+        }
+        
+        // Reverse the sum string as we constructed it backwards
+        reverse(sum.begin(), sum.end());
+        
+        // Remove leading zeros from the sum
+        int ind = 0; // Index to find the first non-zero character
+        for(int i = 0; i < sum.length(); i++) {
+            if(sum[i] != '0') {
+                break; // Stop when the first non-zero digit is found
+            }
+            ind++; // Increment index for leading zero
+        }
+        
+        // Return the sum without leading zeros
+        return sum.substr(ind);
+    }
+};
