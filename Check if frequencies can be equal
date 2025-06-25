@@ -1,0 +1,55 @@
+question:Given a string s consisting only lowercase alphabetic characters, check whether it is possible to remove at most one character such that the  frequency of each distinct character in the string becomes same. Return true if it is possible; otherwise, return false.
+
+
+
+code: 
+class Solution {
+public:
+    // Function to check if all characters in the string can have the same frequency
+    bool sameFreq(string& s) {
+        // Create a vector to count the frequency of each character (26 for lowercase letters)
+        vector<int> v(26, 0);
+        
+        // Count the frequency of each character in the string
+        for (auto &b : s) {
+            v[b - 'a']++; // Increment the count for the character 'b'
+        }
+        
+        // Sort the frequency vector in descending order
+        sort(v.begin(), v.end(), greater<>());
+        
+        // Use a set to store unique frequencies
+        set<int> st;
+        
+        // Insert non-zero frequencies into the set
+        for (auto &b : v) {
+            if (b > 0) {
+                st.insert(b); // Only consider frequencies greater than zero
+            }
+        }
+        
+        // If there are more than 2 unique frequencies, return false
+        if (st.size() > 2) {
+            return false;
+        }
+        
+        // If there is only one unique frequency, all characters have the same frequency
+        if (st.size() == 1) {
+            return true;
+        }
+        
+        // If the smallest frequency is 1, it means one character can be removed
+        if (*st.begin() == 1) {
+            return true;
+        }
+        
+        // If the highest frequency is exactly one more than the second highest frequency
+        // (e.g., 3 and 2), we can adjust to make frequencies equal
+        if (v[0] != v[1] + 1) {
+            return false;
+        }
+        
+        // If none of the above conditions failed, return true
+        return true; 
+    }
+};
