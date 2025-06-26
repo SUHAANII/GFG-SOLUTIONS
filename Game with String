@@ -1,0 +1,35 @@
+question: Given a string s consisting of lowercase alphabets and an integer k, your task is to find the minimum possible value of the string after removing exactly k characters.
+
+The value of the string is defined as the sum of the squares of the frequencies of each distinct character present in the string.
+
+code;
+
+class Solution {
+public:
+    // Function to calculate the minimum value based on the frequency of characters
+    int minValue(string &s, int k) {
+        // Array to keep track of frequency of each character (a-z)
+        int hash[26] = {0};
+
+        // Count the frequency of each character in the string
+        for(auto i : s) {
+            hash[i - 'a']++; // Increment the count for the corresponding character
+        }
+
+        // Sort the frequency array in non-decreasing order
+        sort(hash, hash + 26);
+        
+        int ans = 0; // Variable to store the final answer (minimum value)
+        int rem = s.size() - k; // Remaining characters after removing k characters
+
+        // Iterate through the sorted frequency array
+        for(int i = 0, n = 26; i < 26; i++, n--) {
+            // Calculate the minimum frequency we can take from the current character
+            int mn = min(hash[i], rem / n);
+            ans += mn * mn; // Add the square of the minimum frequency to the answer
+            rem -= mn; // Decrease the remaining count of characters
+        }
+
+        return ans; // Return the calculated minimum value
+    }
+};
