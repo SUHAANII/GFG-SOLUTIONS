@@ -1,0 +1,71 @@
+question: There is a standard numeric keypad on a mobile phone. You can press the current button or any button that is directly above, below, to the left, or to the right of it. For example, if you press 5, then pressing 2, 4, 6, or 8 is allowed. However, diagonal movements and pressing the bottom row corner buttons (* and #) are not allowed.
+
+
+Given an integer n, determine how many unique sequences of length n can be formed by pressing buttons on the keypad, starting from any digit.
+
+
+code:
+
+
+class Solution {
+public:
+    // Function to count the number of ways to reach 'n' steps from a given position (x, y) in the matrix 'mat'
+    int Findcnt(int n, int x, int y, vector<vector<int>> &mat, vector<vector<vector<int>>> &visited) {
+        // Check if the current position is out of bounds or is an invalid cell (-1)
+        if (x < 0 || x >= 4 || y < 0 || y >= 3 || mat[x][y] == -1) {
+            return 0; // Return 0 if out of bounds or invalid
+        }
+
+        // If we have reached the base case (n == 1), we found one valid way
+        if (n == 1) {
+            return 1; // Return 1 as we've found a valid path
+        }
+
+        // Check if the result for this state has already been computed
+        if (visited[x][y][n] != -1) {
+            return visited[x][y][n]; // Return the cached result
+        }
+
+        // Recursively explore all possible moves from the current position
+        int same = Findcnt(n - 1, x, y, mat, visited); // Stay in the same position
+        int left = Findcnt(n - 1, x - 1, y, mat, visited); // Move left
+        int Up = Findcnt(n - 1, x, y - 1, mat, visited); // Move up
+        int right = Findcnt(n - 1, x, y + 1, mat, visited); // Move right
+        int down = Findcnt(n - 1, x + 1, y, mat, visited); // Move down
+
+        // Store the computed result in the visited array and return it
+        return visited[x][y][n] = (same + left + Up + right + down);
+    }
+
+    // Main function to get the total count of ways to reach 'n' steps
+    int getCount(int n) {
+        // Define the matrix 'mat' with some valid and invalid cells
+        vector<vector<int>> mat = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+            {-1, 0, -1} // -1 represents an invalid cell
+        };
+
+        int ans = 0; // Initialize answer variable to accumulate results
+
+        // Loop through each cell in the matrix (12 cells total)
+        for (int i = 0; i < 12; i++) {
+            // Skip invalid cells (positions with -1)
+            if (i == 9 || i == 11) continue;
+
+            // Create a 3D visited array to cache results for each position and step count
+            vector<vector<vector<int>>> visited(4, vector<vector<int>>(3, vector<int>(n + 1, -1)));
+
+            // Calculate the current x and y coordinates based on the loop index
+            int x = i / 3; // Row index
+            int y = i % 3; // Column index
+
+            // Accumulate the count of ways from the current position (x, y)
+            ans += Findcnt(n, x, y, mat, visited);
+        }
+
+        // Return the total count of ways to reach 'n' steps
+        return ans;
+    }
+};
