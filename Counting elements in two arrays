@@ -1,0 +1,25 @@
+question: You are given two unsorted arrays a[] and b[]. Both arrays may contain duplicate elements. For each element in a[], your task is to count how many elements in b[] are less than or equal to that element.
+
+code:
+
+class Solution {
+public:
+    // Function to count how many elements in vector 'b' are less than or equal to each element in vector 'a'
+    vector<int> countLessEq(vector<int>& a, vector<int>& b) {
+        // Step 1: Sort vector 'b' to enable binary search
+        sort(b.begin(), b.end());
+        
+        // Step 2: Create a vector to store the results
+        vector<int> ans;
+        
+        // Step 3: Iterate through each element 'e' in vector 'a'
+        for(auto &e : a) {
+            // Step 4: Use upper_bound to find the first position in 'b' where elements are greater than 'e'
+            // The difference between this position and the beginning of 'b' gives the count of elements <= 'e'
+            ans.push_back(upper_bound(b.begin(), b.end(), e) - b.begin());
+        }
+        
+        // Step 5: Return the result vector containing counts for each element in 'a'
+        return ans;
+    }
+};
