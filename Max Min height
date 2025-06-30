@@ -1,0 +1,55 @@
+question: Given a garden with n flowers planted in a row, that is represented by an array arr[], where arr[i] denotes the height of the ith flower.You will water them for k days. In one day you can water w continuous flowers. Whenever you water a flower its height increases by 1 unit. You have to maximize the minimum height of all flowers after  k days of watering.
+
+
+code;
+
+class Solution {
+public:
+    // Helper function to determine if we can achieve a height of 'h'
+    bool f(int h, vector<int> &arr, int k, int w) {
+        int n = arr.size(); // Get the size of the array
+        vector<int> temp(n, 0); // Create a temporary array to track adjustments
+        int res = 0; // Total number of operations used
+        int curr = 0; // Current height adjustment
+
+        // Iterate through each element in the array
+        for (int i = 0; i < n; i++) {
+            // If the current height is less than the target height 'h'
+            if (arr[i] < h) {
+                // Calculate how much we need to increase the height
+                int req = max(0, h - arr[i] - curr);
+                res += req; // Add the required operations to the total
+                curr += req; // Update the current adjustment
+
+                // If we are within bounds, mark the end of the influence of this adjustment
+                if (i + w - 1 < n) temp[i + w - 1] = -1 * req;
+            }
+            // Update the current adjustment with the influence of previous operations
+            curr += temp[i]; 
+        }
+        // Return true if the total operations used is within the allowed limit 'k'
+        return res <= k;
+    }
+
+    // Function to find the maximum minimum height we can achieve
+    int maxMinHeight(vector<int> &arr, int k, int w) {
+        // Find the minimum and maximum heights in the array
+        int s = *min_element(arr.begin(), arr.end());
+        int e = *max_element(arr.begin(), arr.end()) + k; // Max height we can reach
+        int ans = s; // Initialize answer with the minimum height
+
+        // Perform binary search between min and max heights
+        while (s <= e) {
+            int mid = s + (e - s) / 2; // Calculate mid-point
+
+            // Check if we can achieve the height 'mid' using at most 'k' operations
+            if (f(mid, arr, k, w)) {
+                ans = mid; // Update answer if we can achieve this height
+                s = mid + 1; // Try for a higher height
+            } else {
+                e = mid - 1; // Reduce the search space for lower heights
+            }
+        }
+        return ans; // Return the maximum minimum height achievable
+    }
+};
