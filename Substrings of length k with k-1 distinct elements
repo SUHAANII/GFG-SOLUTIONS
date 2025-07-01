@@ -1,0 +1,53 @@
+question: Given a string s consisting only lowercase alphabets and an integer k. Find the count of all substrings of length k which have exactly k-1 distinct characters.
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of substrings with exactly k distinct characters
+    int substrCount(string &s, int k) {
+        int n = s.length(); // Get the length of the input string
+        int count = 0; // Initialize a counter for valid substrings
+        string s1 = s.substr(0, k); // Take the first k characters of the string
+        unordered_map<char, int> mp; // Map to store the frequency of characters in the current window
+
+        // Populate the frequency map with the first k characters
+        for (auto it : s1) {
+            mp[it]++;
+        }
+
+        int dist = mp.size(); // Get the number of distinct characters in the first k characters
+        // If the number of distinct characters is exactly k-1, increment the count
+        if (dist == k - 1) {
+            count++;
+        }
+
+        // Sliding window approach: iterate through the string starting from index k
+        for (int i = k; i < n; i++) {
+            char ch = s[i - k]; // Character that is sliding out of the window
+            mp[ch]--; // Decrease its count in the frequency map
+
+            // If the count of this character becomes zero, remove it from the map
+            if (mp[ch] == 0) {
+                mp.erase(ch);
+            }
+
+            // Check if the new character (s[i]) is already in the map
+            if (mp.find(s[i]) != mp.end()) {
+                mp[s[i]]++; // If it exists, increment its count
+                // If the size of the map is k-1, increment the count
+                if (mp.size() == k - 1) {
+                    count++;
+                }
+            } else {
+                // If s[i] is not in the map, add it and check the size
+                mp[s[i]]++;
+                // If the size of the map is k-1, increment the count
+                if (mp.size() == k - 1) {
+                    count++;
+                }
+            }
+        }
+        return count; // Return the total count of valid substrings
+    }
+};
