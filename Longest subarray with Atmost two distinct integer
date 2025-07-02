@@ -1,0 +1,42 @@
+question: Given an array arr[] consisting of positive integers, your task is to find the length of the longest subarray that contains at most two distinct integers.
+
+code:
+
+class Solution {
+public:
+    int totalElements(vector<int> &arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        int i = 0; // Initialize the right pointer for the current position in the array
+        unordered_map<int, int> mp; // Map to count occurrences of elements in the current window
+        int res = 0; // Variable to store the maximum length of the subarray found
+        int start = 0; // Initialize the left pointer for the current window
+
+        // Iterate through the array with the right pointer 'i'
+        while (i < n) {
+            // Add the current element to the map and increase its count
+            mp[arr[i]]++;
+
+            // If the size of the map exceeds 2, we have more than 2 unique elements
+            while (mp.size() > 2) {
+                // Decrease the count of the element at the left pointer
+                mp[arr[start]]--;
+                
+                // If the count of that element becomes zero, remove it from the map
+                if (mp[arr[start]] == 0) {
+                    mp.erase(arr[start]);
+                }
+                
+                // Move the left pointer to the right to reduce the size of the window
+                start++;
+            }
+
+            // Update the result with the maximum length of the valid subarray found
+            res = max(res, i - start + 1);
+            i++; // Move the right pointer to the next element
+        }
+        
+        // Return the maximum length of the subarray with at most 2 unique elements
+        return res;
+    }
+};
