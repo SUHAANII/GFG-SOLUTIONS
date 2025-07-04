@@ -1,0 +1,52 @@
+question:You are given an array arr[] of positive integers and an integer k, find the number of subarrays in arr[] where the count of distinct integers is at most k.
+
+Note: A subarray is a contiguous part of an array.
+
+code:
+class Solution {
+public:
+    // Function to count the number of subarrays with at most k distinct integers
+    int countAtMostK(vector<int> &arr, int k) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Create a map to store the frequency of elements in the current window
+        unordered_map<int, int> mpp;
+        
+        // Variable to store the total count of valid subarrays
+        int count = 0;
+        
+        // Initialize two pointers for the sliding window
+        int st = 0, end = 0;
+        
+        // Iterate through the array using the end pointer
+        while (end < n) {
+            // Add the current element to the map and increment its count
+            mpp[arr[end]]++;
+            
+            // If the number of distinct elements exceeds k, shrink the window from the start
+            while (mpp.size() > k) {
+                // Decrease the count of the element at the start pointer
+                mpp[arr[st]]--;
+                
+                // If the count of that element becomes zero, remove it from the map
+                if (mpp[arr[st]] == 0) {
+                    mpp.erase(arr[st]);
+                }
+                
+                // Move the start pointer to the right
+                st++;
+            }
+            
+            // The number of valid subarrays that end at 'end' is (end - st + 1)
+            // Add this count to the total count
+            count += (end - st + 1);
+            
+            // Move the end pointer to the right
+            end++;
+        }
+        
+        // Return the total count of subarrays with at most k distinct integers
+        return count;
+    }
+};
