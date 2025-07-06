@@ -1,0 +1,55 @@
+question: You are given two integer arrays a[] and b[] of equal size. A sum combination is formed by adding one element from a[] and one from b[], using each index pair (i, j) at most once. Return the top k maximum sum combinations, sorted in non-increasing order.
+
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the top K sums from pairs of elements in arrays a and b
+    vector<int> topKSumPairs(vector<int>& a, vector<int>& b, int k) {
+        // Get the size of the first array
+        int n = a.size();
+
+        // Sort both arrays in descending order
+        sort(a.begin(), a.end(), greater<>());
+        sort(b.begin(), b.end(), greater<>());
+
+        // Priority queue to store the sums and their corresponding indices
+        priority_queue<tuple<int, int, int>> pq;
+        // Set to track used pairs of indices to avoid duplicates
+        set<pair<int, int>> used;
+
+        // Start with the largest sum (a[0] + b[0]) and its indices (0, 0)
+        pq.emplace(a[0] + b[0], 0, 0);
+        used.emplace(0, 0); // Mark the pair (0, 0) as used
+
+        vector<int> ans; // Vector to store the result sums
+
+        // Extract the top K sums
+        while (k-- && !pq.empty()) {
+            // Get the tuple with the highest sum from the priority queue
+            tuple<int, int, int> top = pq.top(); pq.pop();
+            int sum = get<0>(top); // Extract the sum
+            int i = get<1>(top);   // Extract the index from array a
+            int j = get<2>(top);   // Extract the index from array b
+
+            // Add the current sum to the result vector
+            ans.push_back(sum);
+
+            // Check if we can add the next pair from array a
+            if (i + 1 < n && used.insert({i + 1, j}).second) {
+                // If the new pair (i + 1, j) has not been used, add it to the priority queue
+                pq.emplace(a[i + 1] + b[j], i + 1, j);
+            }
+            // Check if we can add the next pair from array b
+            if (j + 1 < n && used.insert({i, j + 1}).second) {
+                // If the new pair (i, j + 1) has not been used, add it to the priority queue
+                pq.emplace(a[i] + b[j + 1], i, j + 1);
+            }
+        }
+
+        // Return the top K sums
+        return ans;
+    }
+};
