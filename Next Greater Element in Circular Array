@@ -1,0 +1,52 @@
+question: Given a circular integer array arr[], the task is to determine the next greater element (NGE) for each element in the array.
+
+The next greater element of an element arr[i] is the first element that is greater than arr[i] when traversing circularly. If no such element exists, return -1 for that position.
+
+Circular Property:
+
+Since the array is circular, after reaching the last element, the search continues from the beginning until we have looked at all elements once.
+
+code:
+
+class Solution {
+public:
+    // Function to find the next larger element for each element in the array
+    vector<int> nextLargerElement(vector<int> &arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Create a stack to keep track of elements for which we need to find the next larger element
+        stack<int> st;
+        
+        // Initialize a vector to store the result, filled with -1 (default value if no larger element exists)
+        vector<int> v(n, -1);
+        
+        // Start from the second last element and push elements onto the stack
+        for (int j = n - 2; j >= 0; j--) {
+            st.push(arr[j]);
+        }
+        
+        // Start from the last element of the array
+        int i = n - 1;
+        
+        // Loop through the array from the last element to the first
+        while (i >= 0) {
+            // While the stack is not empty and the top of the stack is less than or equal to the current element
+            while (st.size() && st.top() <= arr[i]) {
+                // Pop elements from the stack since they are not the next larger element
+                st.pop();
+            }
+            
+            // If the stack is not empty, the top element is the next larger element for arr[i]
+            if (st.size()) {
+                v[i] = st.top();
+            }
+            
+            // Push the current element onto the stack for future comparisons
+            st.push(arr[i--]);
+        }
+        
+        // Return the vector containing the next larger elements
+        return v;
+    }
+};
