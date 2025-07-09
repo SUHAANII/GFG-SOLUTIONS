@@ -1,0 +1,53 @@
+question: Given an array arr[] of positive integers, find the total sum of the minimum elements of every possible subarrays.
+
+Note: It is guaranteed that the total sum will fit within a 32-bit unsigned integer.
+
+code:
+// Function to calculate the sum of minimums of all subarrays
+int sumOfSubarrayMinimums(vector<int>& arr) {
+    int n = arr.size(); // Get the size of the input array
+    vector<int> left(n, -1), right(n, n); // Initialize left and right boundary arrays
+
+    stack<int> st; // Monotonic stack to find boundaries
+
+    // Finding right boundaries (next smaller element to the right)
+    for(int i = n - 1; i >= 0; --i) {
+        if(st.empty()) {
+            right[i] = n; // No smaller element to the right
+            st.push(i); // Push current index onto the stack
+        } else {
+            // Pop elements from stack until a smaller element is found
+            while(!st.empty() && arr[i] < arr[st.top()]) {
+                st.pop(); // Pop elements that are greater than the current element
+            }
+            right[i] = st.empty() ? n : st.top(); // Set right boundary
+            st.push(i); // Push current index onto the stack
+        }
+    }
+
+    while(!st.empty()) st.pop(); // Clear stack for the next pass
+
+    // Finding left boundaries (next smaller or equal element to the left)
+    for(int i = 0; i < n; ++i) {
+        if(st.empty()) {
+            left[i] = -1; // No smaller element to the left
+            st.push(i); // Push current index onto the stack
+        } else {
+            // Pop elements until a smaller or equal element is found
+            while(!st.empty() && arr[i] <= arr[st.top()]) {
+                st.pop(); // Pop elements that are greater than or equal to the current element
+            }
+            left[i] = st.empty() ? -1 : st.top(); // Set left boundary
+            st.push(i); // Push current index onto the stack
+        }
+    }
+
+    int ans = 0; // Initialize answer to accumulate the total sum of minimums
+    // Calculate total sum of minimums in all subarrays
+    for(int i = 0; i < n; ++i) {
+        // Calculate contribution of arr[i] as the minimum for its subarrays
+        ans += arr[i] * (i - left[i]) * (right[i] - i);
+    }
+
+    return ans; // Return the final answer
+}
