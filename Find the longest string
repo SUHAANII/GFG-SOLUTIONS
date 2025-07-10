@@ -1,0 +1,48 @@
+question: Given an array of strings words[]. Find the longest string in words[] such that every prefix of it is also present in the array words[]. 
+
+Note: If multiple strings have the same maximum length, return the lexicographically smallest one.
+
+code:
+
+class Solution {
+public:
+    string longestString(vector<string> &words) {
+        // Sort the words to ensure they are in lexicographical order
+        sort(words.begin(), words.end());
+        
+        // Create a hash map to store the words for quick lookup
+        unordered_map<string, int> ump;
+        for (auto &i : words) {
+            ump[i]++; // Populate the map with the words
+        }
+
+        string s; // This will store the longest valid prefix word
+        int l = 0; // Length of the longest valid prefix word
+
+        // Iterate through each word in the sorted list
+        for (auto &i : words) {
+            string x; // Temporary string to build prefixes
+            int n = i.size(); // Get the length of the current word
+            
+            // Iterate through each character in the current word
+            for (int j = 0; j < n; j++) {
+                x += i[j]; // Build the prefix by adding one character at a time
+
+                // Check if the current prefix exists in the map
+                if (!ump[x]) {
+                    n = 0; // If it doesn't exist, break out of the loop
+                    break; // No need to check further characters
+                }
+            }
+            
+            // If the length of the valid prefix is greater than the current longest
+            if (n > l) {
+                s = i; // Update the longest valid prefix word
+                l = n; // Update the length of the longest valid prefix
+            }
+        }
+        
+        // Return the longest valid prefix word found
+        return s;
+    }
+};
