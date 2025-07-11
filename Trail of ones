@@ -1,0 +1,31 @@
+question: Given an integer n, the task is to count the number of binary strings of length n that contains at least one pair of consecutive 1's.
+Note: A binary string is a sequence made up of only 0's and 1's.
+
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of ways to arrange consecutive integers
+    int countConsec(int n) {
+        // If n is less than 2, there are no valid arrangements
+        if (n < 2) return 0;
+
+        // Initialize the first two Fibonacci numbers
+        int a = 2; // F(3): number of arrangements for 3
+        int b = 3; // F(4): number of arrangements for 4
+        
+        // Loop from 3 to n to calculate Fibonacci numbers
+        for (int i = 3; i <= n; i++) {
+            int tmp = a + b; // Calculate the next Fibonacci number
+            a = b;           // Move to the next Fibonacci number
+            b = tmp;        // Update b to the newly calculated Fibonacci number
+        }
+
+        // Total arrangements for n elements is 2^n (total subsets)
+        int total = 1 << n; // Using bit manipulation to calculate 2^n
+        
+        // Return the total arrangements minus the arrangements counted by Fibonacci
+        return total - b; // b contains the Fibonacci number for n
+    }
+};
