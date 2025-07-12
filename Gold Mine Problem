@@ -1,0 +1,49 @@
+question: Given a gold mine called mat[][]. Each field in this mine contains a positive integer which is the amount of gold in tons. Initially, the miner can start from any row in the first column. From a given cell, the miner can move -
+
+to the cell diagonally up towards the right
+to the right
+to the cell diagonally down towards the right
+Find out the maximum amount of gold that he can collect until he can no longer move.
+
+
+
+code:
+
+class Solution {
+private: 
+    int n, m; // Variables to store the dimensions of the grid
+
+    // Recursive function to calculate the maximum gold collectible from (i, j)
+    int f(vector<vector<int>> &grid, vector<vector<int>> &dp, int i, int j) {
+        // Step 1: Check for out-of-bounds indices
+        if (i >= n || j < 0 || j >= m || i < 0) {
+            return 0; // Return 0 if out of bounds
+        }
+
+        // Step 2: Check if the result is already computed
+        if (dp[i][j] != -1) return dp[i][j]; // Return cached result if available
+
+        // Step 3: Calculate the maximum gold collectible from the current cell
+        return dp[i][j] = grid[i][j] + max({
+            f(grid, dp, i + 1, j + 1), // Move down-right
+            f(grid, dp, i, j + 1),     // Move right
+            f(grid, dp, i - 1, j + 1)  // Move up-right
+        });
+    }
+
+public:
+    // Function to find the maximum gold collectible starting from the first column
+    int maxGold(vector<vector<int>>& mat) {
+        n = mat.size(); // Get the number of rows
+        m = mat[0].size(); // Get the number of columns
+        int res = 0; // Variable to store the maximum gold collected
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1)); // DP table initialized to -1
+
+        // Step 4: Iterate through each row in the first column
+        for (int i = 0; i < n; i++) {
+            res = max(res, f(mat, dp, i, 0)); // Update the result with the maximum gold collectible
+        }
+
+        return res; // Return the maximum gold collectible
+    }
+};
