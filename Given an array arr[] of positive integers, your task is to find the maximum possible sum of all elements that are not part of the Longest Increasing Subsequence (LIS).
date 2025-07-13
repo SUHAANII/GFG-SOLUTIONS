@@ -1,0 +1,67 @@
+question: Given an array arr[] of positive integers, your task is to find the maximum possible sum of all elements that are not part of the Longest Increasing Subsequence (LIS).
+
+code:
+
+class Solution {
+public:
+    int nonLisMaxSum(vector<int>& arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // dp[i] will store a pair: (length of LIS ending at i, sum of that LIS)
+        vector<pair<int, int>> dp(n);
+        
+        // Variables to track the maximum length of LIS and the minimum sum of that LIS
+        int maxLen = 0;
+        int minSum = 0;
+        int totalSum = 0; // Total sum of all elements in arr
+        
+        // Iterate through each element in the array
+        for (int i = 0; i < n; i++) {
+            int len = 0;  // Length of LIS ending at current index
+            int sum = 0;  // Sum of LIS ending at current index
+            
+            totalSum += arr[i];  // Accumulate total sum of elements
+            
+            // Check all previous elements to find increasing subsequences
+            for (int j = i - 1; j >= 0; j--) {
+                // If arr[i] can extend the increasing sequence ending at arr[j]
+                if (arr[i] > arr[j] && dp[j].first >= len) {
+                    // If we found a longer LIS
+                    if (dp[j].first > len) {
+                        len = dp[j].first;  // Update length
+                        sum = dp[j].second; // Update sum
+                    }
+                    // If we have the same length but a smaller sum
+                    else if (dp[j].second < sum) {
+                        sum = dp[j].second; // Update sum to the smaller one
+                    }
+                }
+            }
+            
+            // Include the current element in the LIS
+            len++;
+            sum += arr[i];
+            
+            // Store the length and sum of LIS ending at index i
+            dp[i] = {len, sum};
+        }
+        
+        // Iterate through dp to find the maximum length and the minimum sum of that length
+        for (int i = 0; i < n; i++) {
+            if (dp[i].first >= maxLen) {
+                // If we found a longer LIS
+                if (dp[i].first > maxLen) {
+                    minSum = dp[i].second; // Update minimum sum
+                    maxLen = dp[i].first;  // Update maximum length
+                } else {
+                    // If we found the same length, take the minimum sum
+                    minSum = min(minSum, dp[i].second);
+                }
+            }
+        }
+        
+        // Return the total sum minus the minimum sum of the LIS
+        return totalSum - minSum;
+    }
+};
