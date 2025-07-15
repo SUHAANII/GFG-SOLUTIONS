@@ -1,0 +1,21 @@
+question: Given a number represented as a string s (which may be very large), check whether it is divisible by 13 or not.
+
+code:
+
+int rem = 0; // Initialize a remainder variable to store the intermediate result
+
+// Loop through each character in the string 's'
+for (int i = 0; i < s.length(); i++) {
+    // Check if the current remainder is less than 13
+    if (rem < 13) {
+        // Update the remainder by shifting the previous digits left (multiply by 10)
+        // and adding the numeric value of the current character
+        // (s[i] - 48 converts the character to its integer value)
+        rem = rem * 10 + (s[i] - 48);
+    }
+    // Update the remainder to be the remainder when divided by 13
+    rem = rem % 13;
+}
+
+// Return true if the final remainder is 0, indicating that the number is divisible by 13
+return rem == 0;
