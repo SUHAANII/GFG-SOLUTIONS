@@ -1,0 +1,47 @@
+question: Given a positive integer n, you need to count the numbers less than or equal to n having exactly 9 divisors.
+
+code:
+
+class Solution {
+public:
+    // Function to check if a number has exactly 9 divisors
+    bool has9div(int x) {
+        // Initialize a counter for divisors
+        int cnt = 0;
+
+        // Loop through all numbers from 1 to the square root of x
+        for (int i = 1; i * i <= x; i++) {
+            // Check if i is a divisor of x
+            if (x % i == 0) {
+                // If i is not the square root of x, it contributes 2 divisors (i and x/i)
+                if (x != i * i) {
+                    cnt += 2; // Count both divisors
+                } else {
+                    // If i is the square root, count it only once
+                    cnt++;
+                }
+            }
+            // If the count exceeds 9, return false early
+            if (cnt > 9) return false;
+        }
+
+        // Return true if the count of divisors is exactly 9
+        return cnt == 9;
+    }
+
+    // Function to count how many perfect squares up to n have exactly 9 divisors
+    int countNumbers(int n) {
+        // Initialize the answer counter
+        int ans = 0;
+
+        // Loop through all integers i such that i*i <= n
+        for (int i = 6; i * i <= n; i++) {
+            // Check if the square of i has exactly 9 divisors
+            if (has9div(i * i)) {
+                ans++; // Increment the count if true
+            }
+        }
+        // Return the total count of perfect squares with exactly 9 divisors
+        return ans;
+    }
+};
