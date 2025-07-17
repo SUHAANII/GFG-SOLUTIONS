@@ -1,0 +1,50 @@
+question: Given two positive integers n and k, determine the highest value of x such that kx divides n! (n factorial) completely (i.e., n % (kx) == 0).
+
+
+
+code:
+
+class Solution {
+public:
+    // Function to find the maximum power of k that divides n!
+    int maxKPower(int n, int k) {
+        // Map to store prime factors of k and their corresponding counts
+        map<int, int> primeFactor;
+
+        // Factorize k into its prime factors
+        for (int i = 2; i * i <= k; i++) {
+            // While i divides k, keep dividing and count the occurrences
+            while (k % i == 0) {
+                primeFactor[i]++; // Increment the count of the prime factor i
+                k = k / i;        // Divide k by i
+            }
+        }
+        // If k is still greater than 1, it means k itself is a prime factor
+        if (k > 1) primeFactor[k]++;
+        
+        // Initialize the answer to a large value (INT_MAX)
+        int ans = INT_MAX;
+
+        // Iterate through each prime factor and its count
+        for (auto &it : primeFactor) {
+            int p = it.first;    // The prime factor
+            int lnk = it.second;  // The count of this prime factor in k
+            
+            // Calculate the total number of times p is present in n!
+            int powerinNFact = 0;
+            int temp = n;
+
+            // Count the occurrences of the prime factor p in n!
+            while (temp) {
+                powerinNFact += temp / p; // Count how many multiples of p are in n
+                temp /= p;                // Reduce temp to check higher powers of p
+            }
+            
+            // The maximum power of p that divides n! is powerinNFact / lnk
+            ans = min(ans, powerinNFact / lnk); // Update the answer with the minimum found
+        }
+
+        // Return the final answer
+        return ans;
+    }
+};
