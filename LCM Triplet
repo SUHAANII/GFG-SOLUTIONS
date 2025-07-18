@@ -1,0 +1,40 @@
+question: Given a number n, find the maximum possible LCM that can be obtained by selecting three numbers less than or equal to n.
+Note : LCM stands for Lowest Common Multiple.
+
+
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the Greatest Common Divisor (GCD) of two numbers
+    int gcd(int a, int b) {
+        // Base case: if b is 0, then GCD is a
+        if (b == 0) return a;
+        // Recursive case: GCD of b and the remainder of a divided by b
+        return gcd(b, a % b);
+    }
+    
+    // Function to calculate the Least Common Multiple (LCM) of two numbers
+    int lcm(int a, int b) {
+        // LCM can be calculated using the formula: (a * b) / GCD(a, b)
+        return (a / gcd(a, b) * b);
+    }
+    
+    // Function to calculate the LCM of the largest three consecutive integers up to n
+    int lcmTriplets(int n) {
+        // If n is less than 3, return n as we cannot form a triplet
+        if (n < 3) return n;
+        
+        // If n is odd, calculate LCM of n, n-1, and n-2
+        if (n & 1) {
+            return lcm(n, lcm(n - 1, n - 2));
+        } else {
+            // If n is even, calculate LCM of two combinations:
+            // 1. LCM of n, n-1, and n-3
+            // 2. LCM of n-1, n-2, and n-3
+            // Return the maximum of the two LCMs
+            return max(lcm(n, lcm(n - 1, n - 3)), lcm(n - 1, lcm(n - 2, n - 3)));
+        }
+    }
+};
