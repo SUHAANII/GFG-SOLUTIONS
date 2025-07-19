@@ -1,0 +1,45 @@
+question:You are given a lowercase string s, determine the total number of distinct strings that can be formed using the following rules:
+
+Identify all unique vowels (a, e, i, o, u) present in the string.
+For each distinct vowel, choose exactly one of its occurrences from s. If a vowel appears multiple times, each occurrence represents a unique selection choice.
+Generate all possible permutations of the selected vowels. Each unique arrangement counts as a distinct string.
+Return the total number of such distinct strings.
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of ways to arrange vowels in a given string
+    int vowelCount(string& s) {
+        // Create a map to store the frequency of each vowel
+        map<char, int> mp;
+
+        // Iterate through each character in the string
+        for(char c: s) {
+            // Check if the character is a vowel
+            if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                // Increment the count of the vowel in the map
+                mp[c]++;
+            }
+        }
+        
+        // Get the number of unique vowels found in the string
+        int sz = mp.size();
+        // Initialize the answer with the number of unique vowels
+        int ans = sz;
+
+        // Calculate the factorial of (number of unique vowels - 1)
+        // This is done to find the number of ways to arrange these vowels
+        for(int i = 2; i < sz; i++) {
+            ans *= i; // Multiply ans by i (for factorial calculation)
+        }
+
+        // Multiply ans by the frequency of each vowel
+        for(auto it: mp) {
+            ans *= it.second; // Multiply by the count of each vowel
+        }
+        
+        // Return the final calculated answer
+        return ans;
+    }
+};
