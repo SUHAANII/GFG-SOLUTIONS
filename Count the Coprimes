@@ -1,0 +1,52 @@
+question: You are given an array arr[] of positive integers. Your task is to count the number of pairs (i, j) such that:
+
+
+0 ≤ i < j ≤ n-1
+gcd(arr[i], arr[j]) = 1
+In other words, count the number of unordered pairs of indices (i, j) where the elements at those positions are co-prime.
+
+code:
+
+class Solution {
+public:
+    int cntCoprime(vector<int>& arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        // Initialize a variable to find the maximum element in the array
+        int m = 0;
+
+        // Loop through the array to find the maximum value
+        for(int i = 0; i < n; i++) 
+            m = max(m, arr[i]);
+
+        // Create a frequency array to count occurrences of each number
+        vector<int> freq(m + 1, 0);
+        // Create a dp array to store the number of coprime pairs for each integer
+        vector<int> dp(m + 1, 0);
+
+        // Fill the frequency array with counts of each number in arr
+        for(int i = 0; i < n; i++) 
+            freq[arr[i]]++;
+
+        // Iterate from the maximum number down to 1
+        for(int i = m; i >= 1; i--) {
+            // Initialize a counter for the current integer's multiples
+            int c = 0;
+
+            // Loop through all multiples of i
+            for(int j = i; j <= m; j += i) {
+                // Subtract the number of coprime pairs that include multiples of i
+                dp[i] -= dp[j];
+                // Count how many times the multiple appears in the original array
+                c += freq[j];
+            }
+
+            // Calculate the number of coprime pairs formed by the current integer i
+            // (c * (c - 1)) / 2 gives the number of ways to choose 2 elements from c
+            dp[i] += (c * (c - 1)) / 2;
+        }
+
+        // Return the total number of coprime pairs, which is stored in dp[1]
+        return dp[1];
+    }
+};
