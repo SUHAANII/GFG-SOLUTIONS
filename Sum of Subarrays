@@ -1,0 +1,32 @@
+question: Given an array arr[], find the sum of all the subarrays of the given array.
+
+Note: It is guaranteed that the total sum will fit within a 32-bit integer range.
+
+code:
+
+class Solution {
+  public:
+    // Function to calculate the sum of all subarrays of the given array `arr`
+    int subarraySum(vector<int>& arr) {
+        // Initialize the variable to store the final answer (the total sum of all subarray sums)
+        int ans = 0;
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Loop through each element of the array
+        for(int i = 0; i < n; i++) {
+            // Calculate the number of subarrays that include arr[i]
+            // `left` represents the number of subarrays starting from the left of arr[i] (including arr[i])
+            int left = i + 1; // There are (i + 1) starting points for subarrays that include arr[i]
+            // `right` represents the number of subarrays ending at arr[i] (including arr[i])
+            int right = n - i; // There are (n - i) ending points for subarrays that include arr[i]
+            
+            // The contribution of arr[i] to the total sum of subarray sums is its value times
+            // the number of subarrays it can be part of, which is `left * right`
+            ans += (arr[i] * left * right);
+        }
+        
+        // Return the total sum of all subarray sums
+        return ans;
+    }
+};
