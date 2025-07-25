@@ -1,0 +1,46 @@
+question: You are given a circular array arr[] of integers, find the maximum possible sum of a non-empty subarray. In a circular array, the subarray can start at the end and wrap around to the beginning. Return the maximum non-empty subarray sum, considering both non-wrapping and wrapping cases.
+
+code:
+
+class Solution {
+public:
+    int maxCircularSum(vector<int> &arr) {
+        // Initialize variables to hold the total sum of the array,
+        // the current maximum and minimum subarray sums, and
+        // the overall maximum and minimum subarray sums.
+        int totalSum = 0;
+        int currMaxSum = 0, currMinSum = 0;
+        int maxSum = arr[0], minSum = arr[0];
+
+        // Iterate through the array to calculate totalSum,
+        // maximum subarray sum (using Kadane's algorithm), and
+        // minimum subarray sum (using a similar approach).
+        for (int i = 0; i < arr.size(); i++) {
+            // Calculate the maximum subarray sum ending at index i
+            currMaxSum = max(currMaxSum + arr[i], arr[i]);
+            maxSum = max(maxSum, currMaxSum);
+
+            // Calculate the minimum subarray sum ending at index i
+            currMinSum = min(currMinSum + arr[i], arr[i]);
+            minSum = min(minSum, currMinSum);
+
+            // Add the current element to the total sum
+            totalSum += arr[i];
+        }
+
+        // The maximum sum of a non-circular subarray
+        int normalSum = maxSum;
+
+        // The maximum sum of a circular subarray is calculated
+        // as the total sum of the array minus the minimum subarray sum.
+        int circularSum = totalSum - minSum;
+
+        // If the minimum subarray sum equals the total sum,
+        // it means all elements are negative, so we return the normal sum.
+        if (minSum == totalSum)
+            return normalSum;
+
+        // Return the maximum of the normal and circular sums.
+        return max(normalSum, circularSum);
+    }
+};
