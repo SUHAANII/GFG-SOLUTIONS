@@ -1,0 +1,33 @@
+questionn: Given an array arr[] consisting of n integers, the task is to find all the array elements which occurs more than floor(n/3) times.
+
+Note: The returned array of majority elements should be sorted.
+
+code:
+class Solution {
+public:
+    // Function to find all elements that appear more than n/3 times in the array
+    vector<int> findMajority(vector<int>& arr) {
+        // Create a map to store the frequency of each element
+        map<int, int> mp;
+        // Vector to store the result (elements that appear more than n/3 times)
+        vector<int> ans;
+
+        // Iterate through each element in the input array
+        for (int e : arr) {
+            // Increment the count of the current element in the map
+            mp[e]++;
+        }
+
+        // Iterate through the map to find elements with frequency greater than n/3
+        for (auto e : mp) {
+            // Check if the frequency of the current element is greater than n/3
+            if (e.second > arr.size() / 3) {
+                // If it is, add the element to the result vector
+                ans.push_back(e.first);
+            }
+        }
+
+        // Return the result vector containing all majority elements
+        return ans;
+    }
+};
