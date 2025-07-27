@@ -1,0 +1,35 @@
+question: You are given a 2D matrix mat[][] of size n x m. The task is to modify the matrix such that if mat[i][j] is 0, all the elements in the i-th row and j-th column are set to 0
+
+code:
+
+// Get the number of rows (n) and columns (m) in the matrix 'mat'
+int n = mat.size();          // Number of rows in the matrix
+int m = mat[0].size();      // Number of columns in the matrix
+
+// Create vectors to track which rows and columns should be set to zero
+vector<int> rows(n, -1);    // Initialize a vector for rows, default value -1 (not marked)
+vector<int> cols(m, -1);    // Initialize a vector for columns, default value -1 (not marked)
+
+// First pass: Identify rows and columns that contain zeros
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        // If a zero is found in the matrix
+        if (mat[i][j] == 0) {
+            rows[i] = 0;      // Mark the row index as containing a zero
+            cols[j] = 0;      // Mark the column index as containing a zero
+        }
+    }
+}
+
+// Second pass: Update the matrix based on the identified rows and columns
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        // If the current row or column is marked, set the matrix value to zero
+        if (rows[i] == 0 || cols[j] == 0) {
+            mat[i][j] = 0;    // Set the element to zero
+        }
+    }
+}
+
+// The function does not return anything, it modifies 'mat' in place
+return;
