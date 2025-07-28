@@ -1,0 +1,35 @@
+question: A beautiful matrix is defined as a square matrix in which the sum of elements in every row and every column is equal. Given a square matrix mat[][], your task is to determine the minimum number of operations required to make the matrix beautiful.
+In one operation, you are allowed to increment the value of any single cell by 1.
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the balance sums of a given matrix
+    int balanceSums(vector<vector<int>>& mat) {
+        // Initialize variables
+        int realsum = 0; // To store the total sum of all elements in the matrix
+        int rows = mat.size(); // Get the number of rows in the matrix
+        int maxi = 0; // To keep track of the maximum sum of any row or column
+
+        // Loop through each row of the matrix
+        for(int i = 0; i < rows; i++) {
+            int rowsum = 0; // To calculate the sum of the current row
+            int colsum = 0; // To calculate the sum of the current column
+            
+            // Loop through each column of the current row
+            for(int j = 0; j < rows; j++) {
+                rowsum += mat[i][j]; // Add the current element to the row sum
+                realsum += mat[i][j]; // Add the current element to the total sum
+                colsum += mat[j][i]; // Add the current element to the column sum
+            }
+
+            // Update maxi to be the maximum of the current row sum, column sum, and the previous maxi
+            maxi = max({colsum, maxi, rowsum});
+        }
+
+        // Calculate and return the balance sum
+        // The balance sum is the maximum sum multiplied by the number of rows minus the total sum
+        return rows * maxi - realsum;
+    }
+};
