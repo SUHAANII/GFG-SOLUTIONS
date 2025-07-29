@@ -1,0 +1,60 @@
+question: Given a string s consisting of lowercase English letters, for every character whose first and last occurrences are at different positions, calculate the sum of ASCII values of characters strictly between its first and last occurrence.
+Return all such non-zero sums (order does not matter
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the ASCII range for characters in the string
+    vector<int> asciirange(string& s) {
+        // Get the length of the input string
+        int n = s.size();
+        
+        // Create a map to store the first and last occurrence of each character
+        unordered_map<char, pair<int, int>> mp;
+        
+        // Vector to store the cumulative ASCII sum at each index
+        vector<int> ans(n, 0);
+        
+        // Initialize the first element with the ASCII value of the first character
+        ans[0] = int(s[0]);
+        
+        // Calculate cumulative ASCII sums for the string
+        for (int i = 1; i < n; i++) {
+            ans[i] = ans[i - 1] + int(s[i]);
+        }
+        
+        // Populate the map with the first and last occurrence of each character
+        for (int i = 0; i < n; i++) {
+            // If the character is already in the map, update its last occurrence
+            if (mp.find(s[i]) != mp.end()) {
+                mp[s[i]].second = i;
+            } else {
+                // If it's the first time encountering the character, set both first and last occurrence to the current index
+                mp[s[i]] = {i, i};
+            }
+        }
+        
+        // Vector to store the results
+        vector<int> res;
+        
+        // Iterate through each character from 'a' to 'z'
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            // Check if the character exists in the map and if it has more than one occurrence
+            if (mp.find(ch) != mp.end() && mp[ch].first != mp[ch].second) {
+                int l = mp[ch].first; // First occurrence index
+                int r = mp[ch].second; // Last occurrence index
+                
+                // If there are characters between the first and last occurrence
+                if (r - l > 1) {
+                    // Calculate the sum of ASCII values between the first and last occurrence
+                    int sum = ans[r - 1] - ans[l];
+                    res.push_back(sum); // Add the sum to the result vector
+                }
+            }
+        }
+        
+        // Return the result vector containing the sums
+        return res;
+    }
+};
