@@ -1,0 +1,35 @@
+question: Given an unsorted array arr[] of integers, find the number of subarrays whose sum exactly equal to a given number k.
+
+code:
+
+class Solution {
+public:
+    // Function to count the number of subarrays that sum to k
+    int cntSubarrays(vector<int> &arr, int k) {
+        // Create a hash map to store the frequency of prefix sums
+        unordered_map<int, int> prefixSums;
+        int res = 0; // Initialize the result counter for subarrays
+        int currSum = 0; // Variable to keep track of the current prefix sum
+
+        // Iterate through each element in the array
+        for (int i = 0; i < arr.size(); i++) {
+            // Update the current prefix sum by adding the current element
+            currSum += arr[i];
+
+            // Check if the current prefix sum equals k
+            if (currSum == k)
+                res++; // If true, increment the result counter
+
+            // Check if there exists a prefix sum that, when subtracted from the current sum, equals k
+            if (prefixSums.find(currSum - k) != prefixSums.end())
+                // If such a prefix sum exists, add its frequency to the result counter
+                res += prefixSums[currSum - k];
+
+            // Increment the frequency of the current prefix sum in the hash map
+            prefixSums[currSum]++;
+        }
+        
+        // Return the total count of subarrays that sum to k
+        return res;
+    }
+};
