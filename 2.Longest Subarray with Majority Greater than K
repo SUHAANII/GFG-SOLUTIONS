@@ -1,0 +1,34 @@
+question: Given an array arr[] and an integer k, the task is to find the length of longest subarray in which the count of elements greater than k is more than the count of elements less than or equal to k.
+code:
+int n = (int)arr.size(); // Get the size of the array 'arr' and store it in 'n'
+int res = 0; // Initialize 'res' to store the maximum length of the subarray found
+
+map<int, int> mp; // Create a map to store the first occurrence of each sum
+mp[0] = -1; // Initialize the map with sum 0 at index -1 (helps in cases where the subarray starts from index 0)
+int sum = 0; // Initialize 'sum' to keep track of the cumulative sum
+
+// Loop through each element in the array
+for (int i = 0; i < n; i++) {
+    // Increment 'sum' if the current element is greater than 'k', otherwise decrement it
+    if (arr[i] > k)
+        sum++; // Treat elements greater than 'k' as +1
+    else
+        sum--; // Treat elements less than or equal to 'k' as -1
+
+    // If this cumulative 'sum' has not been seen before, store its index
+    if (mp.find(sum) == mp.end())
+        mp[sum] = i;
+
+    // Check if there exists a sum that is one less than the current 'sum'
+    if (mp.find(sum - 1) != mp.end())
+        // If found, calculate the length of the subarray and update 'res' if it's larger
+        res = max(res, i - mp[sum - 1]);
+
+    // If 'sum' is positive, it means there are more elements greater than 'k'
+    if (sum > 0)
+        // Update 'res' to the maximum length possible from index 0 to current index
+        res = max(res, i + 1);
+}
+
+// Return the maximum length of the subarray found
+return res;
