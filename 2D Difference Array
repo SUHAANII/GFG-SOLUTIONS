@@ -1,0 +1,76 @@
+question: You are given a 2D integer matrix mat[][] of size n × m and a list of q operations opr[][]. Each operation is represented as an array [v, r1, c1, r2, c2], where:
+
+v is the value to be added
+(r1, c1) is the top-left cell of a submatrix
+(r2, c2) is the bottom-right cell of the submatrix (inclusive)
+For each of the q operations, add v to every element in the submatrix from (r1, c1) to (r2, c2). Return the final matrix after applying all operations.
+
+code:
+
+class Solution {
+public:
+    // Function to apply a 2D difference array based on operations defined in opr
+    vector<vector<int>> applyDiff2D(vector<vector<int>>& mat,
+                                      vector<vector<int>>& opr) {
+        // Get the dimensions of the matrix
+        int n = mat.size();    // Number of rows
+        int m = mat[0].size(); // Number of columns
+
+        // Create a difference matrix initialized to 0, with an extra row and column
+        vector<vector<int>> diff(n + 1, vector<int>(m + 1, 0));
+
+        // Iterate over each operation in opr
+        for (auto& it : opr) {
+            int val = it[0]; // The value to add
+            int r1 = it[1];  // Starting row index
+            int c1 = it[2];  // Starting column index
+            int r2 = it[3];  // Ending row index
+            int c2 = it[4];  // Ending column index
+
+            // Update the difference matrix using the 2D difference array technique
+            diff[r1][c1] += val;         // Add value at the top-left corner of the submatrix
+            diff[r1][c2 + 1] -= val;     // Subtract value just outside the right edge
+            diff[r2 + 1][c1] -= val;     // Subtract value just outside the bottom edge
+            diff[r2 + 1][c2 + 1] += val;  // Add value back at the bottom-right corner
+
+            // Example operation: opr = (2, 0, 0, 2, 2)
+            // This modifies the difference matrix as shown in the comments below:
+            //
+            //   Initial diff matrix (all zeros):
+            //   0 0 0 0
+            //   0 0 0 0
+            //   0 0 0 0
+            //   0 0 0 0
+            //
+            //   After applying the operation:
+            //   2 0 0 -2
+            //   0 0 0 0
+            //   -2 0 0 +2
+            //   0 0 0 0
+        }
+
+        // Calculate row sums to propagate the differences horizontally
+        for (int r = 0; r < n; r++) {
+            for (int c = 1; c < m; c++) {
+                diff[r][c] += diff[r][c - 1]; // Add the left cell to the current cell
+            }
+        }
+
+        // Calculate column sums to propagate the differences vertically
+        for (int c = 0; c < m; c++) {
+            for (int r = 1; r < n; r++) {
+                diff[r][c] += diff[r - 1][c]; // Add the above cell to the current cell
+            }
+        }
+
+        // Update the original matrix with the calculated differences
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                mat[r][c] += diff[r][c]; // Add the difference value to the original matrix
+            }
+        }
+
+        // Return the modified matrix
+        return mat;
+    }
+};
