@@ -1,0 +1,52 @@
+question: Given a 2D matrix mat[][] with dimensions n×m. Find the maximum possible sum of any submatrix within the given matrix.
+
+code;
+
+class Solution {
+public:
+    // Function to implement Kadane's algorithm to find the maximum sum of a contiguous subarray
+    int kadane(vector<int>& arr) {
+        // Initialize current sum and maximum sum with the first element of the array
+        int curr = arr[0], maxSum = arr[0];
+
+        // Iterate through the array starting from the second element
+        for (int i = 1; i < arr.size(); i++) {
+            // Update current sum: either take the current element or add it to the current sum
+            curr = max(arr[i], curr + arr[i]);
+            // Update maximum sum if the current sum is greater
+            maxSum = max(maxSum, curr);
+        }
+        
+        // Return the maximum sum found
+        return maxSum;
+    }
+
+    // Function to find the maximum sum of a rectangle in a 2D matrix
+    int maxRectSum(vector<vector<int>> &mat) {
+        // Get the number of rows (n) and columns (m) in the matrix
+        int n = mat.size();
+        int m = mat[0].size();
+        // Initialize maxSum to the smallest integer value
+        int maxSum = INT_MIN;
+
+        // Iterate over the left boundary of the rectangle
+        for (int left = 0; left < m; left++) {
+            // Create a temporary array to store the sum of columns between left and right
+            vector<int> temp(n, 0);
+
+            // Iterate over the right boundary of the rectangle
+            for (int right = left; right < m; right++) {
+                // Update the temporary array with the sum of elements for the current column
+                for (int i = 0; i < n; i++) {
+                    temp[i] += mat[i][right];
+                }
+
+                // Call Kadane's algorithm on the compressed 1D array to find the maximum sum subarray
+                maxSum = max(maxSum, kadane(temp));
+            }
+        }
+
+        // Return the maximum sum of the rectangle found
+        return maxSum;
+    }
+};
