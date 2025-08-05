@@ -1,0 +1,49 @@
+question" Given a single string s, the task is to check if it is a palindrome sentence or not.
+A palindrome sentence is a sequence of characters, such as word, phrase, or series of symbols that reads the same backward as forward after converting all uppercase letters to lowercase and removing all non-alphanumeric characters (including spaces and punctuation).
+
+code:
+
+class Solution {
+public:
+    // Function to check if a given string is a palindrome
+    bool isPalindrome(string &str) {
+        int start = 0; // Initialize the starting index
+        int end = str.size() - 1; // Initialize the ending index
+
+        // Loop until the start index is less than or equal to the end index
+        while (start <= end) {
+            // If characters at the start and end do not match, it's not a palindrome
+            if (str[start] != str[end])
+                return false; // Return false if a mismatch is found
+            
+            // Move towards the center
+            start++; // Increment the start index
+            end--;   // Decrement the end index
+        }
+        return true; // If all characters matched, return true
+    }
+
+    // Function to check if a sentence is a palindrome
+    bool isPalinSent(string &s) {
+        string str; // Initialize an empty string to hold filtered characters
+
+        // Loop through each character in the input string
+        for (char ch : s) {
+            // Check if the character is an alphabet or a digit
+            if (isalpha(ch) || isdigit(ch)) {
+                // Convert uppercase letters to lowercase
+                if (ch >= 'A' && ch <= 'Z')
+                    ch = ch - 'A' + 'a'; // Convert to lowercase by adjusting ASCII value
+                
+                // Add the filtered character to the new string
+                str.push_back(ch);
+            }
+        }
+
+        // Check if the filtered string is a palindrome
+        if (isPalindrome(str))
+            return true; // Return true if it is a palindrome
+        else
+            return false; // Return false if it is not
+    }
+};
