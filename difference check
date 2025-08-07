@@ -1,0 +1,48 @@
+question: Given an array arr[] of time strings in 24-hour clock format "HH:MM:SS", return the minimum difference in seconds between any two time strings in the arr[].
+The clock wraps around at midnight, so the time difference between "23:59:59" and "00:00:00" is 1 second.
+
+code:
+
+class Solution {
+public:
+    int minDifference(vector<string> &arr) {
+        // Get the number of time strings in the input array
+        int n = arr.size();
+        
+        // Create a vector to store the total seconds for each time
+        vector<long long> ans;
+        
+        // Iterate through each time string in the input array
+        for (string ch : arr) {
+            // Extract hours, minutes, and seconds from the time string
+            int hr = stoi(ch.substr(0, 2)); // Get the hours (first two characters)
+            int min = stoi(ch.substr(3, 2)); // Get the minutes (next two characters)
+            int sec = stoi(ch.substr(6, 2)); // Get the seconds (last two characters)
+            
+            // Calculate the total seconds from the start of the day
+            long long total = hr * 3600 + min * 60 + sec;
+            // Store the total seconds in the vector
+            ans.push_back(total);
+        }
+        
+        // Sort the vector of total seconds in ascending order
+        sort(ans.begin(), ans.end());
+        
+        // Initialize a variable to keep track of the minimum difference
+        long long maxi = INT_MAX;
+        
+        // Calculate the differences between consecutive times
+        for (int i = 1; i < n; i++) {
+            long long diff = ans[i] - ans[i - 1]; // Difference between consecutive times
+            maxi = min(maxi, diff); // Update the minimum difference if the current is smaller
+        }
+        
+        // Calculate the wrap-around difference between the last and first time
+        long long wrapDiff = 86400 - ans[n - 1] + ans[0];
+        // Update the minimum difference considering the wrap-around
+        maxi = min(maxi, wrapDiff);
+
+        // Return the minimum time difference found
+        return (int)maxi;
+    }
+};
