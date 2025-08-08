@@ -1,0 +1,37 @@
+question: Given a string s, of lowercase english alphabets, find the length of the longest proper prefix which is also a suffix.
+Note: Prefix and suffix can be overlapping but they should not be equal to the entire string.
+
+code:
+
+class Solution {
+public:
+    // Function to get the length of the longest prefix which is also a suffix (LPS)
+    int getLPSLength(string &s) {
+        // Get the size of the input string
+        int n = s.size();
+        
+        // Loop through the string in reverse, starting from the second to last character
+        for (int temp = n - 1; temp >= 1; temp--) {
+            // Initialize a flag to true, assuming the prefix and suffix match
+            bool flag = true;
+
+            // Check characters in the prefix and corresponding characters in the suffix
+            for (int i = 0; i < temp; i++) {
+                // Compare the ith character of the prefix with the corresponding character in the suffix
+                if (s[i] != s[n - temp + i]) {
+                    // If they don't match, set flag to false and break the loop
+                    flag = false;
+                    break;
+                }
+            }
+
+            // If the entire prefix matches the suffix
+            if (flag) {
+                // Return the length of the matching prefix/suffix
+                return temp;
+            }
+        }
+        // If no matching prefix and suffix found, return 0
+        return 0;
+    }
+};
