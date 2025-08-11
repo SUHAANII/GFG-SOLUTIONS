@@ -1,0 +1,58 @@
+question: Given a string s consisting of lowercase English letters, find the maximum possible sum of the lengths of any two non-empty and non-overlapping palindromic substrings of odd length.
+
+Formally, choose any two substrings s[i...j] and s[k...l] such that 1 ≤ i ≤ j < k ≤ l ≤ s.size(), both substrings are palindromes of odd length, and they do not overlap. Return the maximum sum of their lengths.
+
+Note: A palindrome is a string that reads the same forward and backward. A substring is a contiguous sequence of characters within the string.
+
+code:
+
+// Function to find the longest palindromic substring that can be split into two non-overlapping palindromic substrings
+int longestPalindromicSplit(const string &s) {
+    int n = (int)s.size(); // Get the length of the input string
+    if (n < 2) return 0; // If the string has less than 2 characters, return 0
+
+    vector<int> rad(n); // Vector to store the radius of palindromes centered at each character
+    for (int i = 0, L = 0, R = -1; i < n; ++i) {
+        // If i is outside the current palindrome (R), set k to 1 (minimum palindrome length)
+        // Otherwise, use the previously calculated radius to minimize redundant checks
+        int k = (i > R) ? 1 : min(rad[L + R - i], R - i + 1);
+        
+        // Expand around the center i while the characters match
+        while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) ++k;
+        rad[i] = k; // Store the radius of the palindrome centered at i
+
+        // Update the bounds of the current palindrome if we have expanded beyond R
+        if (i + k - 1 > R) { 
+            L = i - k + 1; // New left boundary
+            R = i + k - 1; // New right boundary
+        }
+    }
+
+    vector<int> bestEnd(n, 0), bestStart(n, 0); // Vectors to store the best lengths of palindromic substrings
+    for (int c = 0; c < n; ++c) {
+        // Calculate the length of the palindrome and its start and end indices
+        int len = 2 * rad[c] - 1; // Length of the palindrome
+        int l = c - rad[c] + 1;   // Left index of the palindrome
+        int r = c + rad[c] - 1;   // Right index of the palindrome
+        
+        // Update the best lengths for both start and end positions
+        bestEnd[r] = max(bestEnd[r], len);
+        bestStart[l] = max(bestStart[l], len);
+    }
+
+    // Propagate the best end lengths backwards
+    for (int i = n - 2; i >= 0; --i)
+        bestEnd[i] = max(bestEnd[i], bestEnd[i + 1] - 2); // Ensure non-overlapping
+
+    // Propagate the best start lengths forwards
+    for (int i = 1; i < n; ++i)
+        bestStart[i] = max(bestStart[i], bestStart[i - 1] - 2); // Ensure non-overlapping
+
+    int bestLeft = 0, ans = 0; // Variables to track the best left palindrome and the answer
+    for (int i = 0; i + 1 < n; ++i) {
+        bestLeft = max(bestLeft, bestEnd[i]); // Update the best left palindrome length
+        ans = max(ans, bestLeft + bestStart[i + 1]); // Combine left and right palindromes
+    }
+    
+    return ans; // Return the maximum length of the two non-overlapping palindromic substrings
+}
