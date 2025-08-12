@@ -1,0 +1,37 @@
+question: In a candy store, there are different types of candies available and prices[i] represent the price of  ith types of candies. You are now provided with an attractive offer.
+For every candy you buy from the store, you can get up to k other different candies for free. Find the minimum and maximum amount of money needed to buy all the candies.
+Note: In both cases, you must take the maximum number of free candies possible during each purchase.
+
+code:
+
+class Solution {
+public:
+    vector<int> minMaxCandy(vector<int>& prices, int k) {
+        // Sort the prices in ascending order to easily access the cheapest and most expensive candies
+        sort(prices.begin(), prices.end());
+        
+        // Get the total number of candy prices
+        int n = prices.size();
+        
+        // Initialize variables to store the minimum and maximum sums
+        int mini = 0, maxi = 0;
+        
+        // Calculate the number of candies we can take, based on the given k
+        // The formula ceil(n / (k + 1)) determines how many candies can be taken
+        int req = ceil(float(n) / float(k + 1));
+        
+        // Loop to calculate the minimum and maximum sums of candies
+        for (int i = 0; i < req; i++) {
+            // Add the prices of the cheapest candies to the mini sum
+            mini += prices[i];
+            // Add the prices of the most expensive candies to the maxi sum
+            maxi += prices[n - i - 1];
+        }
+        
+        // Create a vector to store the results: [minimum sum, maximum sum]
+        vector<int> ans = {mini, maxi};
+        
+        // Return the result vector
+        return ans;
+    }
+};
