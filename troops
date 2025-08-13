@@ -1,0 +1,45 @@
+question:You are given an array arr[] of size n, where arr[i] represents the number of soldiers in the i-th troop. You are also given an integer k. A troop is considered "lucky" if its number of soldiers is a multiple of k. Find the minimum total number of soldiers to add across all troops so that at least ⌈n / 2⌉ troops become lucky.
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the minimum number of soldiers needed
+    int minSoldiers(vector<int>& arr, int k) {
+        // Get the size of the array
+        int size = arr.size();
+
+        // Initialize the number of troops needed to 0
+        int troops = 0;
+
+        // Initialize a counter to track how many elements have been processed
+        int cnt = 0;
+
+        // Calculate the midpoint of the array (the minimum number of elements needed to form a group)
+        int mid = (size + 1) / 2;
+
+        // Sort the array based on how far each element is from being divisible by k
+        // The sorting criterion is that elements with smaller remainders come first
+        sort(arr.begin(), arr.end(), [&k](int a, int b) {
+            return (k - a % k) % k < (k - b % k) % k;
+        });
+
+        // Iterate over each element in the sorted array
+        for (const auto &i : arr) {
+            // If we've already counted enough elements (at least mid), return the total troops needed
+            if (cnt >= mid) return troops;
+
+            // If the current element is not divisible by k
+            if (i % k != 0) {
+                // Calculate the troops needed to make it divisible by k
+                troops += (k - i % k);
+            }
+
+            // Increment the counter for processed elements
+            cnt++;
+        }
+
+        // Return the total number of troops needed
+        return troops;
+    }
+};
