@@ -1,0 +1,58 @@
+question: You are given an array arr[] of positive integers, find the count of reverse pairs. A pair of indices (i, j) is said to be a reverse pair if both the following conditions are met:
+
+0 ≤ i < j < arr.size()
+arr[i] > 2 * arr[j]
+
+code:
+
+class Solution {
+    // Helper function to count reverse pairs in the subarray defined by indices l and r
+    int f(int l, int r, vector<int> &arr) {
+        // Base case: if the subarray has 0 or 1 element, there are no pairs to count
+        if (r - l <= 1) return 0;
+
+        // Calculate the midpoint of the current subarray
+        int m = (l + r) / 2, ans = 0;
+        
+        // Recursively count reverse pairs in the left half (arr[l..m-1])
+        ans += f(l, m, arr);
+        // Recursively count reverse pairs in the right half (arr[m..r-1])
+        ans += f(m, r, arr);
+        
+        // Count cross reverse pairs where one element is in the left half and the other is in the right half
+        for (int i = l, j = m; i < m && j < r; ) {
+            // Check if the current element in the left half is greater than twice the current element in the right half
+            if (arr[i] > 2 * arr[j]) {
+                // All elements from index i to m-1 satisfy the condition with arr[j]
+                ans += (m - i); // Count how many elements in the left half are valid
+                j++;  // Move to the next element in the right half
+            } else {
+                i++;  // Move to the next element in the left half
+            }
+        }
+        
+        // Merge the two sorted halves into a temporary array
+        vector<int> tmp(r - l, 0); // Temporary array to hold merged results
+        for (int i = l, j = m, k = 0; i < m || j < r; ) {
+            // Merge the two halves while maintaining sorted order
+            if (j >= r || (i < m && arr[i] < arr[j])) 
+                tmp[k++] = arr[i++]; // Take from the left half if it's smaller
+            else 
+                tmp[k++] = arr[j++]; // Take from the right half otherwise
+        } 
+        
+        // Copy the merged array back to the original array
+        for (int i = 0; i < (r - l); i++) 
+            arr[i + l] = tmp[i];
+        
+        // Return the total count of reverse pairs found
+        return ans;
+    }
+  
+  public:
+    // Public function to count reverse pairs in the entire array
+    int countRevPairs(vector<int> &arr) {
+        // Call the helper function on the entire array
+        return f(0, arr.size(), arr);
+    }
+};
