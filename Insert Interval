@@ -1,0 +1,60 @@
+question: Geek has an array of non-overlapping intervals intervals[][] where intervals[i] = [starti , endi] represent the start and the end of the ith event and intervals is sorted in ascending order by starti . He wants to add a new interval newInterval[] = [newStart, newEnd] where newStart and newEnd represent the start and end of this interval.
+Help Geek to insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+
+code;
+
+class Solution {
+public:
+    vector<vector<int>> insertInterval(vector<vector<int>> &intervals,
+                                       vector<int> &newInterval) {
+        // Initialize an empty vector to store the resulting intervals after insertion
+        vector<vector<int>> ans;
+        
+        // Use a map to store the intervals with the start time as the key and the end time as the value
+        map<int, int> m;
+
+        // Iterate through each interval in the given list of intervals
+        for (int i = 0; i < intervals.size(); i++) {
+            // If the start of the current interval already exists in the map
+            if (m.count(intervals[i][0]) != 0) {
+                // Update the end time to be the maximum of the existing end time and the current end time
+                m[intervals[i][0]] = max(m[intervals[i][0]], intervals[i][1]);
+            } else {
+                // If it doesn't exist, add the current start and end times to the map
+                m[intervals[i][0]] = intervals[i][1];
+            }
+        }
+
+        // Now handle the new interval to be inserted
+        if (m.count(newInterval[0]) != 0) {
+            // If the start of the new interval exists in the map, update the end time
+            m[newInterval[0]] = max(m[newInterval[0]], newInterval[1]);
+        } else {
+            // If it doesn't exist, add the new interval's start and end times to the map
+            m[newInterval[0]] = newInterval[1];
+        }
+
+        // Iterate through the map to construct the merged intervals
+        for (auto i : m) {
+            // If the answer vector is not empty
+            if (ans.size() != 0) {
+                // Check if the current interval overlaps with the last interval in the answer
+                if ((ans[ans.size() - 1][0] <= i.first && 
+                     ans[ans.size() - 1][1] > i.first) || 
+                    ans[ans.size() - 1][1] == i.first) {
+                    // Merge the intervals by updating the end time
+                    ans[ans.size() - 1][1] = max(ans[ans.size() - 1][1], i.second);
+                } else {
+                    // If they do not overlap, add the current interval to the answer
+                    ans.push_back({i.first, i.second});
+                }
+            } else {
+                // If the answer vector is empty, add the first interval
+                ans.push_back({i.first, i.second});
+            }
+        }
+
+        // Return the merged intervals
+        return ans;
+    }
+};
