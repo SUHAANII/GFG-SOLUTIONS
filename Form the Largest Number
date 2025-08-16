@@ -1,0 +1,43 @@
+question: Given an array of integers arr[] representing non-negative integers, arrange them so that after concatenating all of them in order, it results in the largest possible number. Since the result may be very large, return it as a string.
+
+
+
+code:
+
+class Solution {
+public:
+    // Custom comparator function to determine the order of strings
+    static bool comp(string a, string b) {
+        // Compare concatenated results of a+b and b+a
+        // If a+b is greater than b+a, a should come before b
+        return a + b > b + a;
+    }
+
+    // Function to find the largest number that can be formed from the array
+    string findLargest(vector<int> &arr) {
+        // Create a vector to hold the string representations of the numbers
+        vector<string> nums;
+
+        // Convert each integer in the array to a string and store it in nums
+        for (int i = 0; i < arr.size(); i++) {
+            nums.push_back(to_string(arr[i])); // Convert int to string
+        }
+
+        // Sort the nums vector using the custom comparator
+        sort(nums.begin(), nums.end(), comp);
+
+        // Handle the special case where all numbers are zero
+        if (nums[0] == "0") {
+            return "0"; // If the largest number is "0", return "0"
+        }
+
+        // Initialize an empty string to build the final result
+        string ans = "";
+        // Concatenate all sorted strings to form the largest number
+        for (int i = 0; i < nums.size(); i++) {
+            ans += nums[i]; // Append each number to ans
+        }
+
+        return ans; // Return the final concatenated string
+    }
+};
