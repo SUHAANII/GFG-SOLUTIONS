@@ -1,0 +1,52 @@
+question: You are given an array arr[]. For each element at index i (0-based indexing), find the farthest index j to the right (i.e., j > i) such that arr[j] < arr[i]. If no such index exists for a given position, return -1 for that index. Return the resulting array of answers.
+
+code:
+
+class Solution {
+public:
+    vector<int> farMin(vector<int>& arr) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Create a vector to store the minimum value from each index to the end of the array
+        vector<int> preMin(n);
+        // The last element's minimum is itself
+        preMin[n-1] = arr[n-1];
+        
+        // Fill preMin from right to left
+        // preMin[i] will hold the minimum value from arr[i] to arr[n-1]
+        for(int i = n-2; i >= 0; --i) {
+            preMin[i] = min(arr[i], preMin[i+1]);
+        }
+        
+        // Initialize the answer array; the last element has no right smaller element
+        vector<int> ans(n); 
+        ans[n-1] = -1; // Last element always points to -1
+        
+        // For each element (except the last), find the farthest index j where arr[j] < arr[i]
+        for(int i = 0; i < n-1; ++i) {
+            int low = i + 1; // Start searching from the next index
+            int high = n - 1; // Search until the last index
+            int temp = -1; // This will store the farthest index found
+            
+            // Binary search to find the farthest index with a smaller value
+            while(low <= high) {
+                int mid = (low + high) / 2; // Calculate the mid index
+                
+                // Check if the minimum value from mid to the end is less than arr[i]
+                if(preMin[mid] < arr[i]) {
+                    temp = mid; // Update the candidate index
+                    low = mid + 1; // Try to find a farther index
+                } else {
+                    // If not, search in the left half
+                    high = mid - 1;
+                }
+            }
+            // Store the farthest index found for arr[i]
+            ans[i] = temp;
+        }
+        
+        // Return the answer array
+        return ans;
+    }
+};
