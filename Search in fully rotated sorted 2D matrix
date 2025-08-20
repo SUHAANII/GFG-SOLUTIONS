@@ -1,0 +1,69 @@
+question: You are given a 2D matrix mat[][] of size n x m that was initially filled in the following manner:
+
+
+Each row is sorted in increasing order from left to right.
+The first element of every row is greater than the last element of the previous row.
+
+This implies that if the matrix is flattened row-wise, it forms a strictly sorted 1D array.
+Later, this sorted 1D array was rotated at some unknown pivot. The rotated array was then written back into the matrix row-wise to form the current matrix.
+
+
+Given such a matrix mat[][] and an integer x, determine whether x exists in the matrix.
+
+code:
+
+class Solution {
+public:
+    // Function to search for a value 'x' in a 2D matrix 'mat'
+    bool searchMatrix(vector<vector<int>> &mat, int x) {
+        // Get the number of rows (m) and columns (n) in the matrix
+        int m = mat.size(); // Number of rows
+        int n = mat[0].size(); // Number of columns
+        
+        // Initialize pointers for binary search
+        int i = 0; // Start index
+        int j = (n * m) - 1; // End index (last element in the flattened matrix)
+        
+        // Perform binary search while the start index is less than or equal to the end index
+        while (i <= j) {
+            // Calculate the mid index
+            int mid = (i + j) / 2;
+            
+            // Calculate row and column indices for the low, high, and mid points
+            int lowr = i / n; // Row index for the start
+            int lowc = i % n; // Column index for the start
+            int highr = j / n; // Row index for the end
+            int highc = j % n; // Column index for the end
+            int midr = mid / n; // Row index for the mid
+            int midc = mid % n; // Column index for the mid
+            
+            // Check if the mid element is equal to x
+            if (mat[midr][midc] == x) return true; // Found x
+            
+            // Check if the low element is less than or equal to the mid element
+            if (mat[lowr][lowc] <= mat[midr][midc]) {
+                // Check if x is within the range of low and mid elements
+                if (mat[lowr][lowc] <= x && mat[midr][midc] >= x) {
+                    // Narrow the search to the left half
+                    j = mid - 1;
+                } else {
+                    // Otherwise, search the right half
+                    i = mid + 1;
+                }
+            } else {
+                // If low element is greater than mid element
+                // Check if x is within the range of mid and high elements
+                if (mat[midr][midc] <= x && x <= mat[highr][highc]) {
+                    // Narrow the search to the right half
+                    i = mid + 1;
+                } else {
+                    // Otherwise, search the left half
+                    j = mid - 1;
+                }
+            }
+        }
+        
+        // If we exit the loop, x was not found in the matrix
+        return false;
+    }
+};
