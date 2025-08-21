@@ -1,0 +1,45 @@
+question:Given an array arr[] of integers and an integer k, select k elements from the array such that the minimum absolute difference between any two of the selected elements is maximized. Return this maximum possible minimum difference.
+
+
+
+code:
+class Solution {
+public:
+    // Function to find the maximum minimum difference
+    int maxMinDiff(vector<int>& arr, int k) {
+        // Get the size of the input array
+        int n = arr.size();
+        
+        // Sort the array to facilitate the binary search
+        sort(arr.begin(), arr.end());
+        
+        // Initialize the binary search range
+        int s = 0; // Start of the range
+        int e = 1e6 + 5; // End of the range (a sufficiently large number)
+        
+        // Binary search to find the maximum minimum difference
+        while(e > s + 1) {
+            int m = (s + e) / 2; // Midpoint of the current range
+            int p = 0; // Pointer to track the last selected element
+            int c = 1; // Count of selected elements, starting with the first
+            
+            // Iterate through the sorted array to count how many elements can be selected
+            for(int i = 1; i < n; i++) {
+                // If the difference between the current element and the last selected element is at least 'm'
+                if(arr[i] - arr[p] >= m) {
+                    p = i; // Update the pointer to the current element
+                    c++; // Increment the count of selected elements
+                }
+            }
+            
+            // If we can select at least 'k' elements, it means we can try for a larger difference
+            if(c >= k) 
+                s = m; // Move the start of the range up
+            else 
+                e = m; // Otherwise, move the end of the range down
+        }
+        
+        // Return the maximum minimum difference found
+        return s;
+    }
+};
