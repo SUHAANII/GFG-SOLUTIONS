@@ -1,0 +1,31 @@
+question: Given a row-wise sorted matrix mat[][] of size n*m, where the number of rows and columns is always odd. Return the median of the matrix.
+
+
+
+code;
+
+class Solution {
+  public:
+    // Function to find the median of a matrix
+    int median(vector<vector<int>> &mat) {
+        // Create a vector to store all elements of the matrix
+        vector<int> val;
+
+        // Loop through each row of the matrix
+        for(int i = 0; i < mat.size(); i++) {
+            // Loop through each column of the current row
+            for(int j = 0; j < mat[0].size(); j++) {
+                // Add the current element to the vector
+                val.push_back(mat[i][j]);
+            }
+        }
+
+        // Sort the vector containing all matrix elements
+        sort(val.begin(), val.end());
+
+        // Calculate the index of the median element
+        // The median index is the middle element in a sorted array
+        // For an even number of elements, we take the lower middle element
+        return val[(mat.size() * mat[0].size()) / 2];
+    }
+};
