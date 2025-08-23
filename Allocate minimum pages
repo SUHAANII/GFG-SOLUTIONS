@@ -1,0 +1,68 @@
+question;Given an array arr[] of integers, where each element arr[i] represents the number of pages in the i-th book. You also have an integer k representing the number of students. The task is to allocate books to each student such that:
+
+Each student receives atleast one book.
+Each student is assigned a contiguous sequence of books.
+No book is assigned to more than one student.
+The objective is to minimize the maximum number of pages assigned to any student. In other words, out of all possible allocations, find the arrangement where the student who receives the most pages still has the smallest possible maximum.
+
+Note: If it is not possible to allocate books to all students, return -1.
+
+code:
+
+
+class Solution {
+public:
+    // Function to check if it is possible to allocate pages
+    bool isPossible(vector<int> &arr, int k, int mid) {
+        int sum = 0;           // To keep track of the current sum of pages allocated to a student
+        int student = 1;      // Start with one student
+
+        // Iterate through each book's pages
+        for (int x : arr) {
+            sum += x;         // Add the pages of the current book to the sum
+            
+            // If the sum exceeds the mid value, we need to allocate to a new student
+            if (sum > mid) {
+                student++;     // Increment the student count
+                sum = x;      // Start the new student's allocation with the current book
+            }
+        }
+
+        // Return true if the number of students needed is less than or equal to k
+        return student <= k;
+    }
+
+    // Function to find the minimum number of pages
+    int findPages(vector<int> &arr, int k) {
+        // If there are more students than books, allocation is not possible
+        if (k > arr.size()) return -1;
+
+        int sum = 0;          // To calculate the total number of pages
+        int mx = INT_MIN;     // To find the maximum pages in a single book
+
+        // Calculate the total number of pages and the maximum pages in a single book
+        for (int x : arr) {
+            sum += x;        // Add to the total sum
+            mx = max(mx, x); // Update the maximum if current book has more pages
+        }
+
+        // Set low as the maximum pages in a single book and high as the total pages
+        int low = mx, high = sum, mid, ans = INT_MAX;
+
+        // Binary search to find the minimum possible maximum pages allocated to a student
+        while (low <= high) {
+            mid = (low + high) / 2; // Calculate the mid value
+
+            // Check if it is possible to allocate pages such that no student has more than mid pages
+            if (isPossible(arr, k, mid)) {
+                ans = min(ans, mid); // Update the answer with the minimum mid found
+                high = mid - 1;      // Try for a smaller maximum page limit
+            } else {
+                low = mid + 1;       // Increase the minimum page limit
+            }
+        }
+
+        // Return the minimum number of pages that can be allocated to a student
+        return ans;
+    }
+};
