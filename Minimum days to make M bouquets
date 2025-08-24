@@ -1,0 +1,61 @@
+question:You have a row of flowers, where each flower blooms after a specific day. The array arr[] represents the blooming schedule: arr[i] is the day the flower at position i will bloom. To create a bouquet, you need to collect k adjacent bloomed flowers. Each flower can only be used in one bouquet.
+
+Your goal is to find the minimum number of days required to make exactly m bouquets. If it is not possible to make m bouquets with the given arrangement, return -1.
+
+code:
+
+class Solution {
+protected:
+    // Function to check if it's possible to make 'm' bouquets
+    // by day 'day' using 'k' flowers for each bouquet
+    bool checkThatTheyCanMakeOrNot(vector<int> arr, int k, int m, int day) {
+        int count = 0; // Count of consecutive flowers that can be picked
+        int bouquet = 0; // Count of bouquets made
+
+        // Iterate through the flower blooming days
+        for (int i = 0; i < arr.size(); i++) {
+            // If the flower blooms by 'day', we can pick it
+            if (arr[i] <= day) {
+                count++; // Increase the count of consecutive flowers
+                // If we have enough flowers for one bouquet
+                if (count == k) {
+                    count = 0; // Reset count for the next bouquet
+                    bouquet++; // Increment the bouquet count
+                }
+            } else {
+                // If the flower doesn't bloom by 'day', reset count
+                count = 0;
+            }
+        }
+
+        // Check if we can make at least 'm' bouquets
+        return bouquet >= m;
+    }
+
+public:
+    // Main function to find the minimum number of days needed
+    int minDaysBloom(vector<int>& arr, int k, int m) {
+        // If the total number of flowers needed is more than available, return -1
+        if (m * k > arr.size())
+            return -1;
+
+        // Initialize binary search boundaries
+        int low = *min_element(arr.begin(), arr.end()); // Minimum blooming day
+        int high = *max_element(arr.begin(), arr.end()); // Maximum blooming day
+
+        // Perform binary search to find the minimum day
+        while (low < high) {
+            int mid = low + (high - low) / 2; // Midpoint of the current range
+
+            // Check if we can make 'm' bouquets by 'mid' day
+            if (checkThatTheyCanMakeOrNot(arr, k, m, mid)) {
+                high = mid; // Try to find an earlier day
+            } else {
+                low = mid + 1; // Need more days
+            }
+        }
+
+        // 'low' will be the minimum day required to make 'm' bouquets
+        return low;
+    }
+};
