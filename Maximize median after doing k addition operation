@@ -1,0 +1,59 @@
+question: Given an array arr[] consisting of positive integers and an integer k. You are allowed to perform at most k operations, where in each operation, you can increment any one element of the array by 1. Determine the maximum possible median of the array that can be achieved after performing at most k such operations.
+
+Note: The median of an array is defined as the middle element when the array (after sorting) has an odd size, or the average of the two middle elements when the array (after sorting) has an even size.
+
+
+
+code:
+
+class Solution {
+public:
+    int maximizeMedian(vector<int>& arr, int k) {
+        // Get the size of the array
+        int n = arr.size();
+        // Calculate the current median index (for a zero-based index)
+        int cur = (n - 1) / 2;
+        // Sort the array to facilitate median calculation
+        sort(arr.begin(), arr.end());
+        
+        // If the size of the array is even and the difference between the two middle elements
+        // is greater than or equal to k, we can increase the median
+        if (n % 2 == 0 && arr[cur + 1] - arr[cur] >= k) {
+            // Return the new median after adding k
+            return (arr[cur + 1] + arr[cur] + k) / 2;
+        }
+        
+        // Initialize the length of the segment of equal elements starting from the current median
+        int len = 1;
+        // While there is still k to distribute
+        while (k) {
+            // Extend the segment of equal elements to the right as long as they are the same
+            while (cur < n - 1 && arr[cur] == arr[cur + 1]) {
+                cur++;
+                len++;
+            }
+            
+            // If we have reached the end of the array, return the maximum value we can achieve
+            if (cur == n - 1) {
+                return arr[cur] + k / len;
+            }
+            
+            // Calculate the difference between the next element and the current element
+            int diff = arr[cur + 1] - arr[cur];
+            
+            // If we have enough k to equalize the current segment up to the next element
+            if (k >= diff * len) {
+                // Move to the next element, reduce k accordingly, and increase the length
+                cur++;
+                k -= diff * len;
+                len++;
+            } else {
+                // If we can't equalize fully, return the maximum achievable median
+                return arr[cur] + k / len;
+            }
+        }
+        
+        // If k is exhausted, return the current median element
+        return arr[cur];
+    }
+};
