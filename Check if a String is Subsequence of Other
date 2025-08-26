@@ -1,0 +1,30 @@
+question: Given two strings s1 and s2. You have to check that s1 is a subsequence of s2 or not.
+Note: A subsequence is a sequence that can be derived from another sequence by deleting some elements without changing the order of the remaining elements.
+
+code:
+
+class Solution {
+public:
+    // Function to check if s1 is a subsequence of s2
+    bool isSubSeq(string& s1, string& s2) {
+        // Initialize a pointer x to track the position in s1
+        int x = 0;
+        // Get the length of s1
+        int n = s1.length();
+        
+        // Iterate through each character in s2
+        for (int i = 0; i < s2.length(); i++) {
+            // Check if the current character in s2 matches the current character in s1
+            if (s1[x] == s2[i]) {
+                // If there's a match, move the pointer x to the next character in s1
+                x++;
+            }
+            // If x equals n, it means we have found all characters of s1 in s2 in order
+            if (x == n) {
+                return true; // s1 is a subsequence of s2
+            }
+        }
+        // If we finish the loop and haven't matched all of s1, return false
+        return (x == n);
+    }
+};
