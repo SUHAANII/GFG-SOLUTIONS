@@ -1,0 +1,58 @@
+question: Given two strings s and p. Find the smallest substring in s consisting of all the characters (including duplicates) of the string p. Return empty string in case no such substring is present.
+If there are multiple such substring of the same length found, return the one with the least starting index.
+
+code:
+
+class Solution {
+public:
+    // Function to find the smallest window in string 's' that contains all characters of string 'p'
+    string smallestWindow(string &s, string &p) {
+        // Vector to store the frequency of characters in 'p'
+        vector<int> freqs(26, 0); // Frequency of characters in 's'
+        vector<int> freqp(26, 0); // Frequency of characters in 'p'
+        
+        int unique = 0; // Count of unique characters in 'p'
+        
+        // Fill the frequency array for 'p' and count unique characters
+        for (auto it : p) {
+            if (freqp[it - 'a'] == 0) unique++; // New unique character found
+            freqp[it - 'a']++; // Increment frequency of the character in 'p'
+        }
+        
+        int start = 0, end = 0; // Pointers for the sliding window
+        int minlen = INT_MAX; // Minimum length of the window found
+        string ans = ""; // Resulting smallest window
+        
+        // Expand the window by moving the 'end' pointer
+        while (end < s.size()) {
+            // Include the current character in the frequency map
+            freqs[s[end] - 'a']++;
+            
+            // Check if the current character count matches with 'p'
+            if (freqs[s[end] - 'a'] == freqp[s[end] - 'a'] && freqp[s[end] - 'a'] > 0) {
+                match++; // Increase the match count
+            }
+            
+            // If all unique characters are matched, try to shrink the window
+            if (match >= unique) {
+                // Shrink the window from the left
+                while (start <= end && freqs[s[start] - 'a'] > freqp[s[start] - 'a']) {
+                    freqs[s[start] - 'a']--; // Decrease the frequency of the character at 'start'
+                    start++; // Move the start pointer to the right
+                }
+                
+                // Calculate the current window length
+                int len = end - start + 1;
+                
+                // Update the minimum length and the answer if a smaller window is found
+                if (len < minlen) {
+                    minlen = len; // Update minimum length
+                    ans = s.substr(start, len); // Update the answer with the current window
+                }
+            }
+            end++; // Move the end pointer to expand the window
+        }
+        
+        return ans; // Return the smallest window found
+    }
+};
