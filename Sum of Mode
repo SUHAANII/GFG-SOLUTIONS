@@ -1,0 +1,53 @@
+question:Given an array arr[] of positive integers and an integer k. You have to find the sum of the modes of all the subarrays of size k.
+Note: The mode of a subarray is the element that occurs with the highest frequency. If multiple elements have the same highest frequency, the smallest such element is considered the mode.
+
+code:
+
+class Solution {
+public:
+    // Function to calculate the sum of modes in all subarrays of size k
+    int sumOfModes(vector<int>& arr, int k) {
+        int n = arr.size();  // Get the size of the input array
+        int x = 0, y = 0;    // Initialize two pointers for the sliding window
+        unordered_map<int,int> count; // Map to store frequency of each number in the current window
+        set<pair<int,int>> s; // Set to store {frequency, -value} pairs for easy retrieval of the mode
+        int ans = 0;          // Variable to accumulate the sum of modes
+
+        // Iterate through the array using the right pointer y
+        while (y < n) {
+            int num = arr[y]; // Current number to add to the window
+            
+            // If the number is already present in the count map, remove its old frequency from the set
+            if (count[num] > 0) 
+                s.erase({count[num], -num});  // Remove the previous frequency of num
+            
+            // Increment the count of the current number
+            count[num]++;
+            // Insert the new frequency and the negative of the number into the set
+            s.insert({count[num], -num}); // This keeps the set sorted by frequency and value
+
+            // If the window size exceeds k, we need to remove the leftmost element
+            if (y - x + 1 > k) {
+                int left = arr[x]; // The number to be removed from the window
+                s.erase({count[left], -left}); // Remove its frequency from the set
+                count[left]--; // Decrement the frequency of the leftmost number
+                
+                // If the frequency is still positive, reinsert it into the set
+                if (count[left] > 0) 
+                    s.insert({count[left], -left});  
+                
+                x++; // Move the left pointer to the right, effectively shrinking the window
+            }
+
+            // When the window size is exactly k, we can calculate the mode
+            if (y - x + 1 == k) {
+                auto it = s.rbegin(); // Get the element with the highest frequency (last element in sorted order)
+                ans += -it->second; // Add the number (not the frequency) to the answer
+            }
+
+            y++; // Move the right pointer to expand the window
+        }
+
+        return ans; // Return the total sum of modes for all subarrays of size k
+    }
+};
