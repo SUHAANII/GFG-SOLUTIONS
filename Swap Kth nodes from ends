@@ -1,0 +1,54 @@
+question: Given the head of a singly linked list and an integer k. Swap the kth node (1-based index) from the beginning and the kth node from the end of the linked list. Return the head of the final formed list and if it's not possible to swap the nodes return the original list.
+
+
+
+code:
+
+/*
+class Node {
+  public:
+    int data;        // Value stored in the node
+    Node *next;     // Pointer to the next node in the list
+
+    // Constructor to initialize a new node with a given value
+    Node(int x) {
+        data = x;   // Set the node's data to x
+        next = NULL; // Initialize the next pointer to NULL
+    }
+};
+*/
+
+class Solution {
+  public:
+    // Function to swap the k-th node from the beginning with the k-th node from the end
+    Node* swapKth(Node* head, int k) {
+        // Initialize a temporary pointer to traverse the list
+        Node *temp = head;
+        int count = 1; // Counter to keep track of the number of nodes
+        
+        // Traverse the linked list to count the total number of nodes
+        while(temp->next != NULL) {
+            count++; // Increment the count for each node
+            temp = temp->next; // Move to the next node
+        }
+        
+        // If k is greater than the number of nodes, return the original list
+        if(count < k) return head;
+        
+        // Reset temp to the head to find the k-th node from the beginning
+        temp = head;
+        for(int i = 1; i < k; i++) 
+            temp = temp->next; // Move to the k-th node from the start
+        
+        // Initialize another pointer to find the k-th node from the end
+        Node *a = head;
+        for(int i = 1; i < count - k + 1; i++) 
+            a = a->next; // Move to the k-th node from the end
+        
+        // Swap the data of the two k-th nodes
+        swap(a->data, temp->data);
+        
+        // Return the modified list head
+        return head;
+    }
+};
