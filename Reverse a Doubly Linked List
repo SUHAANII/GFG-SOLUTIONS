@@ -1,0 +1,47 @@
+question: You are given the head of a doubly linked list. You have to reverse the doubly linked list and return its head.
+
+
+
+code:
+
+/*
+class Node {
+  public:
+    int data;       // Data stored in the node
+    Node *next;     // Pointer to the next node in the list
+    Node *prev;     // Pointer to the previous node in the list
+    Node(int val) { // Constructor to initialize a new node
+        data = val; // Set the data value
+        next = NULL; // Initialize next pointer to NULL
+        prev = NULL; // Initialize prev pointer to NULL
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node *reverse(Node *head) {
+        // Start with the current node set to head
+        Node* curr = head;
+        Node* prev = NULL; // Initialize previous pointer to NULL
+
+        // Check if the list is empty or has only one node
+        if (curr == NULL || curr->next == NULL)
+            return head; // Return the head as it is
+
+        // Traverse the list and reverse the pointers
+        while (curr != NULL) {
+            // Store the previous pointer
+            prev = curr->prev; 
+            // Reverse the current node's next and prev pointers
+            curr->prev = curr->next; 
+            curr->next = prev; 
+            // Move to the next node in the original list
+            curr = curr->prev; // curr is now pointing to what was next
+        }
+
+        // At the end of the loop, prev is pointing to the new head
+        // Return the new head of the reversed list
+        return head = prev->prev; // Move back to the last valid node (new head)
+    }
+};
