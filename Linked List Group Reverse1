@@ -1,0 +1,40 @@
+question: You are given the head of a Singly linked list. You have to reverse every k node in the linked list and return the head of the modified list.
+Note: If the number of nodes is not a multiple of k then the left-out nodes at the end, should be considered as a group and must be reversed.
+
+code:
+
+class Solution {
+  public:
+    Node *reverseKGroup(Node *head, int k) {
+        // Initialize count to keep track of the number of nodes processed
+        int count = 0;
+
+        // If the head is NULL, return NULL (base case)
+        if (head == NULL) {
+            return NULL;
+        }
+
+        // Pointers to manage the current node, previous node, and the next node
+        Node *next = NULL;
+        Node *curr = head;  // Start with the head of the list
+        Node *prev = NULL;  // Previous node starts as NULL
+
+        // Reverse the first k nodes of the linked list
+        while (curr != NULL && count < k) {
+            next = curr->next;  // Store the next node
+            curr->next = prev;  // Reverse the link
+            prev = curr;        // Move prev to current node
+            curr = next;        // Move to the next node
+            count++;            // Increment the count
+        }
+
+        // If there are more nodes left to process
+        if (next != NULL) {
+            // Recursively reverse the next k nodes and link them
+            head->next = reverseKGroup(next, k);
+        }
+
+        // Return the new head of the reversed list (prev is the new head)
+        return prev;
+    }
+};
