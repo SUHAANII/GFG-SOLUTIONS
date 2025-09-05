@@ -1,0 +1,47 @@
+question: Given the head of a linked list where nodes can contain values 0s, 1s, and 2s only. Your task is to rearrange the list so that all 0s appear at the beginning, followed by all 1s, and all 2s are placed at the end.
+
+
+
+code:
+
+class Solution {
+  public:
+    Node* segregate(Node* head) {
+        // Check if the list is empty; if so, return the head (which is NULL)
+        if(head == NULL) return head;
+
+        // Initialize a pointer to traverse the list
+        Node* curr = head;
+        // Counters to keep track of the number of 0s, 1s, and 2s in the list
+        int cntZero = 0, cntOne = 0, cntTwo = 0;
+
+        // First pass: Count the number of 0s, 1s, and 2s in the linked list
+        while(curr != NULL) {
+            if(curr->data == 0) cntZero++; // Increment count for 0s
+            if(curr->data == 1) cntOne++;  // Increment count for 1s
+            curr = curr->next;             // Move to the next node
+        }
+
+        // Reset the current pointer to the head of the list for the second pass
+        curr = head;
+
+        // Second pass: Update the list with the counted values in order
+        while(curr) {
+            if(cntZero > 0) {
+                curr->data = 0; // Set current node's data to 0
+                cntZero--;      // Decrease the count of 0s
+            }
+            else if(cntOne > 0) {
+                curr->data = 1; // Set current node's data to 1
+                cntOne--;       // Decrease the count of 1s
+            }
+            else {
+                curr->data = 2; // Set current node's data to 2
+            }
+            curr = curr->next; // Move to the next node
+        }
+        
+        // Return the head of the modified linked list
+        return head;
+    }
+};
