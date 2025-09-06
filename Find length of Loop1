@@ -1,0 +1,43 @@
+question: Given the head of a linked list, determine whether the list contains a loop. If a loop is present, return the number of nodes in the loop, otherwise return 0.
+
+Note: Internally, pos(1 based index) is used to denote the position of the node that tail's next pointer is connected to. If pos = 0, it means the last node points to null, indicating there is no loop. Note that pos is not passed as a parameter.
+
+code:
+
+class Solution {
+public:
+    // Function to find the length of the loop in a linked list
+    int lengthOfLoop(Node *head) {
+        // Check if the list is empty or has only one node
+        if (head == NULL || head->next == NULL) return 0;
+
+        Node *slow = head; // Initialize slow pointer to the head
+        Node *fast = head; // Initialize fast pointer to the head
+
+        // Step 1: Detect loop using Floyd's Tortoise and Hare algorithm
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;         // Move slow pointer one step
+            fast = fast->next->next;  // Move fast pointer two steps
+
+            // Check if slow and fast pointers meet, indicating a loop
+            if (slow == fast) {  
+                return countLoopLength(slow); // Call helper function to count loop length
+            }
+        }
+        return 0; // No loop found, return 0
+    }
+
+private:
+    // Helper function to count the number of nodes in the loop
+    int countLoopLength(Node *nodeInLoop) {
+        int count = 1; // Start counting from the node where the loop was detected
+        Node *temp = nodeInLoop->next; // Initialize a temporary pointer to traverse the loop
+
+        // Traverse the loop until we come back to the starting node
+        while (temp != nodeInLoop) {
+            count++;            // Increment count for each node in the loop
+            temp = temp->next; // Move to the next node in the loop
+        }
+        return count; // Return the total count of nodes in the loop
+    }
+};
