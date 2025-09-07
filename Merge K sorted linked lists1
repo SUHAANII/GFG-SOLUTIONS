@@ -1,0 +1,50 @@
+question: Given an array arr[] of n sorted linked lists of different sizes. Your task is to merge all these lists into a single sorted linked list and return the head of the merged list.
+
+
+code:
+
+/*
+class Node {
+  public:
+    int data;      // Data stored in the node
+    Node* next;    // Pointer to the next node in the list
+
+    // Constructor to initialize the node with a value
+    Node(int x){
+        data = x; // Assign the value to the data member
+        next = NULL; // Initialize next pointer to NULL
+    }
+};
+*/
+
+class Solution {
+  public:
+    // Function to merge k sorted linked lists
+    Node* mergeKLists(vector<Node*>& arr) {
+        // Create a multiset to store the elements in sorted order
+        multiset<int> ms;
+
+        // Iterate through each linked list in the array
+        for(int i = 0; i < arr.size(); ++i) {
+            Node* temp = arr[i]; // Get the head of the current linked list
+
+            // Traverse the current linked list and insert all its elements into the multiset
+            for(; temp; temp = temp->next) {
+                ms.insert(temp->data); // Insert the data into the multiset
+            }
+        }
+        
+        // Create a dummy node to simplify the merging process
+        Node* head = new Node(-1);
+        Node* curr = head; // Pointer to build the new merged list
+
+        // Iterate through the multiset and create a new linked list with sorted elements
+        for(auto &x : ms) {
+            curr->next = new Node(x); // Create a new node with the current value
+            curr = curr->next; // Move the current pointer to the newly created node
+        }
+
+        // Return the head of the merged linked list, skipping the dummy node
+        return head->next;
+    }
+};
