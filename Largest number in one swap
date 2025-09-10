@@ -1,0 +1,42 @@
+question:Given a string s, return the lexicographically largest string that can be obtained by swapping at most one pair of characters in s.
+
+code:
+class Solution {
+public:
+    // Function to find the lexicographically largest string by swapping one pair of characters
+    string largestSwap(string &s) {
+        // Create a copy of the original string to sort and compare
+        string res = s;
+
+        // Sort the copy in descending order to find the largest possible arrangement
+        sort(res.rbegin(), res.rend());
+
+        // Initialize an index to track where the characters differ
+        int i = 0;
+
+        // Compare the original string with the sorted string
+        // Move forward until characters are the same
+        while (i < s.length() && s[i] == res[i]) {
+            i++;
+        }
+
+        // If we've matched all characters, return the original string as no swap is needed
+        if (i == s.length()) return s;
+
+        // Initialize another index to find the character to swap with
+        int j = s.length() - 1;
+
+        // Find the rightmost character in the original string that can be swapped
+        // This character should match the character at position 'i' in the sorted string
+        while (j > i && s[j] != res[i]) {
+            j--;
+        }
+
+        // Swap the characters at indices 'i' and 'j'
+        swap(s[i], s[j]);
+
+        // Return the modified string which is now the largest possible after one swap
+        return s;
+    }
+};
+
