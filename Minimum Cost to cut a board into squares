@@ -1,0 +1,42 @@
+question: Given a board of dimensions n × m that needs to be cut into n*m squares. The cost of making a cut along a horizontal or vertical edge is provided in two arrays:
+
+x[]: Cutting costs along the vertical edges (length-wise).
+y[]: Cutting costs along the horizontal edges (width-wise).
+Find the minimum total cost required to cut the board into squares optimally.
+
+code:
+
+class Solution {
+  public:
+    int minCost(int n, int m, vector<int>& x, vector<int>& y) {
+        //  code here
+ vector<pair<int, bool>> v; // {cost, isVerticalCut}
+        
+        for(int i = 0; i < x.size(); i++){
+            v.push_back({x[i], true});
+        }
+        
+        for(int i = 0; i < y.size(); i++){
+            v.push_back({y[i], false});
+        }
+        
+        sort(v.begin(), v.end(), cmp);
+        
+        int horizontalSegments = 1;
+        int verticalSegments = 1;
+        
+        int cost = 0;
+        
+        for(int i = 0; i < v.size(); i++){
+            if(v[i].second){
+                cost += v[i].first*horizontalSegments;
+                verticalSegments++;
+            } else {
+                cost += v[i].first*verticalSegments;
+                horizontalSegments++;
+            }
+        }
+        
+        return cost;
+    }
+};
